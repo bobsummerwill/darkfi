@@ -311,13 +311,6 @@
 <a href="#311" id="311">311</a>
 <a href="#312" id="312">312</a>
 <a href="#313" id="313">313</a>
-<a href="#314" id="314">314</a>
-<a href="#315" id="315">315</a>
-<a href="#316" id="316">316</a>
-<a href="#317" id="317">317</a>
-<a href="#318" id="318">318</a>
-<a href="#319" id="319">319</a>
-<a href="#320" id="320">320</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -349,7 +342,7 @@
 <span class="kw">use </span>darkfi::{
     event_graph::{
         model::{Event, EventId, ModelPtr},
-        protocol_event::{Seen, SeenPtr, UnreadEventsPtr},
+        protocol_event::{Seen, SeenPtr},
         view::ViewPtr,
     },
     net::P2pPtr,
@@ -372,7 +365,6 @@
     p2p: P2pPtr,
     model: ModelPtr&lt;PrivMsgEvent&gt;,
     view: ViewPtr&lt;PrivMsgEvent&gt;,
-    unread_events: UnreadEventsPtr&lt;PrivMsgEvent&gt;,
     clients_subscriptions: SubscriberPtr&lt;ClientSubMsg&gt;,
     seen: SeenPtr&lt;EventId&gt;,
     missed_events: Arc&lt;Mutex&lt;Vec&lt;Event&lt;PrivMsgEvent&gt;&gt;&gt;&gt;,
@@ -386,7 +378,6 @@
         p2p: P2pPtr,
         model: ModelPtr&lt;PrivMsgEvent&gt;,
         view: ViewPtr&lt;PrivMsgEvent&gt;,
-        unread_events: UnreadEventsPtr&lt;PrivMsgEvent&gt;,
         clients_subscriptions: SubscriberPtr&lt;ClientSubMsg&gt;,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>seen = Seen::new();
@@ -396,7 +387,6 @@
             p2p,
             model,
             view,
-            unread_events,
             clients_subscriptions,
             seen,
             missed_events,
@@ -414,7 +404,6 @@
                 <span class="self">self</span>.p2p.clone(),
                 <span class="self">self</span>.model.clone(),
                 <span class="self">self</span>.seen.clone(),
-                <span class="self">self</span>.unread_events.clone(),
                 msg_recv,
                 <span class="self">self</span>.clients_subscriptions.clone(),
             ))
@@ -461,7 +450,6 @@
         p2p: P2pPtr,
         model: ModelPtr&lt;PrivMsgEvent&gt;,
         seen: SeenPtr&lt;EventId&gt;,
-        unread_events: UnreadEventsPtr&lt;PrivMsgEvent&gt;,
         recv: smol::channel::Receiver&lt;(NotifierMsg, u64)&gt;,
         clients_subscriptions: SubscriberPtr&lt;ClientSubMsg&gt;,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
@@ -489,7 +477,6 @@
                         previous_event_hash: model.lock().<span class="kw">await</span>.get_head_hash(),
                         action: msg.clone(),
                         timestamp: Timestamp::current_time(),
-                        read_confirms: <span class="number">0</span>,
                     };
 
                     <span class="comment">// Since this will be added to the View directly, other clients connected to irc
@@ -501,7 +488,6 @@
                     <span class="kw">if </span>!seen.push(<span class="kw-2">&amp;</span>event.hash()).<span class="kw">await </span>{
                         <span class="kw">continue
                     </span>}
-                    unread_events.lock().<span class="kw">await</span>.insert(<span class="kw-2">&amp;</span>event);
 
                     p2p.broadcast(event).<span class="kw">await</span><span class="question-mark">?</span>;
                 }

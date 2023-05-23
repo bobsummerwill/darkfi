@@ -131,11 +131,6 @@
 <a href="#131" id="131">131</a>
 <a href="#132" id="132">132</a>
 <a href="#133" id="133">133</a>
-<a href="#134" id="134">134</a>
-<a href="#135" id="135">135</a>
-<a href="#136" id="136">136</a>
-<a href="#137" id="137">137</a>
-<a href="#138" id="138">138</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -162,7 +157,7 @@
 <span class="kw">use </span>darkfi::{
     event_graph::{
         model::{Event, EventId, ModelPtr},
-        protocol_event::{SeenPtr, UnreadEvents},
+        protocol_event::SeenPtr,
     },
     net,
     rpc::{
@@ -176,7 +171,6 @@
 
 <span class="kw">pub struct </span>JsonRpcInterface {
     _nickname: String,
-    unread_events: Arc&lt;Mutex&lt;UnreadEvents&lt;GenEvent&gt;&gt;&gt;,
     missed_events: Arc&lt;Mutex&lt;Vec&lt;Event&lt;GenEvent&gt;&gt;&gt;&gt;,
     model: ModelPtr&lt;GenEvent&gt;,
     seen: SeenPtr&lt;EventId&gt;,
@@ -203,13 +197,12 @@
 <span class="kw">impl </span>JsonRpcInterface {
     <span class="kw">pub fn </span>new(
         _nickname: String,
-        unread_events: Arc&lt;Mutex&lt;UnreadEvents&lt;GenEvent&gt;&gt;&gt;,
         missed_events: Arc&lt;Mutex&lt;Vec&lt;Event&lt;GenEvent&gt;&gt;&gt;&gt;,
         model: ModelPtr&lt;GenEvent&gt;,
         seen: SeenPtr&lt;EventId&gt;,
         p2p: net::P2pPtr,
     ) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{ _nickname, unread_events, missed_events, model, seen, p2p }
+        <span class="self">Self </span>{ _nickname, missed_events, model, seen, p2p }
     }
 
     <span class="comment">// RPCAPI:
@@ -244,15 +237,12 @@
             previous_event_hash: <span class="self">self</span>.model.lock().<span class="kw">await</span>.get_head_hash(),
             action: genevent,
             timestamp: Timestamp::current_time(),
-            read_confirms: <span class="number">0</span>,
         };
 
         <span class="kw">if </span>!<span class="self">self</span>.seen.push(<span class="kw-2">&amp;</span>event.hash()).<span class="kw">await </span>{
             <span class="kw">let </span>json = <span class="macro">json!</span>(<span class="bool-val">false</span>);
             <span class="kw">return </span>JsonResponse::new(json, id).into()
         }
-
-        <span class="self">self</span>.unread_events.lock().<span class="kw">await</span>.insert(<span class="kw-2">&amp;</span>event);
 
         <span class="self">self</span>.p2p.broadcast(event).<span class="kw">await</span>.unwrap();
 

@@ -200,12 +200,6 @@
 <a href="#200" id="200">200</a>
 <a href="#201" id="201">201</a>
 <a href="#202" id="202">202</a>
-<a href="#203" id="203">203</a>
-<a href="#204" id="204">204</a>
-<a href="#205" id="205">205</a>
-<a href="#206" id="206">206</a>
-<a href="#207" id="207">207</a>
-<a href="#208" id="208">208</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -241,7 +235,7 @@
     event_graph::{
         events_queue::EventsQueue,
         model::Model,
-        protocol_event::{ProtocolEvent, Seen, UnreadEvents},
+        protocol_event::{ProtocolEvent, Seen},
         view::View,
     },
     net,
@@ -309,8 +303,6 @@
     // Buffers
     </span><span class="kw">let </span>seen_event = Seen::new();
     <span class="kw">let </span>seen_inv = Seen::new();
-    <span class="kw">let </span>unread_events = UnreadEvents::new();
-    <span class="kw">let </span>unread_events_clone = unread_events.clone();
 
     <span class="comment">// Check the version
     </span><span class="kw">let </span><span class="kw-2">mut </span>net_settings = settings.net.clone();
@@ -327,10 +319,7 @@
             <span class="kw">let </span>seen_event = seen_event.clone();
             <span class="kw">let </span>seen_inv = seen_inv.clone();
             <span class="kw">let </span>model = model.clone();
-            <span class="kw">let </span>unread_events = unread_events.clone();
-            <span class="kw">async move </span>{
-                ProtocolEvent::init(channel, p2p, model, seen_event, seen_inv, unread_events).<span class="kw">await
-            </span>}
+            <span class="kw">async move </span>{ ProtocolEvent::init(channel, p2p, model, seen_event, seen_inv).<span class="kw">await </span>}
         })
         .<span class="kw">await</span>;
 
@@ -362,7 +351,6 @@
         p2p.clone(),
         model_clone,
         view.clone(),
-        unread_events_clone,
         clients_subscriptions,
     )
     .<span class="kw">await</span><span class="question-mark">?</span>;

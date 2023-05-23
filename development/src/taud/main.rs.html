@@ -399,11 +399,6 @@
 <a href="#399" id="399">399</a>
 <a href="#400" id="400">400</a>
 <a href="#401" id="401">401</a>
-<a href="#402" id="402">402</a>
-<a href="#403" id="403">403</a>
-<a href="#404" id="404">404</a>
-<a href="#405" id="405">405</a>
-<a href="#406" id="406">406</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -448,7 +443,7 @@
     event_graph::{
         events_queue::EventsQueue,
         model::{Event, EventId, Model, ModelPtr},
-        protocol_event::{ProtocolEvent, Seen, SeenPtr, UnreadEvents},
+        protocol_event::{ProtocolEvent, Seen, SeenPtr},
         view::{View, ViewPtr},
         EventMsg,
     },
@@ -570,7 +565,6 @@
                         previous_event_hash: model.lock().<span class="kw">await</span>.get_head_hash(),
                         action: encrypted_task,
                         timestamp: Timestamp::current_time(),
-                        read_confirms: <span class="number">0</span>,
                     };
 
                     p2p.broadcast(event).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -726,7 +720,6 @@
     ////////////////////
     </span><span class="kw">let </span>seen_event = Seen::new();
     <span class="kw">let </span>seen_inv = Seen::new();
-    <span class="kw">let </span>unread_events = UnreadEvents::new();
 
     <span class="comment">// let datastore_raft = datastore_path.join(&quot;tau.db&quot;);
 
@@ -747,10 +740,7 @@
             <span class="kw">let </span>seen_event = seen_event.clone();
             <span class="kw">let </span>seen_inv = seen_inv.clone();
             <span class="kw">let </span>model = model.clone();
-            <span class="kw">let </span>unread_events = unread_events.clone();
-            <span class="kw">async move </span>{
-                ProtocolEvent::init(channel, p2p, model, seen_event, seen_inv, unread_events).<span class="kw">await
-            </span>}
+            <span class="kw">async move </span>{ ProtocolEvent::init(channel, p2p, model, seen_event, seen_inv).<span class="kw">await </span>}
         })
         .<span class="kw">await</span>;
 
