@@ -427,8 +427,8 @@
                         <span class="kw">return </span><span class="prelude-val">Err</span>(ZkasErr(<span class="macro">format!</span>(<span class="string">&quot;Could not decode HeapType from {}&quot;</span>, heap_type)))
                     }
                 };
-                args.push((heap_type, heap_index.<span class="number">0 </span><span class="kw">as </span>usize)); <span class="comment">// FIXME, why?
-            </span>}
+                args.push((heap_type, heap_index.<span class="number">0 </span><span class="kw">as </span>usize));
+            }
 
             opcodes.push((opcode, args));
         }

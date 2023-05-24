@@ -426,8 +426,8 @@
                 }
 
                 <span class="kw">if </span>in_string {
-                    <span class="comment">// TODO: Perhaps forbid whitespace.
-                    </span>buf.push(c);
+                    <span class="comment">// For now we forbid whitespace in strings.
+                    </span><span class="self">self</span>.error.abort(<span class="string">&quot;Strings/Namespaces can&#39;t contain whitespace&quot;</span>, lineno, column);
                 }
 
                 <span class="kw">continue

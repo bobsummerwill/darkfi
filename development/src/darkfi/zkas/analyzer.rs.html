@@ -481,8 +481,6 @@
 <a href="#481" id="481">481</a>
 <a href="#482" id="482">482</a>
 <a href="#483" id="483">483</a>
-<a href="#484" id="484">484</a>
-<a href="#485" id="485">485</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -607,8 +605,8 @@
                 // opcode has a return value. When executed we will push
                 // this value onto the heap and use it as a reference to
                 // the actual statement we&#39;re parsing at this moment.
-                // TODO: FIXME: This needs a recursive algorithm, as this
-                //              only allows a single nested function.
+                // TODO: This needs a recursive algorithm, as this only
+                //       allows a single nested function.
                 </span><span class="kw">if let </span>Arg::Func(func) = arg {
                     <span class="kw">let </span>(f_return_types, f_arg_types) = func.opcode.arg_types();
                     <span class="kw">if </span>f_return_types.is_empty() {
@@ -629,8 +627,7 @@
                         column: func.lhs.clone().unwrap().column,
                     };
 
-                    <span class="comment">// FIXME: Needs better *Array handling.
-                    </span><span class="kw">if </span>arg_types[<span class="number">0</span>] == VarType::BaseArray {
+                    <span class="kw">if </span>arg_types[<span class="number">0</span>] == VarType::BaseArray {
                         <span class="kw">if </span>f_return_types[<span class="number">0</span>] != VarType::Base {
                             <span class="self">self</span>.error.abort(
                                 <span class="kw-2">&amp;</span><span class="macro">format!</span>(
@@ -765,8 +762,7 @@
                             Var::Variable(c) =&gt; (c.typ, c.line, c.column),
                         };
 
-                        <span class="comment">// FIXME: Better array handling
-                        </span><span class="kw">if </span>arg_types[<span class="number">0</span>] == VarType::BaseArray {
+                        <span class="kw">if </span>arg_types[<span class="number">0</span>] == VarType::BaseArray {
                             <span class="kw">if </span>var_type != VarType::Base {
                                 <span class="self">self</span>.error.abort(
                                     <span class="kw-2">&amp;</span><span class="macro">format!</span>(
@@ -790,7 +786,7 @@
                                     v.column,
                                 );
                             }
-                        } <span class="kw">else if </span>var_type != arg_types[idx] {
+                        } <span class="kw">else if </span>var_type != arg_types[idx] &amp;&amp; arg_types[idx] != VarType::Any {
                             <span class="self">self</span>.error.abort(
                                 <span class="kw-2">&amp;</span><span class="macro">format!</span>(
                                     <span class="string">&quot;Incorrect argument type. Expected `{:?}`, got `{:?}`.&quot;</span>,
