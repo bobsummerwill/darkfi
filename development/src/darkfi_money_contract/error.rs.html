@@ -229,7 +229,7 @@
     </span>TokenIdDoesNotDeriveFromMint,
 
     <span class="attr">#[error(<span class="string">&quot;Token mint is frozen&quot;</span>)]
-    </span>MintFrozen,
+    </span>TokenMintFrozen,
 
     <span class="attr">#[error(<span class="string">&quot;Input used non-native token&quot;</span>)]
     </span>StakeInputNonNativeToken,
@@ -291,7 +291,7 @@
             MoneyError::SpendHookNonZero =&gt; <span class="self">Self</span>::Custom(<span class="number">15</span>),
             MoneyError::SwapMerkleRootNotFound =&gt; <span class="self">Self</span>::Custom(<span class="number">16</span>),
             MoneyError::TokenIdDoesNotDeriveFromMint =&gt; <span class="self">Self</span>::Custom(<span class="number">17</span>),
-            MoneyError::MintFrozen =&gt; <span class="self">Self</span>::Custom(<span class="number">18</span>),
+            MoneyError::TokenMintFrozen =&gt; <span class="self">Self</span>::Custom(<span class="number">18</span>),
             MoneyError::StakeInputNonNativeToken =&gt; <span class="self">Self</span>::Custom(<span class="number">19</span>),
             MoneyError::StakeMissingSpendHook =&gt; <span class="self">Self</span>::Custom(<span class="number">20</span>),
             MoneyError::StakeMissingNullifier =&gt; <span class="self">Self</span>::Custom(<span class="number">21</span>),

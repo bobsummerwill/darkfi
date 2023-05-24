@@ -219,6 +219,7 @@
 <a href="#219" id="219">219</a>
 <a href="#220" id="220">220</a>
 <a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -338,33 +339,34 @@
     </span><span class="kw">pub </span>coins: Vec&lt;Coin&gt;,
 }
 
-<span class="doccomment">/// Parameters for `Money::Mint`
+<span class="doccomment">/// Parameters for `Money::TokenMint`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
-</span><span class="kw">pub struct </span>MoneyMintParamsV1 {
+</span><span class="kw">pub struct </span>MoneyTokenMintParamsV1 {
     <span class="doccomment">/// Clear input
     </span><span class="kw">pub </span>input: ClearInput,
     <span class="doccomment">/// Anonymous output
     </span><span class="kw">pub </span>output: Output,
 }
 
-<span class="doccomment">/// State update for `Money::Mint`
+<span class="doccomment">/// State update for `Money::TokenMint`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
-</span><span class="kw">pub struct </span>MoneyMintUpdateV1 {
+</span><span class="kw">pub struct </span>MoneyTokenMintUpdateV1 {
     <span class="doccomment">/// The newly minted coin
     </span><span class="kw">pub </span>coin: Coin,
 }
 
-<span class="doccomment">/// Parameters for `Money::Freeze`
+<span class="doccomment">/// Parameters for `Money::TokenFreeze`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
-</span><span class="kw">pub struct </span>MoneyFreezeParamsV1 {
+</span><span class="kw">pub struct </span>MoneyTokenFreezeParamsV1 {
     <span class="doccomment">/// Mint authority public key
-    /// We also use this to derive the token ID
+    ///
+    /// We use this to derive the token ID and verify the signature.
     </span><span class="kw">pub </span>signature_public: PublicKey,
 }
 
-<span class="doccomment">/// State update for `Money::Freeze`
+<span class="doccomment">/// State update for `Money::TokenFreeze`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
-</span><span class="kw">pub struct </span>MoneyFreezeUpdateV1 {
+</span><span class="kw">pub struct </span>MoneyTokenFreezeUpdateV1 {
     <span class="doccomment">/// Mint authority public key
     </span><span class="kw">pub </span>signature_public: PublicKey,
 }

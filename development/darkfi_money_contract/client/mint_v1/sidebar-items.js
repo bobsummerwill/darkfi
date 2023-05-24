@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["create_token_mint_proof"],"struct":["MintCallBuilder","MintCallDebris","TokenMintRevealed"]};

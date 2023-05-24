@@ -832,7 +832,7 @@
         MONEY_KEYS_COL_SECRET, MONEY_KEYS_TABLE, MONEY_TOKENS_COL_IS_FROZEN,
         MONEY_TOKENS_COL_TOKEN_ID, MONEY_TOKENS_TABLE, MONEY_TREE_COL_TREE, MONEY_TREE_TABLE,
     },
-    model::{MoneyFreezeParamsV1, MoneyMintParamsV1, MoneyTransferParamsV1, Output},
+    model::{MoneyTokenFreezeParamsV1, MoneyTokenMintParamsV1, MoneyTransferParamsV1, Output},
     MoneyFunction,
 };
 <span class="kw">use </span>darkfi_sdk::{
@@ -1320,18 +1320,18 @@
                 <span class="kw">continue
             </span>}
 
-            <span class="kw">if </span>call.contract_id == cid &amp;&amp; call.data[<span class="number">0</span>] == MoneyFunction::MintV1 <span class="kw">as </span>u8 {
+            <span class="kw">if </span>call.contract_id == cid &amp;&amp; call.data[<span class="number">0</span>] == MoneyFunction::TokenMintV1 <span class="kw">as </span>u8 {
                 <span class="macro">eprintln!</span>(<span class="string">&quot;Found Money::MintV1 in call {}&quot;</span>, i);
-                <span class="kw">let </span>params: MoneyMintParamsV1 = deserialize(<span class="kw-2">&amp;</span>call.data[<span class="number">1</span>..])<span class="question-mark">?</span>;
+                <span class="kw">let </span>params: MoneyTokenMintParamsV1 = deserialize(<span class="kw-2">&amp;</span>call.data[<span class="number">1</span>..])<span class="question-mark">?</span>;
 
                 outputs.push(params.output);
 
                 <span class="kw">continue
             </span>}
 
-            <span class="kw">if </span>call.contract_id == cid &amp;&amp; call.data[<span class="number">0</span>] == MoneyFunction::FreezeV1 <span class="kw">as </span>u8 {
+            <span class="kw">if </span>call.contract_id == cid &amp;&amp; call.data[<span class="number">0</span>] == MoneyFunction::TokenFreezeV1 <span class="kw">as </span>u8 {
                 <span class="macro">eprintln!</span>(<span class="string">&quot;Found Money::FreezeV1 in call {}&quot;</span>, i);
-                <span class="kw">let </span>params: MoneyFreezeParamsV1 = deserialize(<span class="kw-2">&amp;</span>call.data[<span class="number">1</span>..])<span class="question-mark">?</span>;
+                <span class="kw">let </span>params: MoneyTokenFreezeParamsV1 = deserialize(<span class="kw-2">&amp;</span>call.data[<span class="number">1</span>..])<span class="question-mark">?</span>;
 
                 <span class="kw">let </span>(mint_x, mint_y) = params.signature_public.xy();
                 <span class="kw">let </span>token_id = TokenId::from(poseidon_hash([mint_x, mint_y]));
