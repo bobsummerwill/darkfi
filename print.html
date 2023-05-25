@@ -5817,21 +5817,22 @@ ecosystem.</p>
 Given some prefix, the tool will bruteforce secret keys to find one
 which, when derived, starts with a given prefix.</p>
 <h2 id="usage"><a class="header" href="#usage">Usage</a></h2>
-<pre><code>vanityaddr 0.3.0
-Vanity address generation tool for DarkFi keypairs and token IDs.
+<pre><code>vanityaddr 0.4.1
+Vanity address generation tool for DarkFi keypairs and token IDs
 
-USAGE:
-    vanityaddr [OPTIONS] &lt;PREFIX&gt;
+Usage: vanityaddr [OPTIONS] [PREFIX]...
 
-ARGS:
-    &lt;PREFIX&gt;    Prefix to search (must start with 1)
+Arguments:
+  [PREFIX]...  Prefixes to search
 
-OPTIONS:
-    -c                  Should the search be case-sensitive
-    --token-id          Search for TokenID instead of an address
-    -h, --help          Print help information
-    -t &lt;THREADS&gt;        Number of threads to use (defaults to number of available CPUs)
-    -V, --version       Print version information
+Options:
+  -c                 Should the search be case-sensitive
+      --address      Search for an Address
+      --token-id     Search for a Token ID
+      --contract-id  Search for a Contract ID
+  -t &lt;THREADS&gt;       Number of threads to use (defaults to number of available CPUs)
+  -h, --help         Print help
+  -V, --version      Print version
 </code></pre>
 <p>We can use the tool in our command line:</p>
 <pre><code>% vanityaddr drk
