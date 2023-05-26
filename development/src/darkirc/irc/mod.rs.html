@@ -95,6 +95,8 @@
 <a href="#95" id="95">95</a>
 <a href="#96" id="96">96</a>
 <a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
+<a href="#99" id="99">99</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -115,10 +117,13 @@
 
 </span><span class="kw">use </span>std::collections::HashMap;
 
-<span class="kw">use </span>darkfi::Result;
+<span class="kw">use </span>darkfi::{util::path::get_config_path, <span class="prelude-ty">Result</span>};
 
 <span class="kw">use crate</span>::{
-    settings::{Args, ChannelInfo, ContactInfo},
+    settings::{
+        parse_configured_channels, parse_configured_contacts, Args, ChannelInfo, ContactInfo,
+        CONFIG_FILE,
+    },
     PrivMsgEvent,
 };
 
@@ -140,28 +145,27 @@
     <span class="comment">// user config
     </span><span class="kw">pub </span>nickname: String,
     <span class="kw">pub </span>password: String,
-    <span class="kw">pub </span>private_key: <span class="prelude-ty">Option</span>&lt;String&gt;,
-    <span class="kw">pub </span>capabilities: HashMap&lt;String, bool&gt;,
+    <span class="comment">// pub private_key: Option&lt;String&gt;,
+    </span><span class="kw">pub </span>capabilities: HashMap&lt;String, bool&gt;,
 
     <span class="comment">// channels and contacts
-    </span><span class="kw">pub </span>channels: HashMap&lt;String, ChannelInfo&gt;,
+    </span><span class="kw">pub </span>auto_channels: Vec&lt;String&gt;,
+    <span class="kw">pub </span>channels: HashMap&lt;String, ChannelInfo&gt;,
     <span class="kw">pub </span>contacts: HashMap&lt;String, ContactInfo&gt;,
 }
 
 <span class="kw">impl </span>IrcConfig {
     <span class="kw">pub fn </span>new(settings: <span class="kw-2">&amp;</span>Args) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>password = settings.password.as_ref().unwrap_or(<span class="kw-2">&amp;</span>String::new()).clone();
-        <span class="kw">let </span>private_key = settings.private_key.clone();
+        <span class="comment">// let private_key = settings.private_key.clone();
 
-        <span class="kw">let </span><span class="kw-2">mut </span>channels = settings.channels.clone();
+        </span><span class="kw">let </span>auto_channels = settings.autojoin.clone();
 
-        <span class="kw">for </span>chan <span class="kw">in </span>settings.autojoin.iter() {
-            <span class="kw">if </span>!channels.contains_key(chan) {
-                channels.insert(chan.clone(), ChannelInfo::new());
-            }
-        }
-
-        <span class="kw">let </span>contacts = settings.contacts.clone();
+        <span class="comment">// Pick up channel settings from the TOML configuration
+        </span><span class="kw">let </span>cfg_path = get_config_path(settings.config.clone(), CONFIG_FILE)<span class="question-mark">?</span>;
+        <span class="kw">let </span>toml_contents = std::fs::read_to_string(cfg_path)<span class="question-mark">?</span>;
+        <span class="kw">let </span>channels = parse_configured_channels(<span class="kw-2">&amp;</span>toml_contents)<span class="question-mark">?</span>;
+        <span class="kw">let </span>contacts = parse_configured_contacts(<span class="kw-2">&amp;</span>toml_contents)<span class="question-mark">?</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>capabilities = HashMap::new();
         capabilities.insert(<span class="string">&quot;no-history&quot;</span>.to_string(), <span class="bool-val">false</span>);
@@ -174,9 +178,9 @@
             is_pass_init: <span class="bool-val">false</span>,
             nickname: <span class="string">&quot;anon&quot;</span>.to_string(),
             password,
+            auto_channels,
             channels,
             contacts,
-            private_key,
             capabilities,
         })
     }

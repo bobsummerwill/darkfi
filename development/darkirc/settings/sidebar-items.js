@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":["CONFIG_FILE","CONFIG_FILE_CONTENTS","MAXIMUM_LENGTH_OF_MESSAGE","MAXIMUM_LENGTH_OF_NICKNAME"],"enum":["RPL"],"fn":["parse_priv","parse_pub"],"struct":["Args","ChannelInfo","ContactInfo"]};
+window.SIDEBAR_ITEMS = {"constant":["CONFIG_FILE","CONFIG_FILE_CONTENTS","MAXIMUM_LENGTH_OF_MESSAGE","MAXIMUM_LENGTH_OF_NICKNAME"],"enum":["RPL"],"fn":["parse_configured_channels","parse_configured_contacts","parse_priv_key","salt_box_from_shared_secret"],"struct":["Args","ChannelInfo","ContactInfo"]};

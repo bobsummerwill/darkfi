@@ -137,6 +137,14 @@
 <a href="#137" id="137">137</a>
 <a href="#138" id="138">138</a>
 <a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -219,41 +227,49 @@
     bs58::encode(concat).into_string()
 }
 
-<span class="doccomment">/// Decrypt PrivMsg target
-</span><span class="kw">pub fn </span>decrypt_target(
+<span class="kw">pub fn </span>decrypt_target(
+    contact: <span class="kw-2">&amp;mut </span>String,
     privmsg: <span class="kw-2">&amp;mut </span>PrivMsgEvent,
-    configured_chans: <span class="kw-2">&amp;</span>HashMap&lt;String, ChannelInfo&gt;,
-    configured_contacts: <span class="kw-2">&amp;</span>HashMap&lt;String, ContactInfo&gt;,
-    private_key: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
+    configured_chans: HashMap&lt;String, ChannelInfo&gt;,
+    configured_contacts: HashMap&lt;String, ContactInfo&gt;,
 ) {
-    <span class="kw">for </span>(name, chan_info) <span class="kw">in </span>configured_chans {
+    <span class="kw">for </span>chan_name <span class="kw">in </span>configured_chans.keys() {
+        <span class="kw">let </span>chan_info = configured_chans.get(chan_name).unwrap();
         <span class="kw">if </span>!chan_info.joined {
             <span class="kw">continue
         </span>}
 
-        <span class="kw">let </span>salt_box = chan_info.salt_box(name).clone();
+        <span class="kw">let </span>salt_box = chan_info.salt_box.clone();
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(salt_box) = salt_box {
-            <span class="kw">if </span>try_decrypt(<span class="kw-2">&amp;</span>salt_box, <span class="kw-2">&amp;</span>privmsg.target).is_some() {
-                privmsg.target = name.clone();
+            <span class="kw">let </span>decrypted_target = try_decrypt(<span class="kw-2">&amp;</span>salt_box, <span class="kw-2">&amp;</span>privmsg.target);
+            <span class="kw">if </span>decrypted_target.is_none() {
+                <span class="kw">continue
+            </span>}
+
+            <span class="kw">let </span>target = decrypted_target.unwrap();
+            <span class="kw">if </span><span class="kw-2">*</span>chan_name == target {
+                privmsg.target = target;
                 <span class="kw">return
             </span>}
         }
     }
 
-    <span class="kw">if </span>private_key.is_none() {
-        <span class="kw">return
-    </span>}
+    <span class="kw">for </span>cnt_name <span class="kw">in </span>configured_contacts.keys() {
+        <span class="kw">let </span>cnt_info = configured_contacts.get(cnt_name).unwrap();
 
-    <span class="kw">for </span>(name, contact_info) <span class="kw">in </span>configured_contacts {
-        <span class="kw">let </span>salt_box = contact_info.salt_box(private_key.as_ref().unwrap(), name).clone();
-
+        <span class="kw">let </span>salt_box = cnt_info.salt_box.clone();
         <span class="kw">if let </span><span class="prelude-val">Some</span>(salt_box) = salt_box {
-            <span class="kw">if </span>try_decrypt(<span class="kw-2">&amp;</span>salt_box, <span class="kw-2">&amp;</span>privmsg.target).is_some() {
-                privmsg.target = name.clone();
-                <span class="kw">return
+            <span class="kw">let </span>decrypted_target = try_decrypt(<span class="kw-2">&amp;</span>salt_box, <span class="kw-2">&amp;</span>privmsg.target);
+            <span class="kw">if </span>decrypted_target.is_none() {
+                <span class="kw">continue
             </span>}
-        }
+
+            <span class="kw">let </span>target = decrypted_target.unwrap();
+            privmsg.target = target;
+            <span class="kw-2">*</span>contact = cnt_name.into();
+            <span class="kw">return
+        </span>}
     }
 }
 

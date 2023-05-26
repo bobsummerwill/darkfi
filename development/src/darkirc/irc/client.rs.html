@@ -603,9 +603,6 @@
 <a href="#603" id="603">603</a>
 <a href="#604" id="604">604</a>
 <a href="#605" id="605">605</a>
-<a href="#606" id="606">606</a>
-<a href="#607" id="607">607</a>
-<a href="#608" id="608">608</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -634,7 +631,11 @@
 
 <span class="kw">use </span>log::{debug, error, info, warn};
 
-<span class="kw">use </span>darkfi::{event_graph::model::Event, system::Subscription, Error, <span class="prelude-ty">Result</span>};
+<span class="kw">use </span>darkfi::{
+    event_graph::{model::Event, EventMsg},
+    system::Subscription,
+    Error, <span class="prelude-ty">Result</span>,
+};
 
 <span class="kw">use crate</span>::{
     crypto::{decrypt_privmsg, decrypt_target, encrypt_privmsg},
@@ -723,23 +724,27 @@
 
         <span class="self">self</span>.irc_config.channels.extend(new_config.channels);
         <span class="self">self</span>.irc_config.contacts.extend(new_config.contacts);
-        <span class="self">self</span>.irc_config.nickname = new_config.nickname;
-        <span class="self">self</span>.irc_config.private_key = new_config.private_key;
-        <span class="self">self</span>.irc_config.password = new_config.password;
+        <span class="comment">// self.irc_config.private_key = new_config.private_key;
+        </span><span class="self">self</span>.irc_config.password = new_config.password;
 
         <span class="kw">if </span><span class="self">self</span>.on_receive_join(<span class="self">self</span>.irc_config.channels.keys().cloned().collect()).<span class="kw">await</span>.is_err() {
             <span class="macro">warn!</span>(<span class="string">&quot;Error to join updated channels&quot;</span>);
+        } <span class="kw">else </span>{
+            <span class="macro">info!</span>(<span class="string">&quot;[CLIENT {}] Config updated&quot;</span>, <span class="self">self</span>.address);
         }
     }
 
     <span class="kw">pub async fn </span>process_msg(<span class="kw-2">&amp;mut </span><span class="self">self</span>, msg: <span class="kw-2">&amp;mut </span>PrivMsgEvent) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="macro">info!</span>(<span class="string">&quot;[CLIENT {}] msg from View: {:?}&quot;</span>, <span class="self">self</span>.address, msg.to_string());
 
+        <span class="kw">let </span><span class="kw-2">mut </span>msg = msg.clone();
+        <span class="kw">let </span><span class="kw-2">mut </span>contact = String::new();
+
         decrypt_target(
-            msg,
-            <span class="kw-2">&amp;</span><span class="self">self</span>.irc_config.channels,
-            <span class="kw-2">&amp;</span><span class="self">self</span>.irc_config.contacts,
-            <span class="kw-2">&amp;</span><span class="self">self</span>.irc_config.private_key,
+            <span class="kw-2">&amp;mut </span>contact,
+            <span class="kw-2">&amp;mut </span>msg,
+            <span class="self">self</span>.irc_config.channels.clone(),
+            <span class="self">self</span>.irc_config.contacts.clone(),
         );
 
         <span class="kw">if </span>msg.target.starts_with(<span class="string">&#39;#&#39;</span>) {
@@ -753,13 +758,9 @@
                 <span class="kw">return </span><span class="prelude-val">Ok</span>(())
             }
 
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(salt_box) = <span class="kw-2">&amp;</span>chan_info.salt_box(<span class="kw-2">&amp;</span>msg.target) {
-                decrypt_privmsg(salt_box, msg);
-                <span class="macro">info!</span>(
-                    <span class="string">&quot;[CLIENT {}] Decrypted received message: {:?}&quot;</span>,
-                    <span class="self">self</span>.address,
-                    msg.to_string()
-                );
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(salt_box) = <span class="kw-2">&amp;</span>chan_info.salt_box {
+                decrypt_privmsg(salt_box, <span class="kw-2">&amp;mut </span>msg);
+                <span class="macro">info!</span>(<span class="string">&quot;Decrypted received message: {:?}&quot;</span>, msg);
             }
 
             <span class="comment">// add the nickname to the channel&#39;s names
@@ -768,25 +769,20 @@
             }
 
             <span class="self">self</span>.reply(<span class="kw-2">&amp;</span>msg.to_string()).<span class="kw">await</span><span class="question-mark">?</span>;
-        } <span class="kw">else if </span><span class="self">self</span>.irc_config.private_key.is_some() {
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(contact_info) = <span class="self">self</span>.irc_config.contacts.get(<span class="kw-2">&amp;</span>msg.target) {
-                <span class="kw">let </span>salt_box = <span class="kw-2">&amp;</span>contact_info
-                    .salt_box(<span class="self">self</span>.irc_config.private_key.as_ref().unwrap(), <span class="kw-2">&amp;</span>msg.target);
-
-                <span class="kw">if </span>salt_box.is_none() {
-                    <span class="kw">return </span><span class="prelude-val">Ok</span>(())
-                }
-
-                decrypt_privmsg(salt_box.as_ref().unwrap(), msg);
-
-                <span class="macro">info!</span>(
-                    <span class="string">&quot;[CLIENT {}] Decrypted received message: {:?}&quot;</span>,
-                    <span class="self">self</span>.address,
-                    msg.to_string()
-                );
-
-                <span class="self">self</span>.reply(<span class="kw-2">&amp;</span>msg.to_string()).<span class="kw">await</span><span class="question-mark">?</span>;
+        } <span class="kw">else if </span><span class="self">self</span>.irc_config.is_cap_end &amp;&amp; <span class="self">self</span>.irc_config.is_nick_init {
+            <span class="kw">if </span>!<span class="self">self</span>.irc_config.contacts.contains_key(<span class="kw-2">&amp;</span>contact) {
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(())
             }
+
+            <span class="kw">let </span>contact_info = <span class="self">self</span>.irc_config.contacts.get(<span class="kw-2">&amp;</span>contact).unwrap();
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(salt_box) = <span class="kw-2">&amp;</span>contact_info.salt_box {
+                decrypt_privmsg(salt_box, <span class="kw-2">&amp;mut </span>msg);
+                <span class="comment">// This is for /query
+                </span>msg.nick = contact;
+                <span class="macro">info!</span>(<span class="string">&quot;[P2P] Decrypted received message: {:?}&quot;</span>, msg);
+            }
+
+            <span class="self">self</span>.reply(<span class="kw-2">&amp;</span>msg.to_string()).<span class="kw">await</span><span class="question-mark">?</span>;
         }
 
         <span class="prelude-val">Ok</span>(())
@@ -854,7 +850,8 @@
             <span class="self">self</span>.irc_config.is_registered = <span class="bool-val">true</span>;
 
             <span class="comment">// join all channels
-            </span><span class="self">self</span>.on_receive_join(<span class="self">self</span>.irc_config.channels.keys().cloned().collect()).<span class="kw">await</span><span class="question-mark">?</span>;
+            </span><span class="self">self</span>.on_receive_join(<span class="self">self</span>.irc_config.auto_channels.clone()).<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="self">self</span>.on_receive_join(<span class="self">self</span>.irc_config.channels.keys().cloned().collect()).<span class="kw">await</span><span class="question-mark">?</span>;
 
             <span class="kw">if </span><span class="kw-2">*</span><span class="self">self</span>.irc_config.capabilities.get(<span class="string">&quot;no-history&quot;</span>).unwrap() {
                 <span class="kw">return </span><span class="prelude-val">Ok</span>(())
@@ -1095,11 +1092,11 @@
 
         <span class="macro">info!</span>(<span class="string">&quot;[CLIENT {}] (Plain) PRIVMSG {} :{}&quot;</span>, <span class="self">self</span>.address, target, message,);
 
-        <span class="kw">let </span><span class="kw-2">mut </span>privmsg = PrivMsgEvent {
-            nick: <span class="self">self</span>.irc_config.nickname.clone(),
-            target: target.to_string(),
-            msg: message,
-        };
+        <span class="kw">let </span><span class="kw-2">mut </span>privmsg = PrivMsgEvent::new();
+
+        privmsg.nick = <span class="self">self</span>.irc_config.nickname.clone();
+        privmsg.target = target.to_string();
+        privmsg.msg = message.clone();
 
         <span class="kw">if </span>target.starts_with(<span class="string">&#39;#&#39;</span>) {
             <span class="kw">if </span>!<span class="self">self</span>.irc_config.channels.contains_key(target) {
@@ -1112,22 +1109,19 @@
                 <span class="kw">return </span><span class="prelude-val">Ok</span>(())
             }
 
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(salt_box) = <span class="kw-2">&amp;</span>channel_info.salt_box(target) {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(salt_box) = <span class="kw-2">&amp;</span>channel_info.salt_box {
                 encrypt_privmsg(salt_box, <span class="kw-2">&amp;mut </span>privmsg);
-                <span class="macro">info!</span>(<span class="string">&quot;[CLIENT {}] (Encrypted) PRIVMSG: {:?}&quot;</span>, <span class="self">self</span>.address, privmsg.to_string());
+                <span class="macro">info!</span>(<span class="string">&quot;[CLIENT {}] (Encrypted) PRIVMSG: {:?}&quot;</span>, <span class="self">self</span>.address, privmsg);
             }
-        } <span class="kw">else if </span><span class="self">self</span>.irc_config.private_key.is_some() {
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(contact_info) = <span class="self">self</span>.irc_config.contacts.get(target) {
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(salt_box) =
-                    <span class="kw-2">&amp;</span>contact_info.salt_box(<span class="self">self</span>.irc_config.private_key.as_ref().unwrap(), target)
-                {
-                    encrypt_privmsg(salt_box, <span class="kw-2">&amp;mut </span>privmsg);
-                    <span class="macro">info!</span>(
-                        <span class="string">&quot;[CLIENT {}] (Encrypted) PRIVMSG: {:?}&quot;</span>,
-                        <span class="self">self</span>.address,
-                        privmsg.to_string()
-                    );
-                }
+        } <span class="kw">else </span>{
+            <span class="kw">if </span>!<span class="self">self</span>.irc_config.contacts.contains_key(target) {
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(())
+            }
+
+            <span class="kw">let </span>contact_info = <span class="self">self</span>.irc_config.contacts.get(target).unwrap();
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(salt_box) = <span class="kw-2">&amp;</span>contact_info.salt_box {
+                encrypt_privmsg(salt_box, <span class="kw-2">&amp;mut </span>privmsg);
+                <span class="macro">info!</span>(<span class="string">&quot;[CLIENT {}] (Encrypted) PRIVMSG: {:?}&quot;</span>, <span class="self">self</span>.address, privmsg);
             }
         }
 
@@ -1144,7 +1138,7 @@
                 <span class="kw">continue
             </span>}
             <span class="kw">if </span>!<span class="self">self</span>.irc_config.channels.contains_key(chan) {
-                <span class="kw">let </span><span class="kw-2">mut </span>chan_info = ChannelInfo::new();
+                <span class="kw">let </span><span class="kw-2">mut </span>chan_info = ChannelInfo::new()<span class="question-mark">?</span>;
                 chan_info.topic = <span class="prelude-val">Some</span>(<span class="string">&quot;n/a&quot;</span>.to_string());
                 <span class="self">self</span>.irc_config.channels.insert(chan.to_string(), chan_info);
             }
