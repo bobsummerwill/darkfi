@@ -26,7 +26,7 @@ encountered. <a href="https://doc.rust-lang.org/1.69.0/std/io/trait.Write.html#m
     W: <a class="trait" href="https://doc.rust-lang.org/1.69.0/std/io/trait.Write.html" title="trait std::io::Write">Write</a>,</span></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.cursor_pos" class="method trait-impl"><a class="srclink rightside" href="../../src/termion/cursor.rs.html#139">source</a><a href="#method.cursor_pos" class="anchor">§</a><h4 class="code-header">fn <a href="../../termion/cursor/trait.DetectCursorPos.html#tymethod.cursor_pos" class="fn">cursor_pos</a>(&amp;mut self) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.69.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;(<a class="primitive" href="https://doc.rust-lang.org/1.69.0/std/primitive.u16.html">u16</a>, <a class="primitive" href="https://doc.rust-lang.org/1.69.0/std/primitive.u16.html">u16</a>), <a class="struct" href="https://doc.rust-lang.org/1.69.0/std/io/error/struct.Error.html" title="struct std::io::error::Error">Error</a>&gt;</h4></section></summary><div class='docblock'>Get the (1,1)-based cursor position from the terminal.</div></details></div></details><details class="toggle implementors-toggle"><summary><section id="impl-ExecutableCommand-for-TermionBackend%3CW%3E" class="impl"><a class="srclink rightside" href="../../src/crossterm/command.rs.html#138">source</a><a href="#impl-ExecutableCommand-for-TermionBackend%3CW%3E" class="anchor">§</a><h3 class="code-header">impl&lt;T&gt; <a class="trait" href="../../crossterm/command/trait.ExecutableCommand.html" title="trait crossterm::command::ExecutableCommand">ExecutableCommand</a> for T<span class="where fmt-newline">where
     T: <a class="trait" href="https://doc.rust-lang.org/1.69.0/std/io/trait.Write.html" title="trait std::io::Write">Write</a> + ?<a class="trait" href="https://doc.rust-lang.org/1.69.0/core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,</span></h3></section></summary><div class="impl-items"><details class="toggle method-toggle" open><summary><section id="method.execute" class="method trait-impl"><a class="srclink rightside" href="../../src/crossterm/command.rs.html#180">source</a><a href="#method.execute" class="anchor">§</a><h4 class="code-header">fn <a href="../../crossterm/command/trait.ExecutableCommand.html#tymethod.execute" class="fn">execute</a>(&amp;mut self, command: impl <a class="trait" href="../../crossterm/command/trait.Command.html" title="trait crossterm::command::Command">Command</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/1.69.0/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.69.0/std/primitive.reference.html">&amp;mut T</a>, <a class="struct" href="https://doc.rust-lang.org/1.69.0/std/io/error/struct.Error.html" title="struct std::io::error::Error">Error</a>&gt;</h4></section></summary><div class="docblock"><p>Executes the given command directly.</p>
 <p>The given command its ANSI escape code will be written and flushed onto <code>Self</code>.</p>
-<h5 id="arguments-1"><a href="#arguments-1">Arguments</a></h5>
+<h5 id="arguments"><a href="#arguments">Arguments</a></h5>
 <ul>
 <li>
 <p><a href="./trait.Command.html">Command</a></p>
@@ -51,7 +51,7 @@ encountered. <a href="https://doc.rust-lang.org/1.69.0/std/io/trait.Write.html#m
      // 1 + 1 = 2
  </span>}</code></pre></div>
 <p>Have a look over at the <a href="./index.html#command-api">Command API</a> for more details.</p>
-<h5 id="notes-1"><a href="#notes-1">Notes</a></h5>
+<h5 id="notes"><a href="#notes">Notes</a></h5>
 <ul>
 <li>In the case of UNIX and Windows 10, ANSI codes are written to the given ‘writer’.</li>
 <li>In case of Windows versions lower than 10, a direct WinAPI call will be made.
@@ -74,7 +74,7 @@ and <a href="./trait.QueueableCommand.html">queue</a> for those old Windows vers
 <li>The terminal will <code>flush</code> automatically if the buffer is full.</li>
 <li>Each line is flushed in case of <code>stdout</code>, because it is line buffered.</li>
 </ul>
-<h5 id="arguments"><a href="#arguments">Arguments</a></h5>
+<h5 id="arguments-1"><a href="#arguments-1">Arguments</a></h5>
 <ul>
 <li>
 <p><a href="./trait.Command.html">Command</a></p>
@@ -106,7 +106,7 @@ and <a href="./trait.QueueableCommand.html">queue</a> for those old Windows vers
     // foo 2
 </span>}</code></pre></div>
 <p>Have a look over at the <a href="./index.html#command-api">Command API</a> for more details.</p>
-<h5 id="notes"><a href="#notes">Notes</a></h5>
+<h5 id="notes-1"><a href="#notes-1">Notes</a></h5>
 <ul>
 <li>In the case of UNIX and Windows 10, ANSI codes are written to the given ‘writer’.</li>
 <li>In case of Windows versions lower than 10, a direct WinAPI call will be made.
