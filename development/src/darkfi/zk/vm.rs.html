@@ -868,6 +868,39 @@
 <a href="#868" id="868">868</a>
 <a href="#869" id="869">869</a>
 <a href="#870" id="870">870</a>
+<a href="#871" id="871">871</a>
+<a href="#872" id="872">872</a>
+<a href="#873" id="873">873</a>
+<a href="#874" id="874">874</a>
+<a href="#875" id="875">875</a>
+<a href="#876" id="876">876</a>
+<a href="#877" id="877">877</a>
+<a href="#878" id="878">878</a>
+<a href="#879" id="879">879</a>
+<a href="#880" id="880">880</a>
+<a href="#881" id="881">881</a>
+<a href="#882" id="882">882</a>
+<a href="#883" id="883">883</a>
+<a href="#884" id="884">884</a>
+<a href="#885" id="885">885</a>
+<a href="#886" id="886">886</a>
+<a href="#887" id="887">887</a>
+<a href="#888" id="888">888</a>
+<a href="#889" id="889">889</a>
+<a href="#890" id="890">890</a>
+<a href="#891" id="891">891</a>
+<a href="#892" id="892">892</a>
+<a href="#893" id="893">893</a>
+<a href="#894" id="894">894</a>
+<a href="#895" id="895">895</a>
+<a href="#896" id="896">896</a>
+<a href="#897" id="897">897</a>
+<a href="#898" id="898">898</a>
+<a href="#899" id="899">899</a>
+<a href="#900" id="900">900</a>
+<a href="#901" id="901">901</a>
+<a href="#902" id="902">902</a>
+<a href="#903" id="903">903</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -923,6 +956,7 @@
     assign_free_advice,
     gadget::{
         arithmetic::{ArithChip, ArithConfig, ArithInstruction},
+        cond_select::{ConditionalSelectChip, ConditionalSelectConfig},
         less_than::{LessThanChip, LessThanConfig},
         native_range_check::{NativeRangeCheckChip, NativeRangeCheckConfig},
         small_range_check::{SmallRangeCheckChip, SmallRangeCheckConfig},
@@ -949,6 +983,7 @@
     native_253_range_check_config: NativeRangeCheckConfig&lt;<span class="number">3</span>, <span class="number">253</span>, <span class="number">85</span>&gt;,
     lessthan_config: LessThanConfig&lt;<span class="number">3</span>, <span class="number">253</span>, <span class="number">85</span>&gt;,
     boolcheck_config: SmallRangeCheckConfig,
+    condselect_config: ConditionalSelectConfig&lt;pallas::Base&gt;,
 }
 
 <span class="kw">impl </span>VmConfig {
@@ -974,6 +1009,10 @@
 
     <span class="kw">fn </span>arithmetic_chip(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ArithChip&lt;pallas::Base&gt; {
         ArithChip::construct(<span class="self">self</span>.arith_config.clone())
+    }
+
+    <span class="kw">fn </span>condselect_chip(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ConditionalSelectChip&lt;pallas::Base&gt; {
+        ConditionalSelectChip::construct(<span class="self">self</span>.condselect_config.clone(), ())
     }
 }
 
@@ -1133,6 +1172,10 @@
         // chip with a range of 2, which enforces one bit, i.e. 0 or 1.
         </span><span class="kw">let </span>boolcheck_config = SmallRangeCheckChip::configure(meta, advices[<span class="number">9</span>], <span class="number">2</span>);
 
+        <span class="comment">// Cnfiguration for the conditional selection chip
+        </span><span class="kw">let </span>condselect_config =
+            ConditionalSelectChip::configure(meta, advices[<span class="number">1</span>..<span class="number">5</span>].try_into().unwrap());
+
         VmConfig {
             primary,
             advices,
@@ -1147,6 +1190,7 @@
             native_253_range_check_config,
             lessthan_config,
             boolcheck_config,
+            condselect_config,
         }
     }
 
@@ -1204,6 +1248,9 @@
 
         <span class="comment">// Construct the boolean check chip.
         </span><span class="kw">let </span>boolcheck_chip = SmallRangeCheckChip::construct(config.boolcheck_config.clone());
+
+        <span class="comment">// Construct the conditional selectiono chip
+        </span><span class="kw">let </span>condselect_chip = config.condselect_chip();
 
         <span class="comment">// ==========================
         // Constants setup
@@ -1673,6 +1720,25 @@
 
                     boolcheck_chip
                         .small_range_check(layouter.namespace(|| <span class="string">&quot;copy boolean check&quot;</span>), w)<span class="question-mark">?</span>;
+                }
+
+                Opcode::CondSelect =&gt; {
+                    <span class="macro">trace!</span>(target: <span class="string">&quot;zk::vm&quot;</span>, <span class="string">&quot;Executing `CondSelect{:?}` opcode&quot;</span>, opcode.<span class="number">1</span>);
+                    <span class="kw">let </span>args = <span class="kw-2">&amp;</span>opcode.<span class="number">1</span>;
+
+                    <span class="kw">let </span>cond: AssignedCell&lt;Fp, Fp&gt; = heap[args[<span class="number">0</span>].<span class="number">1</span>].clone().into();
+                    <span class="kw">let </span>lhs: AssignedCell&lt;Fp, Fp&gt; = heap[args[<span class="number">1</span>].<span class="number">1</span>].clone().into();
+                    <span class="kw">let </span>rhs: AssignedCell&lt;Fp, Fp&gt; = heap[args[<span class="number">2</span>].<span class="number">1</span>].clone().into();
+
+                    <span class="kw">let </span>out: AssignedCell&lt;Fp, Fp&gt; = condselect_chip.conditional_select(
+                        <span class="kw-2">&amp;mut </span>layouter.namespace(|| <span class="string">&quot;cond_select&quot;</span>),
+                        lhs,
+                        rhs,
+                        cond,
+                    )<span class="question-mark">?</span>;
+
+                    <span class="macro">trace!</span>(target: <span class="string">&quot;zk::vm&quot;</span>, <span class="string">&quot;Pushing assignment to heap address {}&quot;</span>, heap.len());
+                    heap.push(HeapVar::Base(out));
                 }
 
                 Opcode::ConstrainEqualBase =&gt; {

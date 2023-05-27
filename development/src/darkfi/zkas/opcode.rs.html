@@ -204,6 +204,15 @@
 <a href="#204" id="204">204</a>
 <a href="#205" id="205">205</a>
 <a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
+<a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -284,6 +293,9 @@
     <span class="doccomment">/// Check if a field element fits in a boolean (Either 0 or 1)
     </span>BoolCheck = <span class="number">0x53</span>,
 
+    <span class="doccomment">/// Conditionally select between two base field elements given a boolean
+    </span>CondSelect = <span class="number">0x60</span>,
+
     <span class="doccomment">/// Constrain equality of two Base field elements inside the circuit
     </span>ConstrainEqualBase = <span class="number">0xe0</span>,
 
@@ -317,6 +329,7 @@
             <span class="string">&quot;less_than_strict&quot; </span>=&gt; <span class="prelude-val">Some</span>(<span class="self">Self</span>::LessThanStrict),
             <span class="string">&quot;less_than_loose&quot; </span>=&gt; <span class="prelude-val">Some</span>(<span class="self">Self</span>::LessThanLoose),
             <span class="string">&quot;bool_check&quot; </span>=&gt; <span class="prelude-val">Some</span>(<span class="self">Self</span>::BoolCheck),
+            <span class="string">&quot;cond_select&quot; </span>=&gt; <span class="prelude-val">Some</span>(<span class="self">Self</span>::CondSelect),
             <span class="string">&quot;constrain_equal_base&quot; </span>=&gt; <span class="prelude-val">Some</span>(<span class="self">Self</span>::ConstrainEqualBase),
             <span class="string">&quot;constrain_equal_point&quot; </span>=&gt; <span class="prelude-val">Some</span>(<span class="self">Self</span>::ConstrainEqualPoint),
             <span class="string">&quot;constrain_instance&quot; </span>=&gt; <span class="prelude-val">Some</span>(<span class="self">Self</span>::ConstrainInstance),
@@ -344,6 +357,7 @@
             <span class="number">0x51 </span>=&gt; <span class="prelude-val">Some</span>(<span class="self">Self</span>::LessThanStrict),
             <span class="number">0x52 </span>=&gt; <span class="prelude-val">Some</span>(<span class="self">Self</span>::LessThanLoose),
             <span class="number">0x53 </span>=&gt; <span class="prelude-val">Some</span>(<span class="self">Self</span>::BoolCheck),
+            <span class="number">0x60 </span>=&gt; <span class="prelude-val">Some</span>(<span class="self">Self</span>::CondSelect),
             <span class="number">0xe0 </span>=&gt; <span class="prelude-val">Some</span>(<span class="self">Self</span>::ConstrainEqualBase),
             <span class="number">0xe1 </span>=&gt; <span class="prelude-val">Some</span>(<span class="self">Self</span>::ConstrainEqualPoint),
             <span class="number">0xf0 </span>=&gt; <span class="prelude-val">Some</span>(<span class="self">Self</span>::ConstrainInstance),
@@ -399,6 +413,10 @@
             Opcode::LessThanLoose =&gt; (<span class="macro">vec!</span>[], <span class="macro">vec!</span>[VarType::Base, VarType::Base]),
 
             Opcode::BoolCheck =&gt; (<span class="macro">vec!</span>[], <span class="macro">vec!</span>[VarType::Base]),
+
+            Opcode::CondSelect =&gt; {
+                (<span class="macro">vec!</span>[VarType::Base], <span class="macro">vec!</span>[VarType::Base, VarType::Base, VarType::Base])
+            }
 
             Opcode::ConstrainEqualBase =&gt; (<span class="macro">vec!</span>[], <span class="macro">vec!</span>[VarType::Base, VarType::Base]),
 
