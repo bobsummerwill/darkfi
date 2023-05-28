@@ -204,6 +204,19 @@ $ ./drk subscribe blocks
 <p>Now you can leave the subscriber running. In case you stop it, just
 run <code>drk scan</code> again until the chain is fully scanned, and then you
 should be able to subscribe again.</p>
+<h2 id="local-deployment"><a class="header" href="#local-deployment">Local Deployment</a></h2>
+<p>For development we recommend running master.
+First we modify the constants specifically for a local testnet.
+This step is optional but you might find scanning takes a long time
+otherwise.</p>
+<pre><code>cd contrib/localnet/darkfid-single-node/
+./tmux_sessions.sh now
+cd ../../../
+make darkfid
+</code></pre>
+<p>You can run a single consensus full node using this command:</p>
+<pre><code>./tmux_sessions.sh -v
+</code></pre>
 <h2 id="advanced-usage"><a class="header" href="#advanced-usage">Advanced Usage</a></h2>
 <p>To run a node in full debug mode:</p>
 <pre><code>LOG_TARGETS=&quot;\!sled,\!net&quot; ./darkfid -v | tee /tmp/darkfid.log
