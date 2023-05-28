@@ -619,8 +619,6 @@
 <a href="#619" id="619">619</a>
 <a href="#620" id="620">620</a>
 <a href="#621" id="621">621</a>
-<a href="#622" id="622">622</a>
-<a href="#623" id="623">623</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -642,9 +640,9 @@
 </span><span class="kw">use </span>std::{cmp::Ordering, collections::HashMap, fmt::Debug};
 
 <span class="kw">use </span>async_std::sync::{Arc, Mutex};
+<span class="kw">use </span>blake3;
 <span class="kw">use </span>darkfi_serial::{Decodable, Encodable, SerialDecodable, SerialEncodable};
 <span class="kw">use </span>log::error;
-<span class="kw">use </span>ripemd::{Digest, Ripemd256};
 
 <span class="kw">use crate</span>::{event_graph::events_queue::EventsQueuePtr, util::time::Timestamp};
 
@@ -669,12 +667,10 @@
     <span class="kw">pub fn </span>hash(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; EventId {
         <span class="kw">let </span><span class="kw-2">mut </span>bytes = Vec::new();
         <span class="self">self</span>.encode(<span class="kw-2">&amp;mut </span>bytes).expect(<span class="string">&quot;serialize failed!&quot;</span>);
-        <span class="kw">let </span><span class="kw-2">mut </span>hasher = Ripemd256::new();
-        hasher.update(bytes);
-        <span class="kw">let </span>bytes = hasher.finalize().to_vec();
-        <span class="kw">let </span><span class="kw-2">mut </span>result = [<span class="number">0u8</span>; <span class="number">32</span>];
-        result.copy_from_slice(bytes.as_slice());
-        result
+        <span class="kw">let </span><span class="kw-2">mut </span>hasher = blake3::Hasher::new();
+        hasher.update(<span class="kw-2">&amp;</span>bytes);
+        <span class="kw">let </span>binding = hasher.finalize();
+        binding.as_bytes().clone().to_owned()
     }
 }
 
