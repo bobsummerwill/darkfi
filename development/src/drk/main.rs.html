@@ -1312,6 +1312,13 @@
 <a href="#1312" id="1312">1312</a>
 <a href="#1313" id="1313">1313</a>
 <a href="#1314" id="1314">1314</a>
+<a href="#1315" id="1315">1315</a>
+<a href="#1316" id="1316">1316</a>
+<a href="#1317" id="1317">1317</a>
+<a href="#1318" id="1318">1318</a>
+<a href="#1319" id="1319">1319</a>
+<a href="#1320" id="1320">1320</a>
+<a href="#1321" id="1321">1321</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -1599,20 +1606,20 @@
 
     <span class="doccomment">/// Show the balance of a DAO
     </span>Balance {
-        <span class="doccomment">/// Numeric identifier for the DAO
-        </span>dao_id: u64,
+        <span class="doccomment">/// Name or numeric identifier for the DAO
+        </span>dao_alias: String,
     },
 
     <span class="doccomment">/// Mint an imported DAO on-chain
     </span>Mint {
-        <span class="doccomment">/// Numeric identifier for the DAO
-        </span>dao_id: u64,
+        <span class="doccomment">/// Name or numeric identifier for the DAO
+        </span>dao_alias: String,
     },
 
     <span class="doccomment">/// Create a proposal for a DAO
     </span>Propose {
-        <span class="doccomment">/// Numeric identifier for the DAO
-        </span>dao_id: u64,
+        <span class="doccomment">/// Name or numeric identifier for the DAO
+        </span>dao_alias: String,
 
         <span class="doccomment">/// Pubkey to send tokens to with proposal success
         </span>recipient: String,
@@ -1621,19 +1628,19 @@
         </span>amount: String,
 
         <span class="doccomment">/// Token ID to send from DAO with proposal success
-        </span>token_id: String,
+        </span>token: String,
     },
 
     <span class="doccomment">/// List DAO proposals
     </span>Proposals {
-        <span class="doccomment">/// Numeric identifier for the DAO
-        </span>dao_id: u64,
+        <span class="doccomment">/// Name or numeric identifier for the DAO
+        </span>dao_alias: String,
     },
 
     <span class="doccomment">/// View a DAO proposal data
     </span>Proposal {
-        <span class="doccomment">/// Numeric identifier for the DAO
-        </span>dao_id: u64,
+        <span class="doccomment">/// Name or numeric identifier for the DAO
+        </span>dao_alias: String,
 
         <span class="doccomment">/// Numeric identifier for the proposal
         </span>proposal_id: u64,
@@ -1641,8 +1648,8 @@
 
     <span class="doccomment">/// Vote on a given proposal
     </span>Vote {
-        <span class="doccomment">/// Numeric identifier for the DAO
-        </span>dao_id: u64,
+        <span class="doccomment">/// Name or numeric identifier for the DAO
+        </span>dao_alias: String,
 
         <span class="doccomment">/// Numeric identifier for the proposal
         </span>proposal_id: u64,
@@ -1656,8 +1663,8 @@
 
     <span class="doccomment">/// Execute a DAO proposal
     </span>Exec {
-        <span class="doccomment">/// Numeric identifier for the DAO
-        </span>dao_id: u64,
+        <span class="doccomment">/// Name or numeric identifier for the DAO
+        </span>dao_alias: String,
 
         <span class="doccomment">/// Numeric identifier for the proposal
         </span>proposal_id: u64,
@@ -2053,7 +2060,7 @@
             <span class="kw">let _ </span>= f64::from_str(<span class="kw-2">&amp;</span>amount).with_context(|| <span class="string">&quot;Invalid amount&quot;</span>)<span class="question-mark">?</span>;
             <span class="kw">let </span>rcpt = PublicKey::from_str(<span class="kw-2">&amp;</span>recipient).with_context(|| <span class="string">&quot;Invalid recipient&quot;</span>)<span class="question-mark">?</span>;
             <span class="kw">let </span>drk = Drk::new(args.endpoint).<span class="kw">await</span><span class="question-mark">?</span>;
-            <span class="kw">let </span>token_id = drk.get_token(token).<span class="kw">await</span>.with_context(|| <span class="string">&quot;Invalid Token ID&quot;</span>)<span class="question-mark">?</span>;
+            <span class="kw">let </span>token_id = drk.get_token(token).<span class="kw">await</span>.with_context(|| <span class="string">&quot;Invalid token alias&quot;</span>)<span class="question-mark">?</span>;
 
             <span class="kw">let </span>tx = drk
                 .transfer(<span class="kw-2">&amp;</span>amount, token_id, rcpt, dao, dao_bulla)
@@ -2272,8 +2279,9 @@
                 <span class="prelude-val">Ok</span>(())
             }
 
-            DaoSubcmd::Balance { dao_id } =&gt; {
+            DaoSubcmd::Balance { dao_alias } =&gt; {
                 <span class="kw">let </span>drk = Drk::new(args.endpoint).<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="kw">let </span>dao_id = drk.get_dao_id(<span class="kw-2">&amp;</span>dao_alias).<span class="kw">await</span><span class="question-mark">?</span>;
 
                 <span class="kw">let </span>balmap =
                     drk.dao_balance(dao_id).<span class="kw">await</span>.with_context(|| <span class="string">&quot;Failed to fetch DAO balance&quot;</span>)<span class="question-mark">?</span>;
@@ -2306,20 +2314,22 @@
                 <span class="prelude-val">Ok</span>(())
             }
 
-            DaoSubcmd::Mint { dao_id } =&gt; {
+            DaoSubcmd::Mint { dao_alias } =&gt; {
                 <span class="kw">let </span>drk = Drk::new(args.endpoint).<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="kw">let </span>dao_id = drk.get_dao_id(<span class="kw-2">&amp;</span>dao_alias).<span class="kw">await</span><span class="question-mark">?</span>;
 
                 <span class="kw">let </span>tx = drk.dao_mint(dao_id).<span class="kw">await</span>.with_context(|| <span class="string">&quot;Failed to mint DAO&quot;</span>)<span class="question-mark">?</span>;
                 <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, bs58::encode(<span class="kw-2">&amp;</span>serialize(<span class="kw-2">&amp;</span>tx)).into_string());
                 <span class="prelude-val">Ok</span>(())
             }
 
-            DaoSubcmd::Propose { dao_id, recipient, amount, token_id } =&gt; {
+            DaoSubcmd::Propose { dao_alias, recipient, amount, token } =&gt; {
                 <span class="kw">let _ </span>= f64::from_str(<span class="kw-2">&amp;</span>amount).with_context(|| <span class="string">&quot;Invalid amount&quot;</span>)<span class="question-mark">?</span>;
                 <span class="kw">let </span>amount = decode_base10(<span class="kw-2">&amp;</span>amount, <span class="number">8</span>, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
                 <span class="kw">let </span>rcpt = PublicKey::from_str(<span class="kw-2">&amp;</span>recipient).with_context(|| <span class="string">&quot;Invalid recipient&quot;</span>)<span class="question-mark">?</span>;
                 <span class="kw">let </span>drk = Drk::new(args.endpoint).<span class="kw">await</span><span class="question-mark">?</span>;
-                <span class="kw">let </span>token_id = drk.get_token(token_id).<span class="kw">await</span>.with_context(|| <span class="string">&quot;Invalid Token ID&quot;</span>)<span class="question-mark">?</span>;
+                <span class="kw">let </span>dao_id = drk.get_dao_id(<span class="kw-2">&amp;</span>dao_alias).<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="kw">let </span>token_id = drk.get_token(token).<span class="kw">await</span>.with_context(|| <span class="string">&quot;Invalid token alias&quot;</span>)<span class="question-mark">?</span>;
 
                 <span class="kw">let </span>tx = drk
                     .dao_propose(dao_id, rcpt, amount, token_id)
@@ -2330,8 +2340,9 @@
                 <span class="prelude-val">Ok</span>(())
             }
 
-            DaoSubcmd::Proposals { dao_id } =&gt; {
+            DaoSubcmd::Proposals { dao_alias } =&gt; {
                 <span class="kw">let </span>drk = Drk::new(args.endpoint).<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="kw">let </span>dao_id = drk.get_dao_id(<span class="kw-2">&amp;</span>dao_alias).<span class="kw">await</span><span class="question-mark">?</span>;
 
                 <span class="kw">let </span>proposals = drk.get_dao_proposals(dao_id).<span class="kw">await</span><span class="question-mark">?</span>;
 
@@ -2342,8 +2353,9 @@
                 <span class="prelude-val">Ok</span>(())
             }
 
-            DaoSubcmd::Proposal { dao_id, proposal_id } =&gt; {
+            DaoSubcmd::Proposal { dao_alias, proposal_id } =&gt; {
                 <span class="kw">let </span>drk = Drk::new(args.endpoint).<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="kw">let </span>dao_id = drk.get_dao_id(<span class="kw-2">&amp;</span>dao_alias).<span class="kw">await</span><span class="question-mark">?</span>;
 
                 <span class="kw">let </span>proposals = drk.get_dao_proposals(dao_id).<span class="kw">await</span><span class="question-mark">?</span>;
                 <span class="kw">let </span><span class="prelude-val">Some</span>(proposal) = proposals.iter().find(|x| x.id == proposal_id) <span class="kw">else </span>{
@@ -2356,8 +2368,9 @@
                 <span class="prelude-val">Ok</span>(())
             }
 
-            DaoSubcmd::Vote { dao_id, proposal_id, vote, vote_weight } =&gt; {
+            DaoSubcmd::Vote { dao_alias, proposal_id, vote, vote_weight } =&gt; {
                 <span class="kw">let </span>drk = Drk::new(args.endpoint).<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="kw">let </span>dao_id = drk.get_dao_id(<span class="kw-2">&amp;</span>dao_alias).<span class="kw">await</span><span class="question-mark">?</span>;
 
                 <span class="kw">let _ </span>= f64::from_str(<span class="kw-2">&amp;</span>vote_weight).with_context(|| <span class="string">&quot;Invalid vote weight&quot;</span>)<span class="question-mark">?</span>;
                 <span class="kw">let </span>weight = decode_base10(<span class="kw-2">&amp;</span>vote_weight, <span class="number">8</span>, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
@@ -2380,8 +2393,9 @@
                 <span class="prelude-val">Ok</span>(())
             }
 
-            DaoSubcmd::Exec { dao_id, proposal_id } =&gt; {
+            DaoSubcmd::Exec { dao_alias, proposal_id } =&gt; {
                 <span class="kw">let </span>drk = Drk::new(args.endpoint).<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="kw">let </span>dao_id = drk.get_dao_id(<span class="kw-2">&amp;</span>dao_alias).<span class="kw">await</span><span class="question-mark">?</span>;
                 <span class="kw">let </span>dao = drk.get_dao_by_id(dao_id).<span class="kw">await</span><span class="question-mark">?</span>;
                 <span class="kw">let </span>proposal = drk.get_dao_proposal_by_id(proposal_id).<span class="kw">await</span><span class="question-mark">?</span>;
                 <span class="macro">assert!</span>(proposal.dao_bulla == dao.bulla());

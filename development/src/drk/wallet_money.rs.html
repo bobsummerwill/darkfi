@@ -794,10 +794,6 @@
 <a href="#794" id="794">794</a>
 <a href="#795" id="795">795</a>
 <a href="#796" id="796">796</a>
-<a href="#797" id="797">797</a>
-<a href="#798" id="798">798</a>
-<a href="#799" id="799">799</a>
-<a href="#800" id="800">800</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -1036,8 +1032,6 @@
     /// Optionally also fetch spent ones.
     /// The boolean in the returned tuple notes if the coin was marked as spent.
     </span><span class="kw">pub async fn </span>get_coins(<span class="kw-2">&amp;</span><span class="self">self</span>, fetch_spent: bool) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;(OwnCoin, bool)&gt;&gt; {
-        <span class="macro">eprintln!</span>(<span class="string">&quot;Fetching OwnCoins from the wallet&quot;</span>);
-
         <span class="kw">let </span>query = <span class="kw">if </span>fetch_spent {
             <span class="macro">format!</span>(<span class="string">&quot;SELECT * FROM {}&quot;</span>, MONEY_COINS_TABLE)
         } <span class="kw">else </span>{
@@ -1503,8 +1497,6 @@
         alias_filter: <span class="prelude-ty">Option</span>&lt;String&gt;,
         token_id_filter: <span class="prelude-ty">Option</span>&lt;TokenId&gt;,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;HashMap&lt;String, TokenId&gt;&gt; {
-        <span class="macro">eprintln!</span>(<span class="string">&quot;Fetching Aliases from the wallet&quot;</span>);
-
         <span class="kw">let </span>query = <span class="macro">format!</span>(<span class="string">&quot;SELECT * FROM {}&quot;</span>, MONEY_ALIASES_TABLE);
         <span class="kw">let </span>params = <span class="macro">json!</span>([
             query,
