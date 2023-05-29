@@ -1319,6 +1319,11 @@
 <a href="#1319" id="1319">1319</a>
 <a href="#1320" id="1320">1320</a>
 <a href="#1321" id="1321">1321</a>
+<a href="#1322" id="1322">1322</a>
+<a href="#1323" id="1323">1323</a>
+<a href="#1324" id="1324">1324</a>
+<a href="#1325" id="1325">1325</a>
+<a href="#1326" id="1326">1326</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -1601,7 +1606,7 @@
     <span class="doccomment">/// List imported DAOs (or info about a specific one)
     </span>List {
         <span class="doccomment">/// Numeric identifier for the DAO (optional)
-        </span>dao_id: <span class="prelude-ty">Option</span>&lt;u64&gt;,
+        </span>dao_alias: <span class="prelude-ty">Option</span>&lt;String&gt;,
     },
 
     <span class="doccomment">/// Show the balance of a DAO
@@ -2271,8 +2276,13 @@
                 <span class="prelude-val">Ok</span>(())
             }
 
-            DaoSubcmd::List { dao_id } =&gt; {
+            DaoSubcmd::List { dao_alias } =&gt; {
                 <span class="kw">let </span>drk = Drk::new(args.endpoint).<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="comment">// We cannot use .map() since get_dao_id() uses ?
+                </span><span class="kw">let </span>dao_id = <span class="kw">match </span>dao_alias {
+                    <span class="prelude-val">Some</span>(alias) =&gt; <span class="prelude-val">Some</span>(drk.get_dao_id(<span class="kw-2">&amp;</span>alias).<span class="kw">await</span><span class="question-mark">?</span>),
+                    <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
+                };
 
                 drk.dao_list(dao_id).<span class="kw">await</span>.with_context(|| <span class="string">&quot;Failed to list DAO&quot;</span>)<span class="question-mark">?</span>;
 

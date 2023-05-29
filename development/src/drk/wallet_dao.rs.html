@@ -1279,8 +1279,6 @@
 <a href="#1279" id="1279">1279</a>
 <a href="#1280" id="1280">1280</a>
 <a href="#1281" id="1281">1281</a>
-<a href="#1282" id="1282">1282</a>
-<a href="#1283" id="1283">1283</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -1715,7 +1713,7 @@
             query,
             QueryType::Integer <span class="kw">as </span>u8,
             DAO_DAOS_COL_DAO_ID,
-            QueryType::Blob <span class="kw">as </span>u8,
+            QueryType::Text <span class="kw">as </span>u8,
             DAO_DAOS_COL_NAME,
         ]);
 
@@ -1733,8 +1731,7 @@
                     <span class="macro">anyhow!</span>(<span class="string">&quot;[get_dao_id_by_alias] Unexpected response from darkfid: {}&quot;</span>, rep))
             };
 
-            <span class="kw">let </span>alias_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">1</span>].clone())<span class="question-mark">?</span>;
-            <span class="kw">let </span>alias: String = deserialize(<span class="kw-2">&amp;</span>alias_bytes)<span class="question-mark">?</span>;
+            <span class="kw">let </span>alias: String = serde_json::from_value(row[<span class="number">1</span>].clone())<span class="question-mark">?</span>;
             <span class="kw">if </span>alias != alias_filter {
                 <span class="kw">continue
             </span>}
@@ -1779,8 +1776,8 @@
 
         <span class="kw">let </span>params = <span class="macro">json!</span>([
             query,
-            QueryType::Blob <span class="kw">as </span>u8,
-            serialize(<span class="kw-2">&amp;</span>dao_name),
+            QueryType::Text <span class="kw">as </span>u8,
+            dao_name,
             QueryType::Blob <span class="kw">as </span>u8,
             serialize(<span class="kw-2">&amp;</span>dao_params.proposer_limit),
             QueryType::Blob <span class="kw">as </span>u8,
@@ -1846,7 +1843,7 @@
             query,
             QueryType::Integer <span class="kw">as </span>u8,
             DAO_DAOS_COL_DAO_ID,
-            QueryType::Blob <span class="kw">as </span>u8,
+            QueryType::Text <span class="kw">as </span>u8,
             DAO_DAOS_COL_NAME,
             QueryType::Blob <span class="kw">as </span>u8,
             DAO_DAOS_COL_PROPOSER_LIMIT,
@@ -1886,8 +1883,7 @@
 
             <span class="kw">let </span>id: u64 = serde_json::from_value(row[<span class="number">0</span>].clone())<span class="question-mark">?</span>;
 
-            <span class="kw">let </span>name_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">1</span>].clone())<span class="question-mark">?</span>;
-            <span class="kw">let </span>name = deserialize(<span class="kw-2">&amp;</span>name_bytes)<span class="question-mark">?</span>;
+            <span class="kw">let </span>name: String = serde_json::from_value(row[<span class="number">1</span>].clone())<span class="question-mark">?</span>;
 
             <span class="kw">let </span>proposer_limit_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">2</span>].clone())<span class="question-mark">?</span>;
             <span class="kw">let </span>proposer_limit = deserialize(<span class="kw-2">&amp;</span>proposer_limit_bytes)<span class="question-mark">?</span>;
