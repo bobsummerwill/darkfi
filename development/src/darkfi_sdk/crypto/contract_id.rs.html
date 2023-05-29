@@ -130,6 +130,20 @@
 <a href="#130" id="130">130</a>
 <a href="#131" id="131">131</a>
 <a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -161,17 +175,24 @@
     // avoid hardcoding contract IDs for arbitrary contract deployments, because
     // the contracts with 0 as their x coordinate can never have a valid signature.
 
-    </span><span class="doccomment">/// Contract ID for the native money contract
+    </span><span class="doccomment">/// Derivation prefix for `ContractId`
+    </span><span class="kw">pub static </span><span class="kw-2">ref </span>CONTRACT_ID_PREFIX: pallas::Base = pallas::Base::from(<span class="number">42</span>);
+
+    <span class="doccomment">/// Contract ID for the native money contract
     </span><span class="kw">pub static </span><span class="kw-2">ref </span>MONEY_CONTRACT_ID: ContractId =
-        ContractId::from(poseidon_hash([pallas::Base::zero(), pallas::Base::from(<span class="number">0</span>)]));
+        ContractId::from(poseidon_hash([<span class="kw-2">*</span>CONTRACT_ID_PREFIX, pallas::Base::zero(), pallas::Base::from(<span class="number">0</span>)]));
 
     <span class="doccomment">/// Contract ID for the native DAO contract
     </span><span class="kw">pub static </span><span class="kw-2">ref </span>DAO_CONTRACT_ID: ContractId =
-        ContractId::from(poseidon_hash([pallas::Base::zero(), pallas::Base::from(<span class="number">1</span>)]));
+        ContractId::from(poseidon_hash([<span class="kw-2">*</span>CONTRACT_ID_PREFIX, pallas::Base::zero(), pallas::Base::from(<span class="number">1</span>)]));
 
     <span class="doccomment">/// Contract ID for the native Consensus contract
     </span><span class="kw">pub static </span><span class="kw-2">ref </span>CONSENSUS_CONTRACT_ID: ContractId =
-        ContractId::from(poseidon_hash([pallas::Base::zero(), pallas::Base::from(<span class="number">2</span>)]));
+        ContractId::from(poseidon_hash([<span class="kw-2">*</span>CONTRACT_ID_PREFIX, pallas::Base::zero(), pallas::Base::from(<span class="number">2</span>)]));
+
+    <span class="doccomment">/// Contract ID for the native Deployooor contract
+    </span><span class="kw">pub static </span><span class="kw-2">ref </span>DEPLOYOOOR_CONTRACT_ID: ContractId =
+        ContractId::from(poseidon_hash([<span class="kw-2">*</span>CONTRACT_ID_PREFIX, pallas::Base::zero(), pallas::Base::from(<span class="number">3</span>)]));
 }
 
 <span class="doccomment">/// ContractId represents an on-chain identifier for a certain smart contract.
@@ -183,7 +204,14 @@
     </span><span class="kw">pub fn </span>derive(deploy_key: SecretKey) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>public_key = PublicKey::from_secret(deploy_key);
         <span class="kw">let </span>(x, y) = public_key.xy();
-        <span class="kw">let </span>hash = poseidon_hash::&lt;<span class="number">2</span>&gt;([x, y]);
+        <span class="kw">let </span>hash = poseidon_hash([<span class="kw-2">*</span>CONTRACT_ID_PREFIX, x, y]);
+        <span class="self">Self</span>(hash)
+    }
+
+    <span class="doccomment">/// Derive a contract ID from a `Publickey`
+    </span><span class="kw">pub fn </span>derive_public(public_key: PublicKey) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>(x, y) = public_key.xy();
+        <span class="kw">let </span>hash = poseidon_hash([<span class="kw-2">*</span>CONTRACT_ID_PREFIX, x, y]);
         <span class="self">Self</span>(hash)
     }
 
