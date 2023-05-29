@@ -1324,6 +1324,13 @@
 <a href="#1324" id="1324">1324</a>
 <a href="#1325" id="1325">1325</a>
 <a href="#1326" id="1326">1326</a>
+<a href="#1327" id="1327">1327</a>
+<a href="#1328" id="1328">1328</a>
+<a href="#1329" id="1329">1329</a>
+<a href="#1330" id="1330">1330</a>
+<a href="#1331" id="1331">1331</a>
+<a href="#1332" id="1332">1332</a>
+<a href="#1333" id="1333">1333</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -2374,6 +2381,13 @@
                 };
 
                 <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, proposal);
+
+                <span class="kw">let </span>votes = drk.get_dao_proposal_votes(proposal_id).<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="macro">println!</span>(<span class="string">&quot;votes:&quot;</span>);
+                <span class="kw">for </span>vote <span class="kw">in </span>votes {
+                    <span class="kw">let </span>option = <span class="kw">if </span>vote.vote_option { <span class="string">&quot;yes&quot; </span>} <span class="kw">else </span>{ <span class="string">&quot;no &quot; </span>};
+                    <span class="macro">println!</span>(<span class="string">&quot;  {} {}&quot;</span>, option, vote.all_vote_value);
+                }
 
                 <span class="prelude-val">Ok</span>(())
             }
