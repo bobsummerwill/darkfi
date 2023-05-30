@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["__stability","__static_ref_initialize"],"static":["LAZY"],"struct":["DARK_TOKEN_ID","TokenId"]};
+window.SIDEBAR_ITEMS = {"fn":["__stability","__static_ref_initialize"],"static":["LAZY"],"struct":["DARK_TOKEN_ID","TOKEN_ID_PREFIX","TokenId"]};

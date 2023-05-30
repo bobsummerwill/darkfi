@@ -106,6 +106,16 @@
 <a href="#106" id="106">106</a>
 <a href="#107" id="107">107</a>
 <a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -137,9 +147,12 @@
     // avoid hardcoding contract IDs for arbitrary contract deployments, because
     // the contracts with 0 as their x coordinate can never have a valid signature.
 
-    </span><span class="doccomment">/// Native DARK token ID
+    </span><span class="doccomment">/// Derivation prefix for `TokenId`
+    </span><span class="kw">pub static </span><span class="kw-2">ref </span>TOKEN_ID_PREFIX: pallas::Base = pallas::Base::from(<span class="number">69</span>);
+
+    <span class="doccomment">/// Native DARK token ID
     </span><span class="kw">pub static </span><span class="kw-2">ref </span>DARK_TOKEN_ID: TokenId =
-        TokenId::from(poseidon_hash([pallas::Base::zero(), pallas::Base::from(<span class="number">42</span>)]));
+        TokenId::from(poseidon_hash([<span class="kw-2">*</span>TOKEN_ID_PREFIX, pallas::Base::zero(), pallas::Base::from(<span class="number">42</span>)]));
 }
 
 <span class="doccomment">/// TokenId represents an on-chain identifier for a certain token.
@@ -147,11 +160,18 @@
 </span><span class="kw">pub struct </span>TokenId(pallas::Base);
 
 <span class="kw">impl </span>TokenId {
-    <span class="doccomment">/// Derives a `TokenId` given a `SecretKey` (mint authority)
+    <span class="doccomment">/// Derives a `TokenId` from a `SecretKey` (mint authority)
     </span><span class="kw">pub fn </span>derive(mint_authority: SecretKey) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>public_key = PublicKey::from_secret(mint_authority);
         <span class="kw">let </span>(x, y) = public_key.xy();
-        <span class="kw">let </span>hash = poseidon_hash::&lt;<span class="number">2</span>&gt;([x, y]);
+        <span class="kw">let </span>hash = poseidon_hash([<span class="kw-2">*</span>TOKEN_ID_PREFIX, x, y]);
+        <span class="self">Self</span>(hash)
+    }
+
+    <span class="doccomment">/// Derives a `TokenId` from a `PublicKey`
+    </span><span class="kw">pub fn </span>derive_public(public_key: PublicKey) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>(x, y) = public_key.xy();
+        <span class="kw">let </span>hash = poseidon_hash([<span class="kw-2">*</span>TOKEN_ID_PREFIX, x, y]);
         <span class="self">Self</span>(hash)
     }
 

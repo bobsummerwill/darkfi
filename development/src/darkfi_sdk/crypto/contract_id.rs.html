@@ -200,7 +200,7 @@
 </span><span class="kw">pub struct </span>ContractId(pallas::Base);
 
 <span class="kw">impl </span>ContractId {
-    <span class="doccomment">/// Derive a contract ID from a `SecretKey` (deploy key)
+    <span class="doccomment">/// Derives a `ContractId` from a `SecretKey` (deploy key)
     </span><span class="kw">pub fn </span>derive(deploy_key: SecretKey) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>public_key = PublicKey::from_secret(deploy_key);
         <span class="kw">let </span>(x, y) = public_key.xy();
@@ -208,7 +208,7 @@
         <span class="self">Self</span>(hash)
     }
 
-    <span class="doccomment">/// Derive a contract ID from a `Publickey`
+    <span class="doccomment">/// Derive a contract ID from a `PublicKey`
     </span><span class="kw">pub fn </span>derive_public(public_key: PublicKey) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>(x, y) = public_key.xy();
         <span class="kw">let </span>hash = poseidon_hash([<span class="kw-2">*</span>CONTRACT_ID_PREFIX, x, y]);

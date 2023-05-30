@@ -91,6 +91,7 @@
 <a href="#91" id="91">91</a>
 <a href="#92" id="92">92</a>
 <a href="#93" id="93">93</a>
+<a href="#94" id="94">94</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -115,7 +116,7 @@
     <span class="prelude-ty">Result</span>,
 };
 <span class="kw">use </span>darkfi_sdk::{
-    crypto::{poseidon_hash, Keypair, TokenId},
+    crypto::{Keypair, PublicKey, TokenId},
     pasta::pallas,
 };
 <span class="kw">use </span>log::{debug, info};
@@ -129,12 +130,14 @@
 }
 
 <span class="kw">pub struct </span>TokenFreezeRevealed {
+    <span class="kw">pub </span>signature_public: PublicKey,
     <span class="kw">pub </span>token_id: TokenId,
 }
 
 <span class="kw">impl </span>TokenFreezeRevealed {
     <span class="kw">pub fn </span>to_vec(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;pallas::Base&gt; {
-        <span class="macro">vec!</span>[<span class="self">self</span>.token_id.inner()]
+        <span class="kw">let </span>(sig_x, sig_y) = <span class="self">self</span>.signature_public.xy();
+        <span class="macro">vec!</span>[sig_x, sig_y, <span class="self">self</span>.token_id.inner()]
     }
 }
 
@@ -172,10 +175,9 @@
     pk: <span class="kw-2">&amp;</span>ProvingKey,
     mint_authority: <span class="kw-2">&amp;</span>Keypair,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;(Proof, TokenFreezeRevealed)&gt; {
-    <span class="kw">let </span>(mint_x, mint_y) = mint_authority.public.xy();
-    <span class="kw">let </span>token_id = TokenId::from(poseidon_hash([mint_x, mint_y]));
+    <span class="kw">let </span>token_id = TokenId::derive(mint_authority.secret);
 
-    <span class="kw">let </span>public_inputs = TokenFreezeRevealed { token_id };
+    <span class="kw">let </span>public_inputs = TokenFreezeRevealed { signature_public: mint_authority.public, token_id };
 
     <span class="kw">let </span>prover_witnesses = <span class="macro">vec!</span>[Witness::Base(Value::known(mint_authority.secret.inner()))];
 

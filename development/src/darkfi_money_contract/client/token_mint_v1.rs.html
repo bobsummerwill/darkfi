@@ -220,6 +220,14 @@
 <a href="#220" id="220">220</a>
 <a href="#221" id="221">221</a>
 <a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -267,6 +275,7 @@
 }
 
 <span class="kw">pub struct </span>TokenMintRevealed {
+    <span class="kw">pub </span>signature_public: PublicKey,
     <span class="kw">pub </span>token_id: TokenId,
     <span class="kw">pub </span>coin: Coin,
     <span class="kw">pub </span>value_commit: pallas::Point,
@@ -275,12 +284,15 @@
 
 <span class="kw">impl </span>TokenMintRevealed {
     <span class="kw">pub fn </span>to_vec(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;pallas::Base&gt; {
+        <span class="kw">let </span>(sig_x, sig_y) = <span class="self">self</span>.signature_public.xy();
         <span class="kw">let </span>valcom_coords = <span class="self">self</span>.value_commit.to_affine().coordinates().unwrap();
         <span class="kw">let </span>tokcom_coords = <span class="self">self</span>.token_commit.to_affine().coordinates().unwrap();
 
         <span class="comment">// NOTE: It&#39;s important to keep these in the same order
         // as the `constrain_instance` calls in the zkas code.
         </span><span class="macro">vec!</span>[
+            sig_x,
+            sig_y,
             <span class="self">self</span>.token_id.inner(),
             <span class="self">self</span>.coin.inner(),
             <span class="kw-2">*</span>valcom_coords.x(),
@@ -316,8 +328,7 @@
 
         <span class="comment">// In this call, we will build one clear input and one anonymous output.
         // The mint authority pubkey is used to derive the token ID.
-        </span><span class="kw">let </span>(mint_x, mint_y) = <span class="self">self</span>.mint_authority.public.xy();
-        <span class="kw">let </span>token_id = TokenId::from(poseidon_hash([mint_x, mint_y]));
+        </span><span class="kw">let </span>token_id = TokenId::derive(<span class="self">self</span>.mint_authority.secret);
 
         <span class="kw">let </span>input = TransactionBuilderClearInputInfo {
             value: <span class="self">self</span>.amount,
@@ -403,8 +414,7 @@
     user_data: pallas::Base,
     coin_blind: pallas::Base,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;(Proof, TokenMintRevealed)&gt; {
-    <span class="kw">let </span>(mint_x, mint_y) = mint_authority.public.xy();
-    <span class="kw">let </span>token_id = TokenId::from(poseidon_hash([mint_x, mint_y]));
+    <span class="kw">let </span>token_id = TokenId::derive(mint_authority.secret);
 
     <span class="kw">let </span>value_commit = pedersen_commitment_u64(output.value, value_blind);
     <span class="kw">let </span>token_commit = pedersen_commitment_base(token_id.inner(), token_blind);
@@ -422,7 +432,13 @@
         coin_blind,
     ]));
 
-    <span class="kw">let </span>public_inputs = TokenMintRevealed { token_id, coin, value_commit, token_commit };
+    <span class="kw">let </span>public_inputs = TokenMintRevealed {
+        signature_public: mint_authority.public,
+        token_id,
+        coin,
+        value_commit,
+        token_commit,
+    };
 
     <span class="kw">let </span>prover_witnesses = <span class="macro">vec!</span>[
         Witness::Base(Value::known(mint_authority.secret.inner())),
