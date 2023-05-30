@@ -174,7 +174,7 @@
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */
 
-</span><span class="kw">use </span>darkfi_serial::{deserialize, serialize};
+</span><span class="kw">use </span>darkfi_serial::deserialize;
 <span class="kw">use </span>log::{error, warn};
 <span class="kw">use </span>serde_json::{json, Value};
 
@@ -310,7 +310,7 @@
             <span class="kw">return </span>server_error(RpcError::TxBroadcastFail, id, <span class="prelude-val">None</span>)
         }
 
-        <span class="kw">let </span>tx_hash = blake3::hash(<span class="kw-2">&amp;</span>serialize(<span class="kw-2">&amp;</span>tx)).to_hex().as_str().to_string();
+        <span class="kw">let </span>tx_hash = tx.hash().to_string();
         JsonResponse::new(<span class="macro">json!</span>(tx_hash), id).into()
     }
 }
