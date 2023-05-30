@@ -503,6 +503,19 @@
 <a href="#503" id="503">503</a>
 <a href="#504" id="504">504</a>
 <a href="#505" id="505">505</a>
+<a href="#506" id="506">506</a>
+<a href="#507" id="507">507</a>
+<a href="#508" id="508">508</a>
+<a href="#509" id="509">509</a>
+<a href="#510" id="510">510</a>
+<a href="#511" id="511">511</a>
+<a href="#512" id="512">512</a>
+<a href="#513" id="513">513</a>
+<a href="#514" id="514">514</a>
+<a href="#515" id="515">515</a>
+<a href="#516" id="516">516</a>
+<a href="#517" id="517">517</a>
+<a href="#518" id="518">518</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -566,7 +579,7 @@
 }
 
 <span class="kw">impl </span>ContractSection {
-    <span class="kw">pub fn </span>name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
+    <span class="kw">pub const fn </span>name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
         <span class="kw">match </span><span class="self">self </span>{
             <span class="self">Self</span>::Deploy =&gt; <span class="string">&quot;__initialize&quot;</span>,
             <span class="self">Self</span>::Exec =&gt; <span class="string">&quot;__entrypoint&quot;</span>,
@@ -804,6 +817,19 @@
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{ instance, store, ctx })
     }
 
+    <span class="doccomment">/// Perform a sanity check of the WASM bincode
+    </span><span class="kw">pub fn </span>sanity_check(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="macro">debug!</span>(target: <span class="string">&quot;runtime::vm_runtime&quot;</span>, <span class="string">&quot;Performing sanity check on wasm bincode&quot;</span>);
+
+        <span class="comment">// Check that we have all the necessary symbols;
+        </span><span class="kw">let _ </span>= <span class="self">self</span>.instance.exports.get_function(ContractSection::Deploy.name())<span class="question-mark">?</span>;
+        <span class="kw">let _ </span>= <span class="self">self</span>.instance.exports.get_function(ContractSection::Exec.name())<span class="question-mark">?</span>;
+        <span class="kw">let _ </span>= <span class="self">self</span>.instance.exports.get_function(ContractSection::Update.name())<span class="question-mark">?</span>;
+        <span class="kw">let _ </span>= <span class="self">self</span>.instance.exports.get_function(ContractSection::Metadata.name())<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(())
+    }
+
     <span class="kw">fn </span>call(<span class="kw-2">&amp;mut </span><span class="self">self</span>, section: ContractSection, payload: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;u8&gt;&gt; {
         <span class="macro">debug!</span>(target: <span class="string">&quot;runtime::vm_runtime&quot;</span>, <span class="string">&quot;Calling {} method&quot;</span>, section.name());
 
@@ -950,7 +976,7 @@
     <span class="kw">fn </span>print_logs(<span class="kw-2">&amp;</span><span class="self">self</span>) {
         <span class="kw">let </span>logs = <span class="self">self</span>.ctx.as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>.store).logs.borrow();
         <span class="kw">for </span>msg <span class="kw">in </span>logs.iter() {
-            <span class="macro">debug!</span>(target: <span class="string">&quot;runtime::vm_runtime&quot;</span>, <span class="string">&quot;Contract log: {}&quot;</span>, msg);
+            <span class="macro">info!</span>(target: <span class="string">&quot;runtime::vm_runtime&quot;</span>, <span class="string">&quot;[WASM] Contract log: {}&quot;</span>, msg);
         }
     }
 
