@@ -189,6 +189,7 @@
 <a href="#189" id="189">189</a>
 <a href="#190" id="190">190</a>
 <a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
 </pre><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -271,7 +272,7 @@
             WALLET_TXS_HISTORY_COL_TX_HASH,
             QueryType::Text <span class="kw">as </span>u8,
             WALLET_TXS_HISTORY_COL_STATUS,
-            QueryType::Blob <span class="kw">as </span>u8,
+            QueryType::Text <span class="kw">as </span>u8,
             WALLET_TXS_HISTORY_COL_TX,
         ]);
 
@@ -290,7 +291,8 @@
 
         <span class="kw">let </span>status: String = serde_json::from_value(arr[<span class="number">1</span>].clone())<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>tx_bytes: Vec&lt;u8&gt; = serde_json::from_value(arr[<span class="number">2</span>].clone())<span class="question-mark">?</span>;
+        <span class="kw">let </span>tx_encoded: String = serde_json::from_value(arr[<span class="number">2</span>].clone())<span class="question-mark">?</span>;
+        <span class="kw">let </span>tx_bytes: Vec&lt;u8&gt; = bs58::decode(<span class="kw-2">&amp;</span>tx_encoded).into_vec()<span class="question-mark">?</span>;
         <span class="kw">let </span>tx: Transaction = deserialize(<span class="kw-2">&amp;</span>tx_bytes)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>((tx_hash, status, tx))
@@ -312,8 +314,8 @@
             tx.hash().to_string(),
             QueryType::Text <span class="kw">as </span>u8,
             <span class="string">&quot;Broadcasted&quot;</span>,
-            QueryType::Blob <span class="kw">as </span>u8,
-            serialize(tx),
+            QueryType::Text <span class="kw">as </span>u8,
+            bs58::encode(<span class="kw-2">&amp;</span>serialize(tx)).into_string().to_string(),
         ]);
 
         <span class="kw">let </span>req = JsonRequest::new(<span class="string">&quot;wallet.exec_sql&quot;</span>, params);
