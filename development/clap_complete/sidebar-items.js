@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Shell"],"mod":["generator","shells"]};
+window.SIDEBAR_ITEMS = {"mod":["generator","shells"]};

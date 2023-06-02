@@ -300,7 +300,7 @@ var sourcesIndex = JSON.parse('{\
 "term_grid":["",[],["lib.rs"]],\
 "termcolor":["",[],["lib.rs"]],\
 "termion":["",[["sys",[["unix",[],["attr.rs","mod.rs","size.rs","tty.rs"]]]]],["async.rs","clear.rs","color.rs","cursor.rs","event.rs","input.rs","lib.rs","macros.rs","raw.rs","screen.rs","scroll.rs","style.rs"]],\
-"textwrap":["",[["wrap_algorithms",[],["optimal_fit.rs"]]],["core.rs","indentation.rs","lib.rs","word_separators.rs","word_splitters.rs","wrap_algorithms.rs"]],\
+"textwrap":["",[["wrap_algorithms",[],["optimal_fit.rs"]]],["core.rs","indentation.rs","lib.rs","line_ending.rs","word_separators.rs","word_splitters.rs","wrap_algorithms.rs"]],\
 "thiserror":["",[],["aserror.rs","display.rs","lib.rs"]],\
 "thiserror_impl":["",[],["ast.rs","attr.rs","expand.rs","fmt.rs","generics.rs","lib.rs","prop.rs","valid.rs"]],\
 "time":["",[["error",[],["component_range.rs","conversion_range.rs","different_variant.rs","format.rs","indeterminate_offset.rs","invalid_format_description.rs","invalid_variant.rs","mod.rs"]],["format_description",[["parse",[],["ast.rs","format_item.rs","lexer.rs","mod.rs"]],["well_known",[["iso8601",[],["adt_hack.rs"]]],["iso8601.rs","rfc2822.rs","rfc3339.rs"]]],["borrowed_format_item.rs","component.rs","mod.rs","modifier.rs","owned_format_item.rs"]],["formatting",[],["formattable.rs","iso8601.rs","mod.rs"]],["sys",[["local_offset_at",[],["mod.rs","unix.rs"]]],["mod.rs"]]],["date.rs","date_time.rs","duration.rs","ext.rs","instant.rs","lib.rs","macros.rs","month.rs","offset_date_time.rs","primitive_date_time.rs","time.rs","utc_offset.rs","util.rs","weekday.rs"]],\

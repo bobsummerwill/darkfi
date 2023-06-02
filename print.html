@@ -6179,35 +6179,34 @@ and all users will have synced tasks.</p>
 <p>To run your own instance check <a href="misc/tau.html#local-deployment">Local Deployment</a></p>
 <pre><code class="language-shell">% tau --help 
 </code></pre>
-<pre><code>tau 0.3.0
+<pre><code>tau 0.4.1
 
-USAGE:
-    tau [OPTIONS] [FILTERS]... [SUBCOMMAND]
+Usage: tau [OPTIONS] [FILTERS]... [COMMAND]
 
-ARGS:
-    &lt;FILTERS&gt;...    Search filters (zero or more)                                 
+Commands:
+  add      Add a new task.
+  modify   Modify/Edit an existing task
+  list     List tasks
+  start    Start task(s)
+  open     Open task(s)
+  pause    Pause task(s)
+  stop     Stop task(s)
+  comment  Set or Get comment for task(s)
+  info     Get all data about selected task(s)
+  switch   Switch workspace
+  import   Import tasks from a specified directory
+  export   Export tasks to a specified directory
+  log      Log drawdown
+  help     Print this message or the help of the given subcommand(s)
 
-OPTIONS:
-    -e, --endpoint &lt;ENDPOINT&gt;    taud JSON-RPC endpoint [default: tcp://127.0.0.1:23330]
-    -h, --help                   Print help information
-    -v                           Increase verbosity (-vvv supported)
-    -V, --version                Print version information
+Arguments:
+  [FILTERS]...  Search filters (zero or more)
 
-SUBCOMMANDS:
-    add        Add a new task.                                                    
-    comment    Set or Get comment for task(s)
-    export     Export tasks to a specified directory
-    help       Print this message or the help of the given subcommand(s)
-    import     Import tasks from a specified directory
-    info       Get all data about selected task(s)
-    list       List tasks
-    log        Log drawdown
-    modify     Modify/Edit an existing task
-    open       Open task(s)
-    pause      Pause task(s)
-    start      Start task(s)
-    stop       Stop task(s)
-    switch     Switch workspace
+Options:
+  -v...                      Increase verbosity (-vvv supported)
+  -e, --endpoint &lt;ENDPOINT&gt;  taud JSON-RPC endpoint [default: tcp://127.0.0.1:23330]
+  -h, --help                 Print help
+  -V, --version              Print version
 </code></pre>
 <pre><code class="language-shell">% tau [SUBCOMMAND] --help
 </code></pre>
@@ -6215,12 +6214,12 @@ SUBCOMMANDS:
 <h4 id="add-tasks"><a class="header" href="#add-tasks">Add tasks</a></h4>
 <p>Add a new task with the title &quot;review tau usage&quot; with the description text
 &quot;description&quot; set to &quot;review tau&quot;.</p>
-<pre><code class="language-bash">tau add review tau usage &quot;desc:review tau&quot;
+<pre><code class="language-bash">tau add review tau usage desc:&quot;review tau&quot;
 </code></pre>
 <p>Add another task with the title &quot;second task&quot; assigned to dave.
 Because no description is set, it will open your EDITOR and prompt you
 for a description which allows entering multiline text.</p>
-<pre><code class="language-bash">tau add second task @dave
+<pre><code class="language-bash">tau add second task assign:dave
 </code></pre>
 <pre><code>% tau add Third task project:tau rank:1.1
 % tau add Fourth task assign:dave project:tau due:1509 rank:2.5
@@ -6249,7 +6248,7 @@ for a description which allows entering multiline text.</p>
 </code></pre>
 <h4 id="comments"><a class="header" href="#comments">Comments</a></h4>
 <pre><code class="language-shell">% tau 1 comment &quot;content foo bar&quot;	# will add a comment to task 1
-% tau 3 comment				# will show comments on task 3 
+% tau 3 comment				# will open the editor to write a comment
 </code></pre>
 <h4 id="log-drawdown"><a class="header" href="#log-drawdown">Log drawdown</a></h4>
 <pre><code class="language-shell">% tau log 0922			# will list assignees of stopped tasks
