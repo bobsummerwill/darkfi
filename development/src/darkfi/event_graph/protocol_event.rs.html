@@ -323,6 +323,8 @@
 <a href="#323" id="323">323</a>
 <a href="#324" id="324">324</a>
 <a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -346,7 +348,7 @@
 <span class="kw">use </span>async_std::sync::{Arc, Mutex};
 <span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>darkfi_serial::{Decodable, Encodable, SerialDecodable, SerialEncodable};
-<span class="kw">use </span>log::debug;
+<span class="kw">use </span>log::{debug, info};
 <span class="kw">use </span>rand::{rngs::OsRng, RngCore};
 
 <span class="kw">use </span><span class="kw">super</span>::EventMsg;
@@ -490,8 +492,8 @@
 
     <span class="kw">async fn </span>handle_receive_event(<span class="self">self</span>: Arc&lt;<span class="self">Self</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
         <span class="macro">debug!</span>(target: <span class="string">&quot;ircd&quot;</span>, <span class="string">&quot;ProtocolEvent::handle_receive_event() [START]&quot;</span>);
-        <span class="comment">// let exclude_list = vec![self.channel.address()];
-        </span><span class="kw">loop </span>{
+        <span class="kw">let </span>exclude_list = <span class="macro">vec!</span>[<span class="self">self</span>.channel.address()];
+        <span class="kw">loop </span>{
             <span class="kw">let </span>event = <span class="self">self</span>.event_sub.receive().<span class="kw">await</span><span class="question-mark">?</span>;
             <span class="kw">let </span>event = (<span class="kw-2">*</span>event).to_owned();
 
@@ -499,12 +501,14 @@
                 <span class="kw">continue
             </span>}
 
+            <span class="macro">info!</span>(<span class="string">&quot;[P2P] Received: {:?}&quot;</span>, event.action);
+
             <span class="self">self</span>.new_event(<span class="kw-2">&amp;</span>event).<span class="kw">await</span><span class="question-mark">?</span>;
             <span class="self">self</span>.send_inv(<span class="kw-2">&amp;</span>event).<span class="kw">await</span><span class="question-mark">?</span>;
 
             <span class="comment">// Broadcast the msg
-            // self.p2p.broadcast_with_exclude(event, &amp;exclude_list).await?;
-        </span>}
+            </span><span class="self">self</span>.p2p.broadcast_with_exclude(event, <span class="kw-2">&amp;</span>exclude_list).<span class="kw">await</span><span class="question-mark">?</span>;
+        }
     }
 
     <span class="kw">async fn </span>handle_receive_inv(<span class="self">self</span>: Arc&lt;<span class="self">Self</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
