@@ -120,6 +120,17 @@
 <a href="#120" id="120">120</a>
 <a href="#121" id="121">121</a>
 <a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -205,10 +216,20 @@
 /// verifying slot.
 ///
 /// ```
-/// slot = get_current_slot();
+/// slot = get_verifying_slot();
 /// ```
 </span><span class="kw">pub fn </span>get_verifying_slot() -&gt; u64 {
     <span class="kw">unsafe </span>{ get_verifying_slot_() }
+}
+
+<span class="doccomment">/// Everyone can call this. Will return runtime configured
+/// verifying slot epoch.
+///
+/// ```
+/// slot = get_verifying_slot_epoch();
+/// ```
+</span><span class="kw">pub fn </span>get_verifying_slot_epoch() -&gt; u64 {
+    <span class="kw">unsafe </span>{ get_verifying_slot_epoch_() }
 }
 
 <span class="doccomment">/// Everyone can call this. Will return requested slot checkpoint from `SlotCheckpointStore`.
@@ -239,6 +260,7 @@
     <span class="kw">fn </span>get_current_epoch_() -&gt; u64;
     <span class="kw">fn </span>get_current_slot_() -&gt; u64;
     <span class="kw">fn </span>get_verifying_slot_() -&gt; u64;
+    <span class="kw">fn </span>get_verifying_slot_epoch_() -&gt; u64;
     <span class="kw">fn </span>get_slot_checkpoint_(slot: u64) -&gt; i64;
     <span class="kw">fn </span>get_blockchain_time_() -&gt; u64;
 }

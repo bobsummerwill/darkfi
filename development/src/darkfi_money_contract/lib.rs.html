@@ -104,6 +104,8 @@
 <a href="#104" id="104">104</a>
 <a href="#105" id="105">105</a>
 <a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -206,8 +208,10 @@
 </span><span class="kw">pub const </span>CONSENSUS_CONTRACT_DB_VERSION: <span class="kw-2">&amp;</span>str = <span class="string">&quot;db_version&quot;</span>;
 <span class="kw">pub const </span>CONSENSUS_CONTRACT_COIN_MERKLE_TREE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;consensus_coin_tree&quot;</span>;
 
-<span class="doccomment">/// zkas proposal reward circuit namespace
-</span><span class="kw">pub const </span>CONSENSUS_CONTRACT_ZKAS_PROPOSAL_REWARD_NS_V1: <span class="kw-2">&amp;</span>str = <span class="string">&quot;ProposalReward_V1&quot;</span>;
-<span class="doccomment">/// zkas proposal mint circuit namespace
-</span><span class="kw">pub const </span>CONSENSUS_CONTRACT_ZKAS_PROPOSAL_MINT_NS_V1: <span class="kw-2">&amp;</span>str = <span class="string">&quot;ProposalMint_V1&quot;</span>;
+<span class="doccomment">/// zkas consensus mint circuit namespace
+</span><span class="kw">pub const </span>CONSENSUS_CONTRACT_ZKAS_MINT_NS_V1: <span class="kw-2">&amp;</span>str = <span class="string">&quot;ConsensusMint_V1&quot;</span>;
+<span class="doccomment">/// zkas consensus burn circuit namespace
+</span><span class="kw">pub const </span>CONSENSUS_CONTRACT_ZKAS_BURN_NS_V1: <span class="kw-2">&amp;</span>str = <span class="string">&quot;ConsensusBurn_V1&quot;</span>;
+<span class="doccomment">/// zkas proposal circuit namespace
+</span><span class="kw">pub const </span>CONSENSUS_CONTRACT_ZKAS_PROPOSAL_NS_V1: <span class="kw-2">&amp;</span>str = <span class="string">&quot;ConsensusProposal_V1&quot;</span>;
 </code></pre></div></section></main></body></html>

@@ -220,6 +220,19 @@
 <a href="#220" id="220">220</a>
 <a href="#221" id="221">221</a>
 <a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -282,11 +295,11 @@
     </span><span class="kw">pub </span>signature_public: PublicKey,
 }
 
-<span class="doccomment">/// Anonymous input for staking contract calls
+<span class="doccomment">/// Anonymous input for consensus contract calls
 </span><span class="attr">#[derive(Clone, Debug, PartialEq, SerialEncodable, SerialDecodable)]
-</span><span class="kw">pub struct </span>StakeInput {
-    <span class="doccomment">/// Blinding factor for `token_id`
-    </span><span class="kw">pub </span>token_blind: pallas::Scalar,
+</span><span class="kw">pub struct </span>ConsensusInput {
+    <span class="doccomment">/// Epoch the coin was minted
+    </span><span class="kw">pub </span>epoch: u64,
     <span class="doccomment">/// Pedersen commitment for the staked coin&#39;s value
     </span><span class="kw">pub </span>value_commit: pallas::Point,
     <span class="doccomment">/// Revealed nullifier
@@ -297,12 +310,11 @@
     </span><span class="kw">pub </span>signature_public: PublicKey,
 }
 
-<span class="kw">impl </span>PartialEq&lt;StakeInput&gt; <span class="kw">for </span>Input {
-    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>StakeInput) -&gt; bool {
+<span class="kw">impl </span>PartialEq&lt;ConsensusInput&gt; <span class="kw">for </span>Input {
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>ConsensusInput) -&gt; bool {
         <span class="self">self</span>.value_commit == other.value_commit &amp;&amp;
             <span class="self">self</span>.nullifier == other.nullifier &amp;&amp;
-            <span class="self">self</span>.merkle_root == other.merkle_root &amp;&amp;
-            <span class="self">self</span>.signature_public == other.signature_public
+            <span class="self">self</span>.merkle_root == other.merkle_root
     }
 }
 
@@ -313,6 +325,17 @@
     </span><span class="kw">pub </span>value_commit: pallas::Point,
     <span class="doccomment">/// Pedersen commitment for the output&#39;s token ID
     </span><span class="kw">pub </span>token_commit: pallas::Point,
+    <span class="doccomment">/// Minted coin
+    </span><span class="kw">pub </span>coin: Coin,
+    <span class="doccomment">/// AEAD encrypted note
+    </span><span class="kw">pub </span>note: AeadEncryptedNote,
+}
+
+<span class="doccomment">/// A consensus contract call&#39;s anonymous output
+</span><span class="attr">#[derive(Clone, Debug, PartialEq, SerialEncodable, SerialDecodable)]
+</span><span class="kw">pub struct </span>ConsensusOutput {
+    <span class="doccomment">/// Pedersen commitment for the output&#39;s value
+    </span><span class="kw">pub </span>value_commit: pallas::Point,
     <span class="doccomment">/// Minted coin
     </span><span class="kw">pub </span>coin: Coin,
     <span class="doccomment">/// AEAD encrypted note
@@ -391,7 +414,7 @@
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
 </span><span class="kw">pub struct </span>MoneyUnstakeParamsV1 {
     <span class="doccomment">/// Burnt token revealed info
-    </span><span class="kw">pub </span>input: StakeInput,
+    </span><span class="kw">pub </span>input: ConsensusInput,
     <span class="doccomment">/// Spend hook used to invoke other contracts.
     /// If this value is nonzero then the subsequent contract call in the tx
     /// must have this value as its ID.
@@ -415,9 +438,9 @@
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
 </span><span class="kw">pub struct </span>ConsensusStakeParamsV1 {
     <span class="doccomment">/// Burnt token revealed info
-    </span><span class="kw">pub </span>input: StakeInput,
+    </span><span class="kw">pub </span>input: ConsensusInput,
     <span class="doccomment">/// Anonymous output
-    </span><span class="kw">pub </span>output: Output,
+    </span><span class="kw">pub </span>output: ConsensusOutput,
 }
 
 <span class="doccomment">/// State update for `Consensus::Stake`
@@ -430,10 +453,8 @@
 <span class="doccomment">/// Parameters for `Consensus::Unstake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
 </span><span class="kw">pub struct </span>ConsensusUnstakeParamsV1 {
-    <span class="doccomment">/// Blinding factor for `token_id`
-    </span><span class="kw">pub </span>token_blind: pallas::Scalar,
     <span class="doccomment">/// Anonymous input
-    </span><span class="kw">pub </span>input: Input,
+    </span><span class="kw">pub </span>input: ConsensusInput,
 }
 
 <span class="doccomment">/// State update for `Consensus::Unstake`
@@ -442,4 +463,9 @@
     <span class="doccomment">/// Revealed nullifier
     </span><span class="kw">pub </span>nullifier: Nullifier,
 }
+
+<span class="comment">// `pallas::Base` used as prefix/suffix in poseidon hash
+</span><span class="kw">pub const </span>PALLAS_ZERO: pallas::Base = pallas::Base::zero();
+<span class="comment">// `pallas::Scalar` used as prefix/suffix in poseidon hash
+</span><span class="kw">pub const </span>SCALAR_ZERO: pallas::Scalar = pallas::Scalar::zero();
 </code></pre></div></section></main></body></html>

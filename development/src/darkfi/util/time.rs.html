@@ -282,6 +282,11 @@
 <a href="#282" id="282">282</a>
 <a href="#283" id="283">283</a>
 <a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -352,6 +357,11 @@
     <span class="doccomment">/// Calculates the relative number of the provided slot.
     </span><span class="kw">pub fn </span>relative_slot(<span class="kw-2">&amp;</span><span class="self">self</span>, slot: u64) -&gt; u64 {
         slot % <span class="self">self</span>.epoch_length
+    }
+
+    <span class="doccomment">/// Calculates the epoch of the verifying slot.
+    </span><span class="kw">pub fn </span>verifying_slot_epoch(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64 {
+        <span class="self">self</span>.slot_epoch(<span class="self">self</span>.verifying_slot)
     }
 
     <span class="doccomment">/// Calculates seconds until next Nth slot starting time.
