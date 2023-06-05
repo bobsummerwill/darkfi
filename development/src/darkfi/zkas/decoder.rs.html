@@ -217,6 +217,13 @@
 <a href="#217" id="217">217</a>
 <a href="#218" id="218">218</a>
 <a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -260,13 +267,18 @@
     <span class="kw">pub fn </span>decode(bytes: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>magic_bytes = <span class="kw-2">&amp;</span>bytes[<span class="number">0</span>..<span class="number">4</span>];
         <span class="kw">if </span>magic_bytes != MAGIC_BYTES {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(ZkasErr(<span class="string">&quot;Magic bytes are incorrect.&quot;</span>.to_string()))
+            <span class="kw">return </span><span class="prelude-val">Err</span>(ZkasErr(<span class="string">&quot;Magic bytes are incorrect&quot;</span>.to_string()))
         }
 
         <span class="kw">let </span>_binary_version = <span class="kw-2">&amp;</span>bytes[<span class="number">4</span>];
 
         <span class="comment">// After the binary version, we&#39;re supposed to have the witness namespace
-        </span><span class="kw">let </span>(namespace, <span class="kw">_</span>) = deserialize_partial(<span class="kw-2">&amp;</span>bytes[<span class="number">5</span>..])<span class="question-mark">?</span>;
+        </span><span class="kw">let </span>(namespace, <span class="kw">_</span>): (String, <span class="kw">_</span>) = deserialize_partial(<span class="kw-2">&amp;</span>bytes[<span class="number">5</span>..])<span class="question-mark">?</span>;
+
+        <span class="comment">// Enforce a limit on the namespace string length
+        </span><span class="kw">if </span>namespace.len() &gt; <span class="number">32 </span>{
+            <span class="kw">return </span><span class="prelude-val">Err</span>(ZkasErr(<span class="string">&quot;Namespace too long&quot;</span>.to_string()))
+        }
 
         <span class="kw">let </span>constants_offset = <span class="kw">match </span>find_subslice(bytes, <span class="string">b&quot;.constant&quot;</span>) {
             <span class="prelude-val">Some</span>(v) =&gt; v,
@@ -412,7 +424,9 @@
             };
             iter_offset += <span class="number">1</span>;
 
-            <span class="kw">let </span>(arg_num, offset) = deserialize_partial::&lt;VarInt&gt;(<span class="kw-2">&amp;</span>bytes[iter_offset..])<span class="question-mark">?</span>;
+            <span class="comment">// TODO: Check that the types and arg number are correct
+
+            </span><span class="kw">let </span>(arg_num, offset) = deserialize_partial::&lt;VarInt&gt;(<span class="kw-2">&amp;</span>bytes[iter_offset..])<span class="question-mark">?</span>;
             iter_offset += offset;
 
             <span class="kw">let </span><span class="kw-2">mut </span>args = <span class="macro">vec!</span>[];
