@@ -315,7 +315,7 @@
             QueryType::Text <span class="kw">as </span>u8,
             <span class="string">&quot;Broadcasted&quot;</span>,
             QueryType::Text <span class="kw">as </span>u8,
-            bs58::encode(<span class="kw-2">&amp;</span>serialize(tx)).into_string().to_string(),
+            bs58::encode(<span class="kw-2">&amp;</span>serialize(tx)).into_string(),
         ]);
 
         <span class="kw">let </span>req = JsonRequest::new(<span class="string">&quot;wallet.exec_sql&quot;</span>, params);
