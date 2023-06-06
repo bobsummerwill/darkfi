@@ -239,7 +239,7 @@
 <span class="kw">use </span>darkfi_sdk::{
     crypto::{
         note::AeadEncryptedNote, pasta_prelude::<span class="kw-2">*</span>, pedersen_commitment_base,
-        pedersen_commitment_u64, poseidon_hash, Coin, MerkleNode, Nullifier, PublicKey, TokenId,
+        pedersen_commitment_u64, poseidon_hash, MerkleNode, Nullifier, PublicKey, TokenId,
         DARK_TOKEN_ID,
     },
     pasta::pallas,
@@ -249,7 +249,7 @@
 
 <span class="kw">use crate</span>::{
     client::{ConsensusOwnCoin, MoneyNote},
-    model::{ConsensusInput, MoneyUnstakeParamsV1, Output, PALLAS_ZERO, SCALAR_ZERO},
+    model::{Coin, ConsensusInput, MoneyUnstakeParamsV1, Output, PALLAS_ZERO, SCALAR_ZERO},
 };
 
 <span class="kw">pub struct </span>MoneyUnstakeCallDebris {

@@ -79,7 +79,6 @@
 <a href="#79" id="79">79</a>
 <a href="#80" id="80">80</a>
 <a href="#81" id="81">81</a>
-<a href="#82" id="82">82</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -99,11 +98,10 @@
  */
 
 </span><span class="kw">use </span>darkfi_sdk::crypto::{
-    merkle_prelude::<span class="kw-2">*</span>, note::AeadEncryptedNote, Coin, MerkleNode, MerklePosition, MerkleTree,
-    SecretKey,
+    merkle_prelude::<span class="kw-2">*</span>, note::AeadEncryptedNote, MerkleNode, MerklePosition, MerkleTree, SecretKey,
 };
 
-<span class="kw">use </span>darkfi_money_contract::client::MoneyNote;
+<span class="kw">use </span>darkfi_money_contract::{client::MoneyNote, model::Coin};
 
 <span class="kw">pub struct </span>OwnCoin {
     <span class="kw">pub </span>coin: Coin,

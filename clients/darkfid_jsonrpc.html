@@ -173,7 +173,7 @@ Returns a readable block upon success.</p>
 <ul>
 <li><a href="https://darkrenaissance.github.io/darkfi/development/darkfi/consensus/block/struct.BlockInfo.html"><code>BlockInfo</code></a>
 struct as a JSON object
-<br><sup><a href="https://github.com/darkrenaissance/darkfi/blob/master/bin/darkfid/src/rpc_blockchain.rs#L49">[src]</a></sup></li>
+<br><sup><a href="https://github.com/darkrenaissance/darkfi/blob/master/bin/darkfid/src/rpc_blockchain.rs#L51">[src]</a></sup></li>
 </ul>
 <pre><code class="language-json">--&gt; {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;method&quot;: &quot;blockchain.get_slot&quot;, &quot;params&quot;: [0], &quot;id&quot;: 1}
 &lt;-- {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;result&quot;: {...}, &quot;id&quot;: 1}
@@ -189,7 +189,7 @@ Returns a serialized <code>Transaction</code> object.</p>
 <ul>
 <li>Serialized <a href="https://darkrenaissance.github.io/darkfi/development/darkfi/tx/struct.Transaction.html"><code>Transaction</code></a>
 object
-<br><sup><a href="https://github.com/darkrenaissance/darkfi/blob/master/bin/darkfid/src/rpc_blockchain.rs#L88">[src]</a></sup></li>
+<br><sup><a href="https://github.com/darkrenaissance/darkfi/blob/master/bin/darkfid/src/rpc_blockchain.rs#L90">[src]</a></sup></li>
 </ul>
 <pre><code class="language-json">--&gt; {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;method&quot;: &quot;blockchain.get_tx&quot;, &quot;params&quot;: [&quot;TxHash&quot;], &quot;id&quot;: 1}
 &lt;-- {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;result&quot;: {...}, &quot;id&quot;: 1}
@@ -203,7 +203,7 @@ object
 <p><strong>Returns:</strong></p>
 <ul>
 <li><code>u64</code> ID of the last known slot
-<br><sup><a href="https://github.com/darkrenaissance/darkfi/blob/master/bin/darkfid/src/rpc_blockchain.rs#L136">[src]</a></sup></li>
+<br><sup><a href="https://github.com/darkrenaissance/darkfi/blob/master/bin/darkfid/src/rpc_blockchain.rs#L138">[src]</a></sup></li>
 </ul>
 <pre><code class="language-json">--&gt; {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;method&quot;: &quot;blockchain.last_known_slot&quot;, &quot;params&quot;: [], &quot;id&quot;: 1}
 &lt;-- {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;result&quot;: 1234, &quot;id&quot;: 1}
@@ -212,7 +212,7 @@ object
 <p>Initializes a subscription to new incoming blocks.
 Once a subscription is established, <code>darkfid</code> will send JSON-RPC notifications of
 new incoming blocks to the subscriber.
-<br><sup><a href="https://github.com/darkrenaissance/darkfi/blob/master/bin/darkfid/src/rpc_blockchain.rs#L156">[src]</a></sup></p>
+<br><sup><a href="https://github.com/darkrenaissance/darkfi/blob/master/bin/darkfid/src/rpc_blockchain.rs#L158">[src]</a></sup></p>
 <pre><code class="language-json">--&gt; {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;method&quot;: &quot;blockchain.subscribe_blocks&quot;, &quot;params&quot;: [], &quot;id&quot;: 1}
 &lt;-- {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;method&quot;: &quot;blockchain.subscribe_blocks&quot;, &quot;params&quot;: [`blockinfo`]}
 </code></pre>
@@ -220,7 +220,7 @@ new incoming blocks to the subscriber.
 <p>Initializes a subscription to erroneous transactions notifications.
 Once a subscription is established, <code>darkfid</code> will send JSON-RPC notifications of
 erroneous transactions to the subscriber.
-<br><sup><a href="https://github.com/darkrenaissance/darkfi/blob/master/bin/darkfid/src/rpc_blockchain.rs#L174">[src]</a></sup></p>
+<br><sup><a href="https://github.com/darkrenaissance/darkfi/blob/master/bin/darkfid/src/rpc_blockchain.rs#L176">[src]</a></sup></p>
 <pre><code class="language-json">--&gt; {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;method&quot;: &quot;blockchain.subscribe_err_txs&quot;, &quot;params&quot;: [], &quot;id&quot;: 1}
 &lt;-- {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;method&quot;: &quot;blockchain.subscribe_err_txs&quot;, &quot;params&quot;: [`tx_hash`]}
 </code></pre>
@@ -236,7 +236,7 @@ them, including their namespace.</p>
 <li><code>array[n]</code>: Pairs of: <code>zkas_namespace</code> string, serialized
 <a href="https://darkrenaissance.github.io/darkfi/development/darkfi/zkas/decoder/struct.ZkBinary.html"><code>ZkBinary</code></a>
 object
-<br><sup><a href="https://github.com/darkrenaissance/darkfi/blob/master/bin/darkfid/src/rpc_blockchain.rs#L199">[src]</a></sup></li>
+<br><sup><a href="https://github.com/darkrenaissance/darkfi/blob/master/bin/darkfid/src/rpc_blockchain.rs#L201">[src]</a></sup></li>
 </ul>
 <pre><code class="language-json">--&gt; {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;method&quot;: &quot;blockchain.lookup_zkas&quot;, &quot;params&quot;: [&quot;6Ef42L1KLZXBoxBuCDto7coi9DA2D2SRtegNqNU4sd74&quot;], &quot;id&quot;: 1}
 &lt;-- {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;result&quot;: [[&quot;Foo&quot;, [...]], [&quot;Bar&quot;, [...]]], &quot;id&quot;: 1}

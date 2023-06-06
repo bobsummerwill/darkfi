@@ -218,10 +218,10 @@
     zkas::ZkBinary,
     <span class="prelude-ty">Result</span>,
 };
-<span class="kw">use </span>darkfi_money_contract::client::ConsensusNote;
+<span class="kw">use </span>darkfi_money_contract::{client::ConsensusNote, model::Coin};
 <span class="kw">use </span>darkfi_sdk::{
     crypto::{
-        pasta_prelude::<span class="kw-2">*</span>, pedersen_commitment_u64, poseidon_hash, Coin, MerkleNode, MerklePosition,
+        pasta_prelude::<span class="kw-2">*</span>, pedersen_commitment_u64, poseidon_hash, MerkleNode, MerklePosition,
         Nullifier, PublicKey, SecretKey,
     },
     incrementalmerkletree::Hashable,

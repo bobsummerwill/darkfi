@@ -83,39 +83,6 @@
 <a href="#83" id="83">83</a>
 <a href="#84" id="84">84</a>
 <a href="#85" id="85">85</a>
-<a href="#86" id="86">86</a>
-<a href="#87" id="87">87</a>
-<a href="#88" id="88">88</a>
-<a href="#89" id="89">89</a>
-<a href="#90" id="90">90</a>
-<a href="#91" id="91">91</a>
-<a href="#92" id="92">92</a>
-<a href="#93" id="93">93</a>
-<a href="#94" id="94">94</a>
-<a href="#95" id="95">95</a>
-<a href="#96" id="96">96</a>
-<a href="#97" id="97">97</a>
-<a href="#98" id="98">98</a>
-<a href="#99" id="99">99</a>
-<a href="#100" id="100">100</a>
-<a href="#101" id="101">101</a>
-<a href="#102" id="102">102</a>
-<a href="#103" id="103">103</a>
-<a href="#104" id="104">104</a>
-<a href="#105" id="105">105</a>
-<a href="#106" id="106">106</a>
-<a href="#107" id="107">107</a>
-<a href="#108" id="108">108</a>
-<a href="#109" id="109">109</a>
-<a href="#110" id="110">110</a>
-<a href="#111" id="111">111</a>
-<a href="#112" id="112">112</a>
-<a href="#113" id="113">113</a>
-<a href="#114" id="114">114</a>
-<a href="#115" id="115">115</a>
-<a href="#116" id="116">116</a>
-<a href="#117" id="117">117</a>
-<a href="#118" id="118">118</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -190,48 +157,15 @@
             }
         }
     }
-}
 
-<span class="kw">impl </span>From&lt;pallas::Base&gt; <span class="kw">for </span>TokenId {
-    <span class="kw">fn </span>from(x: pallas::Base) -&gt; <span class="self">Self </span>{
-        <span class="self">Self</span>(x)
+    <span class="doccomment">/// Convert the `TokenId` type into 32 raw bytes
+    </span><span class="kw">pub fn </span>to_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; [u8; <span class="number">32</span>] {
+        <span class="self">self</span>.<span class="number">0</span>.to_repr()
     }
 }
 
-<span class="kw">impl </span>core::fmt::Display <span class="kw">for </span>TokenId {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>core::fmt::Formatter) -&gt; core::fmt::Result {
-        <span class="comment">// Base58 encoding
-        </span><span class="kw">let </span>tokenid: String = bs58::encode(<span class="self">self</span>.<span class="number">0</span>.to_repr()).into_string();
-        <span class="macro">write!</span>(f, <span class="string">&quot;{}&quot;</span>, tokenid)
-    }
-}
-
-<span class="kw">impl </span>TryFrom&lt;<span class="kw-2">&amp;</span>str&gt; <span class="kw">for </span>TokenId {
-    <span class="kw">type </span>Error = ContractError;
-
-    <span class="kw">fn </span>try_from(s: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
-        <span class="kw">let </span>bytes: [u8; <span class="number">32</span>] = <span class="kw">match </span>bs58::decode(s).into_vec() {
-            <span class="prelude-val">Ok</span>(v) =&gt; {
-                <span class="kw">if </span>v.len() != <span class="number">32 </span>{
-                    <span class="kw">return </span><span class="prelude-val">Err</span>(ContractError::IoError(
-                        <span class="string">&quot;Decoded bs58 string for TokenId is not 32 bytes long&quot;</span>.to_string(),
-                    ))
-                }
-
-                v.try_into().unwrap()
-            }
-            <span class="prelude-val">Err</span>(e) =&gt; {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(ContractError::IoError(<span class="macro">format!</span>(
-                    <span class="string">&quot;Failed to decode bs58 for TokenId: {}&quot;</span>,
-                    e
-                )))
-            }
-        };
-
-        <span class="kw">match </span>pallas::Base::from_repr(bytes).into() {
-            <span class="prelude-val">Some</span>(v) =&gt; <span class="prelude-val">Ok</span>(<span class="self">Self</span>(v)),
-            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(ContractError::IoError(<span class="string">&quot;Bytes for TokenId are noncanonical&quot;</span>.to_string())),
-        }
-    }
-}
+<span class="kw">use </span>core::str::FromStr;
+<span class="macro">crate::fp_from_bs58!</span>(TokenId);
+<span class="macro">crate::fp_to_bs58!</span>(TokenId);
+<span class="macro">crate::ty_from_fp!</span>(TokenId);
 </code></pre></div></section></main></body></html>

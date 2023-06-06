@@ -367,12 +367,12 @@
 };
 <span class="kw">use </span>darkfi_money_contract::{
     client::{ConsensusNote, ConsensusOwnCoin},
-    model::{ConsensusInput, ConsensusOutput, PALLAS_ZERO},
+    model::{Coin, ConsensusInput, ConsensusOutput, PALLAS_ZERO},
 };
 <span class="kw">use </span>darkfi_sdk::{
     crypto::{
         ecvrf::VrfProof, note::AeadEncryptedNote, pasta_prelude::<span class="kw-2">*</span>, pedersen_commitment_base,
-        pedersen_commitment_u64, poseidon_hash, Coin, MerkleNode, MerkleTree, Nullifier, PublicKey,
+        pedersen_commitment_u64, poseidon_hash, MerkleNode, MerkleTree, Nullifier, PublicKey,
         SecretKey,
     },
     incrementalmerkletree::{Hashable, Tree},

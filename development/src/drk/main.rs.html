@@ -1331,6 +1331,7 @@
 <a href="#1331" id="1331">1331</a>
 <a href="#1332" id="1332">1332</a>
 <a href="#1333" id="1333">1333</a>
+<a href="#1334" id="1334">1334</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -1360,8 +1361,9 @@
 <span class="kw">use </span>clap::{CommandFactory, Parser, Subcommand};
 <span class="kw">use </span>clap_complete::{generate, Shell};
 <span class="kw">use </span>darkfi::{tx::Transaction, util::parse::decode_base10, zk::halo2::Field};
+<span class="kw">use </span>darkfi_money_contract::model::Coin;
 <span class="kw">use </span>darkfi_sdk::{
-    crypto::{Coin, PublicKey, SecretKey, TokenId},
+    crypto::{PublicKey, SecretKey, TokenId},
     pasta::{group::ff::PrimeField, pallas},
 };
 <span class="kw">use </span>darkfi_serial::{deserialize, serialize};
@@ -2530,7 +2532,7 @@
                 }
 
                 <span class="kw">let </span>token_id =
-                    TokenId::try_from(token.as_str()).with_context(|| <span class="string">&quot;Invalid Token ID&quot;</span>)<span class="question-mark">?</span>;
+                    TokenId::from_str(token.as_str()).with_context(|| <span class="string">&quot;Invalid Token ID&quot;</span>)<span class="question-mark">?</span>;
                 <span class="kw">let </span>drk = Drk::new(args.endpoint).<span class="kw">await</span><span class="question-mark">?</span>;
                 drk.add_alias(alias, token_id).<span class="kw">await</span><span class="question-mark">?</span>;
 
@@ -2540,7 +2542,7 @@
             AliasSubcmd::Show { alias, token } =&gt; {
                 <span class="kw">let </span>token_id = <span class="kw">match </span>token {
                     <span class="prelude-val">Some</span>(t) =&gt; {
-                        <span class="prelude-val">Some</span>(TokenId::try_from(t.as_str()).with_context(|| <span class="string">&quot;Invalid Token ID&quot;</span>)<span class="question-mark">?</span>)
+                        <span class="prelude-val">Some</span>(TokenId::from_str(t.as_str()).with_context(|| <span class="string">&quot;Invalid Token ID&quot;</span>)<span class="question-mark">?</span>)
                     }
                     <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
                 };

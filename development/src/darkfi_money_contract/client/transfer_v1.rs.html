@@ -536,8 +536,8 @@
 <span class="kw">use </span>darkfi_sdk::{
     crypto::{
         note::AeadEncryptedNote, pasta_prelude::<span class="kw-2">*</span>, pedersen_commitment_base,
-        pedersen_commitment_u64, poseidon_hash, Coin, Keypair, MerkleNode, MerklePosition,
-        MerkleTree, Nullifier, PublicKey, SecretKey, TokenId,
+        pedersen_commitment_u64, poseidon_hash, Keypair, MerkleNode, MerklePosition, MerkleTree,
+        Nullifier, PublicKey, SecretKey, TokenId,
     },
     incrementalmerkletree::{Hashable, Tree},
     pasta::pallas,
@@ -547,7 +547,7 @@
 
 <span class="kw">use crate</span>::{
     client::{MoneyNote, OwnCoin},
-    model::{ClearInput, Input, MoneyTransferParamsV1, Output},
+    model::{ClearInput, Coin, Input, MoneyTransferParamsV1, Output},
 };
 
 <span class="kw">pub struct </span>TransferCallDebris {

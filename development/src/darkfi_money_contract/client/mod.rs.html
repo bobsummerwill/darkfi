@@ -224,12 +224,12 @@
 //! are able to abstract away any wallet interfaces to client implementations.
 
 </span><span class="kw">use </span>darkfi_sdk::{
-    crypto::{Coin, MerklePosition, Nullifier, SecretKey, TokenId, DARK_TOKEN_ID},
+    crypto::{MerklePosition, Nullifier, SecretKey, TokenId, DARK_TOKEN_ID},
     pasta::pallas,
 };
 <span class="kw">use </span>darkfi_serial::{SerialDecodable, SerialEncodable};
 
-<span class="kw">use </span><span class="kw">crate</span>::model::{PALLAS_ZERO, SCALAR_ZERO};
+<span class="kw">use </span><span class="kw">crate</span>::model::{Coin, PALLAS_ZERO, SCALAR_ZERO};
 
 <span class="doccomment">/// `Money::TransferV1` API
 </span><span class="kw">pub mod </span>transfer_v1;

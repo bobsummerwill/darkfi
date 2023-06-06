@@ -254,7 +254,7 @@
 <span class="kw">use </span>darkfi_sdk::{
     crypto::{
         note::AeadEncryptedNote, pasta_prelude::<span class="kw-2">*</span>, pedersen_commitment_base,
-        pedersen_commitment_u64, poseidon_hash, Coin, Keypair, PublicKey, TokenId,
+        pedersen_commitment_u64, poseidon_hash, Keypair, PublicKey, TokenId,
     },
     pasta::pallas,
 };
@@ -266,7 +266,7 @@
         transfer_v1::{TransactionBuilderClearInputInfo, TransactionBuilderOutputInfo},
         MoneyNote,
     },
-    model::{ClearInput, MoneyTokenMintParamsV1, Output},
+    model::{ClearInput, Coin, MoneyTokenMintParamsV1, Output},
 };
 
 <span class="kw">pub struct </span>TokenMintCallDebris {

@@ -216,6 +216,13 @@ This allows us to coordinate more effectively.</p>
 </div>
 <p>* once we have proper syncing implemented in ircd, these will become less relevant and not needed.</p>
 <p>Another option is to run your ircd inside a persistant tmux session, and never miss messages.</p>
+<h2 id="code-coverage"><a class="header" href="#code-coverage">Code coverage</a></h2>
+<p>You can run codecov tests of the codebase using
+<a href="https://github.com/taiki-e/cargo-llvm-cov"><code>cargo-llvm-cov</code></a>:</p>
+<pre><code>$ cargo install cargo-llvm-cov
+$ make coverage
+</code></pre>
+<p>You can then find the reports in <code>target/llvm-cov/html/index.html</code></p>
 
                     </main>
 
