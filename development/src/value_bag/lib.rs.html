@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/value-bag-1.0.0-alpha.9/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="value_bag" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0 (90c541806 2023-05-31)" data-search-js="search-e077946657036a58.js" data-settings-js="settings-298e1ea74db45b39.js" data-settings-css="settings-7bfb4c59cc6bc502.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-905937fbbdc8e9ea.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f61008743c98d196.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../value_bag/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/value-bag-1.4.0/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="value_bag" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0 (90c541806 2023-05-31)" data-search-js="search-e077946657036a58.js" data-settings-js="settings-298e1ea74db45b39.js" data-settings-css="settings-7bfb4c59cc6bc502.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-905937fbbdc8e9ea.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f61008743c98d196.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../value_bag/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -381,22 +381,150 @@
 <a href="#381" id="381">381</a>
 <a href="#382" id="382">382</a>
 <a href="#383" id="383">383</a>
+<a href="#384" id="384">384</a>
+<a href="#385" id="385">385</a>
+<a href="#386" id="386">386</a>
+<a href="#387" id="387">387</a>
+<a href="#388" id="388">388</a>
+<a href="#389" id="389">389</a>
+<a href="#390" id="390">390</a>
+<a href="#391" id="391">391</a>
+<a href="#392" id="392">392</a>
+<a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
+<a href="#395" id="395">395</a>
+<a href="#396" id="396">396</a>
+<a href="#397" id="397">397</a>
+<a href="#398" id="398">398</a>
+<a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
+<a href="#401" id="401">401</a>
+<a href="#402" id="402">402</a>
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
+<a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
+<a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a>
+<a href="#427" id="427">427</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Structured values.
 //!
 //! This crate contains the [`ValueBag`] type, a container for an anonymous structured value.
 //! `ValueBag`s can be captured in various ways and then formatted, inspected, and serialized
 //! without losing their original structure.
+//!
+//! The producer of a [`ValueBag`] may use a different strategy for capturing than the eventual
+//! consumer. They don&#39;t need to coordinate directly.
 
-</span><span class="attr">#![cfg_attr(value_bag_capture_const_type_id, feature(const_type_id))]
-#![doc(html_root_url = <span class="string">&quot;https://docs.rs/value-bag/1.0.0-alpha.9&quot;</span>)]
+</span><span class="attr">#![doc(html_root_url = <span class="string">&quot;https://docs.rs/value-bag/1.4.0&quot;</span>)]
 #![no_std]
 
-#[cfg(any(feature = <span class="string">&quot;std&quot;</span>, test))]
+</span><span class="comment">/*
+# Crate design
+
+This library internally ties several frameworks together. The details of how
+this is done are hidden from end-users. It looks roughly like this:
+
+            ┌─────┐     ┌──────┐
+            │sval2│     │serde1│  1. libs on crates.io
+            └──┬──┘     └─┬─┬──┘
+               ├──────────┘ │
+       ┌───────▼──┐     ┌───▼───────┐
+       │meta/sval2│     │meta/serde1│  2. meta crates with features
+       └───────┬──┘     └───┬───────┘
+               │            │
+ ┌─────────────▼──┐     ┌───▼─────────────┐
+ │internal/sval/v2◄─────┤internal/serde/v1│  3. internal modules with `InternalVisitor`
+ └─────────────┬──┘     └───┬─────────────┘
+               │            │
+        ┌──────▼────────┬───▼────────────┐
+        │Internal::Sval2│Internal::Serde1│  4. variants in `Internal` enum
+        └───────────────┼────────────────┘
+                        │
+┌───────────────────────▼────────────────────────┐
+│ValueBag::capture_sval2│ValueBag::capture_serde1│  5. ctors on `ValueBag`
+└───────────────────────┼────────────────────────┘
+                        │
+┌───────────────────────▼───────────────────────────┐
+│impl Value for ValueBag│impl Serialize for ValueBag│  6. trait impls on `ValueBag`
+└───────────────────────┴───────────────────────────┘
+
+## 1. libs on crates.io
+
+These are the frameworks like `serde` or `sval`.
+
+## 2. meta crates with features
+
+These are crates that are internal to `value-bag`. They depend on the public
+framework and any utility crates that come along with it. They also expose
+features for any other framework. This is done this way so `value-bag` can use
+Cargo&#39;s `crate?/feature` syntax to conditionally add framework support.
+
+## 3. internal modules with `InternalVisitor`
+
+These are modules in `value-bag` that integrate the framework using the
+`InternalVisitor` trait. This makes it possible for that framework to cast
+primitive values and pass-through any other framework.
+
+## 4. variants in `Internal` enum
+
+These are individual variants on the `Internal` enum that the `ValueBag`
+type wraps. Each framework has one or more variants in this enum.
+
+## 5. ctors on `ValueBag`
+
+These are constructors for producers of `ValueBag`s that accept a value
+implementing a serialization trait from a specific framework, like
+`serde::Serialize` or `sval::Value`.
+
+## 7. trait impls on `ValueBag`
+
+These are trait impls for consumers of `ValueBag`s that serialize the
+underlying value, bridging it if it was produced for a different framework.
+*/
+
+</span><span class="attr">#[cfg(any(feature = <span class="string">&quot;std&quot;</span>, test))]
 #[macro_use]
 #[allow(unused_imports)]
 </span><span class="kw">extern crate </span>std;
 
-<span class="attr">#[cfg(not(any(feature = <span class="string">&quot;std&quot;</span>, test)))]
+<span class="attr">#[cfg(all(not(test), feature = <span class="string">&quot;alloc&quot;</span>, not(feature = <span class="string">&quot;std&quot;</span>)))]
+#[macro_use]
+#[allow(unused_imports)]
+</span><span class="kw">extern crate </span>core;
+
+<span class="attr">#[cfg(all(not(test), feature = <span class="string">&quot;alloc&quot;</span>, not(feature = <span class="string">&quot;std&quot;</span>)))]
+#[macro_use]
+#[allow(unused_imports)]
+</span><span class="kw">extern crate </span>alloc;
+
+<span class="attr">#[cfg(all(not(test), feature = <span class="string">&quot;alloc&quot;</span>, not(feature = <span class="string">&quot;std&quot;</span>)))]
+</span><span class="kw">mod </span>std {
+    <span class="kw">pub use crate</span>::{
+        alloc::{boxed, string},
+        core::<span class="kw-2">*</span>,
+    };
+}
+
+<span class="attr">#[cfg(not(any(feature = <span class="string">&quot;alloc&quot;</span>, feature = <span class="string">&quot;std&quot;</span>, test)))]
 #[macro_use]
 #[allow(unused_imports)]
 </span><span class="kw">extern crate </span>core <span class="kw">as </span>std;
@@ -409,6 +537,11 @@
 
 <span class="attr">#[cfg(any(test, feature = <span class="string">&quot;test&quot;</span>))]
 </span><span class="kw">pub mod </span>test;
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;owned&quot;</span>)]
+</span><span class="kw">mod </span>owned;
+<span class="attr">#[cfg(feature = <span class="string">&quot;owned&quot;</span>)]
+</span><span class="kw">pub use </span><span class="self">self</span>::owned::<span class="kw-2">*</span>;
 
 <span class="kw">pub use </span><span class="self">self</span>::error::Error;
 
@@ -590,80 +723,30 @@
 ///
 /// ## Using `sval`
 ///
-/// When the `sval1` feature is enabled, any `ValueBag` can be serialized using `sval`.
+/// When the `sval2` feature is enabled, any `ValueBag` can be serialized using `sval`.
 /// This makes it possible to visit any typed structure captured in the `ValueBag`,
 /// including complex datatypes like maps and sequences.
 ///
 /// `sval` doesn&#39;t need to allocate so can be used in no-std environments.
 ///
-/// First, enable the `sval1` feature in your `Cargo.toml`:
+/// First, enable the `sval2` feature in your `Cargo.toml`:
 ///
 /// ```toml
 /// [dependencies.value-bag]
-/// features = [&quot;sval1&quot;]
+/// features = [&quot;sval2&quot;]
 /// ```
 ///
 /// Then stream the contents of the `ValueBag` using `sval`.
 ///
 /// ```
-/// #[cfg(not(all(feature = &quot;std&quot;, feature = &quot;sval1&quot;)))] fn main() {}
-/// #[cfg(all(feature = &quot;std&quot;, feature = &quot;sval1&quot;))]
+/// # #[cfg(not(all(feature = &quot;std&quot;, feature = &quot;sval2&quot;)))] fn main() {}
+/// # #[cfg(all(feature = &quot;std&quot;, feature = &quot;sval2&quot;))]
 /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
-/// # extern crate sval1_json as sval_json;
+/// # use value_bag_sval2::json as sval_json;
 /// use value_bag::ValueBag;
 ///
 /// let value = ValueBag::from(42i64);
-/// let json = sval_json::to_string(value)?;
-/// # Ok(())
-/// # }
-/// ```
-///
-/// ```
-/// #[cfg(not(all(feature = &quot;std&quot;, feature = &quot;sval1&quot;)))] fn main() {}
-/// #[cfg(all(feature = &quot;std&quot;, feature = &quot;sval1&quot;))]
-/// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
-/// # extern crate sval1_lib as sval;
-/// # fn escape(buf: &amp;[u8]) -&gt; &amp;[u8] { buf }
-/// # fn itoa_fmt&lt;T&gt;(num: T) -&gt; Vec&lt;u8&gt; { vec![] }
-/// # fn ryu_fmt&lt;T&gt;(num: T) -&gt; Vec&lt;u8&gt; { vec![] }
-/// use value_bag::ValueBag;
-/// use sval::stream::{self, Stream};
-///
-/// // Implement some simple custom serialization
-/// struct MyStream(Vec&lt;u8&gt;);
-/// impl Stream for MyStream {
-///     fn u64(&amp;mut self, v: u64) -&gt; stream::Result {
-///         self.0.extend_from_slice(itoa_fmt(v).as_slice());
-///         Ok(())
-///     }
-///
-///     fn i64(&amp;mut self, v: i64) -&gt; stream::Result {
-///         self.0.extend_from_slice(itoa_fmt(v).as_slice());
-///         Ok(())
-///     }
-///
-///     fn f64(&amp;mut self, v: f64) -&gt; stream::Result {
-///         self.0.extend_from_slice(ryu_fmt(v).as_slice());
-///         Ok(())
-///     }
-///
-///     fn str(&amp;mut self, v: &amp;str) -&gt; stream::Result {
-///         self.0.push(b&#39;\&quot;&#39;);
-///         self.0.extend_from_slice(escape(v.as_bytes()));
-///         self.0.push(b&#39;\&quot;&#39;);
-///         Ok(())
-///     }
-///
-///     fn bool(&amp;mut self, v: bool) -&gt; stream::Result {
-///         self.0.extend_from_slice(if v { b&quot;true&quot; } else { b&quot;false&quot; });
-///         Ok(())
-///     }
-/// }
-///
-/// let value = ValueBag::from(42i64);
-///
-/// let mut stream = MyStream(vec![]);
-/// sval::stream(&amp;mut stream, &amp;value)?;
+/// let json = sval_json::stream_to_string(value)?;
 /// # Ok(())
 /// # }
 /// ```
@@ -686,10 +769,10 @@
 /// Then stream the contents of the `ValueBag` using `serde`.
 ///
 /// ```
-/// #[cfg(not(all(feature = &quot;std&quot;, feature = &quot;serde1&quot;)))] fn main() {}
-/// #[cfg(all(feature = &quot;std&quot;, feature = &quot;serde1&quot;))]
+/// # #[cfg(not(all(feature = &quot;std&quot;, feature = &quot;serde1&quot;)))] fn main() {}
+/// # #[cfg(all(feature = &quot;std&quot;, feature = &quot;serde1&quot;))]
 /// # fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
-/// # extern crate serde1_json as serde_json;
+/// # use value_bag_serde1::json as serde_json;
 /// use value_bag::ValueBag;
 ///
 /// let value = ValueBag::from(42i64);
@@ -740,7 +823,9 @@
     <span class="doccomment">/// Get a `ValueBag` from a reference to a `ValueBag`.
     </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>by_ref&lt;<span class="lifetime">&#39;u</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">&#39;u </span><span class="self">self</span>) -&gt; ValueBag&lt;<span class="lifetime">&#39;u</span>&gt; {
-        ValueBag { inner: <span class="self">self</span>.inner }
+        ValueBag {
+            inner: <span class="self">self</span>.inner.by_ref(),
+        }
     }
 }
 
@@ -749,17 +834,20 @@
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span><span class="kw">crate</span>::std::mem;
 
+    <span class="attr">#[cfg(feature = <span class="string">&quot;inline-i128&quot;</span>)]
+    </span><span class="kw">const </span>SIZE_LIMIT_U64: usize = <span class="number">4</span>;
+    <span class="attr">#[cfg(not(feature = <span class="string">&quot;inline-i128&quot;</span>))]
+    </span><span class="kw">const </span>SIZE_LIMIT_U64: usize = <span class="number">3</span>;
+
     <span class="attr">#[test]
     </span><span class="kw">fn </span>value_bag_size() {
         <span class="kw">let </span>size = mem::size_of::&lt;ValueBag&lt;<span class="lifetime">&#39;_</span>&gt;&gt;();
-        <span class="kw">let </span>limit = mem::size_of::&lt;u64&gt;() * <span class="number">3</span>;
+        <span class="kw">let </span>limit = mem::size_of::&lt;u64&gt;() * SIZE_LIMIT_U64;
 
         <span class="kw">if </span>size &gt; limit {
             <span class="macro">panic!</span>(
-                <span class="string">&quot;`ValueBag` size ({} bytes) is too large (expected up to {} bytes)\n`(`&amp;dyn` + `TypeId`): {} bytes&quot;</span>,
-                size,
-                limit,
-                mem::size_of::&lt;(<span class="kw-2">&amp;</span><span class="kw">dyn </span>internal::fmt::Debug, <span class="kw">crate</span>::std::any::TypeId)&gt;(),
+                <span class="string">&quot;`ValueBag` size ({} bytes) is too large (expected up to {} bytes)&quot;</span>,
+                size, limit,
             );
         }
     }

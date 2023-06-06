@@ -85,6 +85,10 @@
 <a href="#85" id="85">85</a>
 <a href="#86" id="86">86</a>
 <a href="#87" id="87">87</a>
+<a href="#88" id="88">88</a>
+<a href="#89" id="89">89</a>
+<a href="#90" id="90">90</a>
+<a href="#91" id="91">91</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -102,11 +106,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */
-</span><span class="kw">use </span>std::{path::Path, process::exit};
+</span><span class="kw">use </span>std::{io::Cursor, process::exit};
 
-<span class="kw">use </span>async_std::{fs::File, io::WriteExt};
-<span class="kw">use </span>darkfi::{util::parse::decode_base10, <span class="prelude-ty">Result</span>};
+<span class="kw">use </span>darkfi::{
+    util::{async_util::sleep, parse::decode_base10},
+    <span class="prelude-ty">Result</span>,
+};
 <span class="kw">use </span>darkfi_sdk::crypto::TokenId;
+<span class="kw">use </span>rodio::{source::Source, Decoder, OutputStream};
 
 <span class="kw">use </span><span class="kw">super</span>::Drk;
 
@@ -154,22 +161,23 @@
 }
 
 <span class="doccomment">/// Fun police go away
-</span><span class="kw">pub async fn </span>kaching() -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-    <span class="attr">#[cfg(feature = <span class="string">&quot;play&quot;</span>)]
-    </span>{
-        <span class="kw">const </span>WALLET_MP3: <span class="kw-2">&amp;</span>[u8] = <span class="macro">include_bytes!</span>(<span class="string">&quot;../wallet.mp3&quot;</span>);
-        <span class="kw">const </span>MP3_DROP: <span class="kw-2">&amp;</span>str = <span class="string">&quot;/tmp/wallet.mp3&quot;</span>;
+</span><span class="kw">pub async fn </span>kaching() {
+    <span class="kw">const </span>WALLET_MP3: <span class="kw-2">&amp;</span>[u8] = <span class="macro">include_bytes!</span>(<span class="string">&quot;../wallet.mp3&quot;</span>);
 
-        <span class="kw">if </span>!Path::new(MP3_DROP).exists() {
-            <span class="kw">let </span><span class="kw-2">mut </span>f = File::create(MP3_DROP).<span class="kw">await</span><span class="question-mark">?</span>;
-            f.write_all(WALLET_MP3).<span class="kw">await</span><span class="question-mark">?</span>;
-        }
+    <span class="kw">let </span>cursor = Cursor::new(WALLET_MP3);
 
-        <span class="kw">if </span>play::play(MP3_DROP).is_err() {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(())
-        }
-    }
+    <span class="kw">let </span><span class="prelude-val">Ok</span>((_stream, stream_handle)) = OutputStream::try_default() <span class="kw">else </span>{
+        <span class="kw">return
+    </span>};
 
-    <span class="prelude-val">Ok</span>(())
+    <span class="kw">let </span><span class="prelude-val">Ok</span>(source) = Decoder::new(cursor) <span class="kw">else </span>{
+        <span class="kw">return
+    </span>};
+
+    <span class="kw">if </span>stream_handle.play_raw(source.convert_samples()).is_err() {
+        <span class="kw">return
+    </span>}
+
+    sleep(<span class="number">2</span>).<span class="kw">await</span>;
 }
 </code></pre></div></section></main></body></html>

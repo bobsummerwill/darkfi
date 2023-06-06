@@ -1332,6 +1332,14 @@
 <a href="#1332" id="1332">1332</a>
 <a href="#1333" id="1333">1333</a>
 <a href="#1334" id="1334">1334</a>
+<a href="#1335" id="1335">1335</a>
+<a href="#1336" id="1336">1336</a>
+<a href="#1337" id="1337">1337</a>
+<a href="#1338" id="1338">1338</a>
+<a href="#1339" id="1339">1339</a>
+<a href="#1340" id="1340">1340</a>
+<a href="#1341" id="1341">1341</a>
+<a href="#1342" id="1342">1342</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -1403,7 +1411,7 @@
 
 <span class="doccomment">/// CLI utility functions
 </span><span class="kw">mod </span>cli_util;
-<span class="kw">use </span>cli_util::{parse_token_pair, parse_value_pair};
+<span class="kw">use </span>cli_util::{kaching, parse_token_pair, parse_value_pair};
 
 <span class="doccomment">/// Wallet functionality related to drk operations
 </span><span class="kw">mod </span>wallet;
@@ -1438,6 +1446,9 @@
 
 <span class="attr">#[derive(Subcommand)]
 </span><span class="kw">enum </span>Subcmd {
+    <span class="doccomment">/// Fun
+    </span>Kaching,
+
     <span class="doccomment">/// Send a ping request to the darkfid RPC endpoint
     </span>Ping,
 
@@ -1821,6 +1832,11 @@
     }
 
     <span class="kw">match </span>args.command {
+        Subcmd::Kaching =&gt; {
+            kaching().<span class="kw">await</span>;
+            <span class="prelude-val">Ok</span>(())
+        }
+
         Subcmd::Ping =&gt; {
             <span class="kw">let </span>drk = Drk::new(args.endpoint).<span class="kw">await</span><span class="question-mark">?</span>;
             drk.ping().<span class="kw">await</span>.with_context(|| <span class="string">&quot;Failed to ping darkfid RPC endpoint&quot;</span>)<span class="question-mark">?</span>;

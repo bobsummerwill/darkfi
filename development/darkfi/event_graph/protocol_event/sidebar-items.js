@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":["SIZE_OF_SEEN_BUFFER"],"struct":["GetData","Inv","InvItem","ProtocolEvent","RingBuffer","Seen","SyncEvent"],"type":["InvId","SeenPtr"]};
+window.SIDEBAR_ITEMS = {"constant":["SIZE_OF_SEEN_BUFFER"],"struct":["GetData","Inv","InvItem","ProtocolEvent","Seen","SyncEvent"],"type":["SeenPtr"]};

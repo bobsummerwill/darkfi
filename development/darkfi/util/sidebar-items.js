@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["async_util","cli","encoding","file","parse","path","time"]};
+window.SIDEBAR_ITEMS = {"mod":["async_util","cli","encoding","file","parse","path","ringbuffer","time"]};

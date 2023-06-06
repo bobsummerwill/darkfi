@@ -122,35 +122,6 @@
 <a href="#122" id="122">122</a>
 <a href="#123" id="123">123</a>
 <a href="#124" id="124">124</a>
-<a href="#125" id="125">125</a>
-<a href="#126" id="126">126</a>
-<a href="#127" id="127">127</a>
-<a href="#128" id="128">128</a>
-<a href="#129" id="129">129</a>
-<a href="#130" id="130">130</a>
-<a href="#131" id="131">131</a>
-<a href="#132" id="132">132</a>
-<a href="#133" id="133">133</a>
-<a href="#134" id="134">134</a>
-<a href="#135" id="135">135</a>
-<a href="#136" id="136">136</a>
-<a href="#137" id="137">137</a>
-<a href="#138" id="138">138</a>
-<a href="#139" id="139">139</a>
-<a href="#140" id="140">140</a>
-<a href="#141" id="141">141</a>
-<a href="#142" id="142">142</a>
-<a href="#143" id="143">143</a>
-<a href="#144" id="144">144</a>
-<a href="#145" id="145">145</a>
-<a href="#146" id="146">146</a>
-<a href="#147" id="147">147</a>
-<a href="#148" id="148">148</a>
-<a href="#149" id="149">149</a>
-<a href="#150" id="150">150</a>
-<a href="#151" id="151">151</a>
-<a href="#152" id="152">152</a>
-<a href="#153" id="153">153</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -169,11 +140,9 @@
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */
 
-</span><span class="kw">use </span>darkfi_money_contract::model::{
-    ClearInput, Coin, ConsensusInput, ConsensusOutput, Input, Output,
-};
+</span><span class="kw">use </span>darkfi_money_contract::model::{ClearInput, Coin, ConsensusInput, ConsensusOutput, Output};
 <span class="kw">use </span>darkfi_sdk::{
-    crypto::{ecvrf::VrfProof, Nullifier, PublicKey},
+    crypto::{ecvrf::VrfProof, Nullifier},
     pasta::pallas,
 };
 <span class="kw">use </span>darkfi_serial::{SerialDecodable, SerialEncodable};
@@ -186,55 +155,6 @@
     <span class="doccomment">/// Anonymous output
     </span><span class="kw">pub </span>output: ConsensusOutput,
 }
-
-<span class="doccomment">/// Parameters for `Consensus::ProposalBurn`
-</span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
-</span><span class="kw">pub struct </span>ConsensusProposalBurnParamsV1 {
-    <span class="doccomment">/// Blinding factor for `token_id`
-    </span><span class="kw">pub </span>token_blind: pallas::Scalar,
-    <span class="doccomment">/// Anonymous input
-    </span><span class="kw">pub </span>input: Input,
-    <span class="doccomment">/// Burnt coin public key used in VRF
-    </span><span class="kw">pub </span>public_key: PublicKey,
-}
-
-<span class="doccomment">/// Parameters for `Consensus::ProposalReward`
-</span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
-</span><span class="kw">pub struct </span>ConsensusProposalRewardParamsV1 {
-    <span class="doccomment">/// Anonymous input of `Consensus::ProposalBurn`
-    </span><span class="kw">pub </span>burnt_input: Input,
-    <span class="doccomment">/// Burnt coin public key used in VRF
-    </span><span class="kw">pub </span>burnt_public_key: PublicKey,
-    <span class="doccomment">/// Burnt token revealed info of `Consensus::ProposalMint`
-    </span><span class="kw">pub </span>mint_input: ConsensusInput,
-    <span class="doccomment">/// Anonymous output
-    </span><span class="kw">pub </span>output: Output,
-    <span class="doccomment">/// Pedersen commitment for the output&#39;s serial number
-    </span><span class="kw">pub </span>new_serial_commit: pallas::Point,
-    <span class="doccomment">/// Rewarded slot
-    </span><span class="kw">pub </span>slot: u64,
-    <span class="doccomment">/// VRF proof for eta calculation
-    </span><span class="kw">pub </span>vrf_proof: VrfProof,
-    <span class="doccomment">/// Coin y
-    </span><span class="kw">pub </span>y: pallas::Base,
-    <span class="doccomment">/// Lottery rho used
-    </span><span class="kw">pub </span>rho: pallas::Base,
-}
-
-<span class="doccomment">/// Parameters for `Consensus::ProposalMint`
-</span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
-</span><span class="kw">pub struct </span>ConsensusProposalMintParamsV1 {
-    <span class="doccomment">/// Burnt token revealed info
-    </span><span class="kw">pub </span>input: ConsensusInput,
-    <span class="doccomment">/// Anonymous output
-    </span><span class="kw">pub </span>output: Output,
-    <span class="doccomment">/// Pedersen commitment for the output&#39;s serial number
-    </span><span class="kw">pub </span>serial_commit: pallas::Point,
-}
-
-<span class="doccomment">/// State update for `Consensus::Reward`
-</span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
-</span><span class="kw">pub struct </span>ConsensusProposalRewardUpdateV1 {}
 
 <span class="doccomment">/// Parameters for `Consensus::Proposal`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
@@ -268,22 +188,37 @@
     </span><span class="kw">pub </span>coin: Coin,
 }
 
-<span class="comment">// Consensus parameters configuration.
-// Note: Always verify `pallas::Base` are correct, in case of changes,
-// using pallas_constants tool.
-// Configured reward
+<span class="doccomment">/// Parameters for `Consensus::UnstakeRequest`
+</span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
+</span><span class="kw">pub struct </span>ConsensusUnstakeRequestParamsV1 {
+    <span class="doccomment">/// Burnt token revealed info
+    </span><span class="kw">pub </span>input: ConsensusInput,
+    <span class="doccomment">/// Anonymous output
+    </span><span class="kw">pub </span>output: Output,
+}
+
+<span class="doccomment">/// Consensus parameters configuration.
+/// Note: Always verify `pallas::Base` are correct, in case of changes,
+/// using pallas_constants tool.
+/// Number of slots in one epoch
+</span><span class="kw">pub const </span>EPOCH_LENGTH: u64 = <span class="number">10</span>;
+<span class="doccomment">/// Slot time in seconds
+</span><span class="kw">pub const </span>SLOT_TIME: u64 = <span class="number">90</span>;
+<span class="doccomment">/// Grace period days target
+</span><span class="kw">pub const </span>GRACE_PERIOD_DAYS: u64 = <span class="number">2</span>;
+<span class="doccomment">/// Configured reward
 </span><span class="kw">pub const </span>REWARD: u64 = <span class="number">1</span>;
-<span class="comment">// Reward `pallas::Base`, calculated by: pallas::Base::from(REWARD)
+<span class="doccomment">/// Reward `pallas::Base`, calculated by: pallas::Base::from(REWARD)
 </span><span class="kw">pub const </span>REWARD_PALLAS: pallas::Base = pallas::Base::from_raw([<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
-<span class="comment">// Serial prefix, calculated by: pallas::Base::from(2)
+<span class="doccomment">/// Serial prefix, calculated by: pallas::Base::from(2)
 </span><span class="kw">pub const </span>SERIAL_PREFIX: pallas::Base = pallas::Base::from_raw([<span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
-<span class="comment">// Seed prefix, calculated by: pallas::Base::from(3)
+<span class="doccomment">/// Seed prefix, calculated by: pallas::Base::from(3)
 </span><span class="kw">pub const </span>SEED_PREFIX: pallas::Base = pallas::Base::from_raw([<span class="number">3</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
-<span class="comment">// Election seed y prefix, calculated by: pallas::Base::from(22)
+<span class="doccomment">/// Election seed y prefix, calculated by: pallas::Base::from(22)
 </span><span class="kw">pub const </span>MU_Y_PREFIX: pallas::Base = pallas::Base::from_raw([<span class="number">22</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
-<span class="comment">// Election seed rho prefix, calculated by: pallas::Base::from(5)
+<span class="doccomment">/// Election seed rho prefix, calculated by: pallas::Base::from(5)
 </span><span class="kw">pub const </span>MU_RHO_PREFIX: pallas::Base = pallas::Base::from_raw([<span class="number">5</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
-<span class="comment">// Lottery headstart, calculated by: darkfi::consensus::LeadCoin::headstart()
+<span class="doccomment">/// Lottery headstart, calculated by: darkfi::consensus::LeadCoin::headstart()
 </span><span class="kw">pub const </span>HEADSTART: pallas::Base = pallas::Base::from_raw([
     <span class="number">11731824086999220879</span>,
     <span class="number">11830614503713258191</span>,
@@ -303,5 +238,12 @@
     </span><span class="kw">pub </span>sigma1: pallas::Base,
     <span class="doccomment">/// Slot sigma2
     </span><span class="kw">pub </span>sigma2: pallas::Base,
+}
+
+<span class="doccomment">/// Auxiliary function to calculate the grace(locked) period, denominated
+/// in epochs.
+</span><span class="kw">pub fn </span>calculate_grace_period() -&gt; u64 {
+    <span class="comment">// 86400 seconds in a day
+    </span>(<span class="number">86400 </span>* GRACE_PERIOD_DAYS) / (SLOT_TIME * EPOCH_LENGTH)
 }
 </code></pre></div></section></main></body></html>

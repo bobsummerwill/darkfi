@@ -1439,8 +1439,8 @@
             <span class="kw">let _ </span>= <span class="self">self</span>.rpc_client.request(req).<span class="kw">await</span><span class="question-mark">?</span>;
         }
 
-        <span class="kw">if </span>!owncoins.is_empty() &amp;&amp; (kaching().<span class="kw">await</span>).is_err() {
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(())
+        <span class="kw">if </span>!owncoins.is_empty() {
+            kaching().<span class="kw">await</span>;
         }
 
         <span class="prelude-val">Ok</span>(())

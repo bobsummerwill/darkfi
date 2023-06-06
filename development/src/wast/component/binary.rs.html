@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/wast-59.0.0/src/component/binary.rs`."><title>binary.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="wast" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0 (90c541806 2023-05-31)" data-search-js="search-e077946657036a58.js" data-settings-js="settings-298e1ea74db45b39.js" data-settings-css="settings-7bfb4c59cc6bc502.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../../static.files/source-script-905937fbbdc8e9ea.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-f61008743c98d196.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../wast/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/wast-60.0.0/src/component/binary.rs`."><title>binary.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="wast" data-themes="" data-resource-suffix="" data-rustdoc-version="1.70.0 (90c541806 2023-05-31)" data-search-js="search-e077946657036a58.js" data-settings-js="settings-298e1ea74db45b39.js" data-settings-css="settings-7bfb4c59cc6bc502.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../../static.files/source-script-905937fbbdc8e9ea.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-f61008743c98d196.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../wast/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -991,6 +991,22 @@
 <a href="#991" id="991">991</a>
 <a href="#992" id="992">992</a>
 <a href="#993" id="993">993</a>
+<a href="#994" id="994">994</a>
+<a href="#995" id="995">995</a>
+<a href="#996" id="996">996</a>
+<a href="#997" id="997">997</a>
+<a href="#998" id="998">998</a>
+<a href="#999" id="999">999</a>
+<a href="#1000" id="1000">1000</a>
+<a href="#1001" id="1001">1001</a>
+<a href="#1002" id="1002">1002</a>
+<a href="#1003" id="1003">1003</a>
+<a href="#1004" id="1004">1004</a>
+<a href="#1005" id="1005">1005</a>
+<a href="#1006" id="1006">1006</a>
+<a href="#1007" id="1007">1007</a>
+<a href="#1008" id="1008">1008</a>
+<a href="#1009" id="1009">1009</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::component::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::core;
 <span class="kw">use </span><span class="kw">crate</span>::token::{Id, Index, NameAnnotation};
@@ -1255,7 +1271,7 @@
             InstanceKind::BundleOfExports(exports) =&gt; {
                 <span class="self">self</span>.instances.export_items(exports.iter().map(|e| {
                     <span class="kw">let </span>(kind, index) = (<span class="kw-2">&amp;</span>e.kind).into();
-                    (e.name, kind, index)
+                    (e.name.into(), kind, index)
                 }));
             }
         }
@@ -1335,8 +1351,7 @@
         <span class="kw">let </span>name = get_name(<span class="kw-2">&amp;</span>import.item.id, <span class="kw-2">&amp;</span>import.item.name);
         <span class="self">self</span>.names_for_item_kind(<span class="kw-2">&amp;</span>import.item.kind).push(name);
         <span class="self">self</span>.imports.import(
-            import.name,
-            import.url.unwrap_or(<span class="string">&quot;&quot;</span>),
+            wasm_encoder::ComponentExternName::from(import.name),
             (<span class="kw-2">&amp;</span>import.item.kind).into(),
         );
         <span class="self">self</span>.flush(<span class="prelude-val">Some</span>(<span class="self">self</span>.imports.id()));
@@ -1346,8 +1361,7 @@
         <span class="kw">let </span>name = get_name(<span class="kw-2">&amp;</span>export.id, <span class="kw-2">&amp;</span>export.debug_name);
         <span class="kw">let </span>(kind, index) = (<span class="kw-2">&amp;</span>export.kind).into();
         <span class="self">self</span>.exports.export(
-            export.name,
-            export.url.unwrap_or(<span class="string">&quot;&quot;</span>),
+            wasm_encoder::ComponentExternName::from(export.name),
             kind,
             index,
             export.ty.as_ref().map(|ty| (<span class="kw-2">&amp;</span>ty.<span class="number">0</span>.kind).into()),
@@ -1813,10 +1827,16 @@
                     encoded.alias((<span class="kw-2">&amp;</span>a.target).into());
                 }
                 ComponentTypeDecl::Import(i) =&gt; {
-                    encoded.import(i.name, i.url.unwrap_or(<span class="string">&quot;&quot;</span>), (<span class="kw-2">&amp;</span>i.item.kind).into());
+                    encoded.import(
+                        wasm_encoder::ComponentExternName::from(i.name),
+                        (<span class="kw-2">&amp;</span>i.item.kind).into(),
+                    );
                 }
                 ComponentTypeDecl::Export(e) =&gt; {
-                    encoded.export(e.name, e.url.unwrap_or(<span class="string">&quot;&quot;</span>), (<span class="kw-2">&amp;</span>e.item.kind).into());
+                    encoded.export(
+                        wasm_encoder::ComponentExternName::from(e.name),
+                        (<span class="kw-2">&amp;</span>e.item.kind).into(),
+                    );
                 }
             }
         }
@@ -1841,7 +1861,10 @@
                     encoded.alias((<span class="kw-2">&amp;</span>a.target).into());
                 }
                 InstanceTypeDecl::Export(e) =&gt; {
-                    encoded.export(e.name, e.url.unwrap_or(<span class="string">&quot;&quot;</span>), (<span class="kw-2">&amp;</span>e.item.kind).into());
+                    encoded.export(
+                        wasm_encoder::ComponentExternName::from(e.name),
+                        (<span class="kw-2">&amp;</span>e.item.kind).into(),
+                    );
                 }
             }
         }
@@ -1981,6 +2004,15 @@
                 kind: (<span class="kw-2">*</span>kind).into(),
                 index: (<span class="kw-2">*</span>index).into(),
             },
+        }
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; From&lt;ComponentExternName&lt;<span class="lifetime">&#39;a</span>&gt;&gt; <span class="kw">for </span>wasm_encoder::ComponentExternName&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="kw">fn </span>from(name: ComponentExternName&lt;<span class="lifetime">&#39;a</span>&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">match </span>name {
+            ComponentExternName::Kebab(name) =&gt; <span class="self">Self</span>::Kebab(name),
+            ComponentExternName::Interface(name) =&gt; <span class="self">Self</span>::Interface(name),
         }
     }
 }

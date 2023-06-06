@@ -300,31 +300,6 @@
 <a href="#300" id="300">300</a>
 <a href="#301" id="301">301</a>
 <a href="#302" id="302">302</a>
-<a href="#303" id="303">303</a>
-<a href="#304" id="304">304</a>
-<a href="#305" id="305">305</a>
-<a href="#306" id="306">306</a>
-<a href="#307" id="307">307</a>
-<a href="#308" id="308">308</a>
-<a href="#309" id="309">309</a>
-<a href="#310" id="310">310</a>
-<a href="#311" id="311">311</a>
-<a href="#312" id="312">312</a>
-<a href="#313" id="313">313</a>
-<a href="#314" id="314">314</a>
-<a href="#315" id="315">315</a>
-<a href="#316" id="316">316</a>
-<a href="#317" id="317">317</a>
-<a href="#318" id="318">318</a>
-<a href="#319" id="319">319</a>
-<a href="#320" id="320">320</a>
-<a href="#321" id="321">321</a>
-<a href="#322" id="322">322</a>
-<a href="#323" id="323">323</a>
-<a href="#324" id="324">324</a>
-<a href="#325" id="325">325</a>
-<a href="#326" id="326">326</a>
-<a href="#327" id="327">327</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -343,59 +318,31 @@
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */
 
-</span><span class="kw">use </span>std::{collections::VecDeque, fmt::Debug};
+</span><span class="kw">use </span>std::fmt::Debug;
 
 <span class="kw">use </span>async_std::sync::{Arc, Mutex};
 <span class="kw">use </span>async_trait::async_trait;
 <span class="kw">use </span>darkfi_serial::{Decodable, Encodable, SerialDecodable, SerialEncodable};
 <span class="kw">use </span>log::{debug, info};
-<span class="kw">use </span>rand::{rngs::OsRng, RngCore};
 
 <span class="kw">use </span><span class="kw">super</span>::EventMsg;
 <span class="kw">use crate</span>::{
     event_graph::model::{Event, EventId, ModelPtr},
     net,
-    util::async_util::sleep,
+    util::{async_util::sleep, ringbuffer::RingBuffer},
     <span class="prelude-ty">Result</span>,
 };
 
 <span class="kw">const </span>SIZE_OF_SEEN_BUFFER: usize = <span class="number">65536</span>;
-<span class="comment">// const MAX_CONFIRM: u8 = 3;
-
-</span><span class="attr">#[derive(Clone)]
-</span><span class="kw">struct </span>RingBuffer&lt;T&gt; {
-    <span class="kw">pub </span>items: VecDeque&lt;T&gt;,
-}
-
-<span class="kw">impl</span>&lt;T: Eq + PartialEq + Clone&gt; RingBuffer&lt;T&gt; {
-    <span class="kw">pub fn </span>new(capacity: usize) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span>items = VecDeque::with_capacity(capacity);
-        <span class="self">Self </span>{ items }
-    }
-
-    <span class="kw">pub fn </span>push(<span class="kw-2">&amp;mut </span><span class="self">self</span>, val: T) {
-        <span class="kw">if </span><span class="self">self</span>.items.len() == <span class="self">self</span>.items.capacity() {
-            <span class="self">self</span>.items.pop_front();
-        }
-        <span class="self">self</span>.items.push_back(val);
-    }
-
-    <span class="kw">pub fn </span>contains(<span class="kw-2">&amp;</span><span class="self">self</span>, val: <span class="kw-2">&amp;</span>T) -&gt; bool {
-        <span class="self">self</span>.items.contains(val)
-    }
-}
-
-<span class="kw">type </span>InvId = u64;
 
 <span class="attr">#[derive(SerialEncodable, SerialDecodable, Clone, Debug, PartialEq, Eq, Hash)]
-</span><span class="kw">struct </span>InvItem {
-    id: InvId,
-    hash: EventId,
+</span><span class="kw">pub struct </span>InvItem {
+    <span class="kw">pub </span>hash: EventId,
 }
 
 <span class="attr">#[derive(SerialDecodable, SerialEncodable, Clone, Debug)]
-</span><span class="kw">struct </span>Inv {
-    invs: Vec&lt;InvItem&gt;,
+</span><span class="kw">pub struct </span>Inv {
+    <span class="kw">pub </span>invs: Vec&lt;InvItem&gt;,
 }
 
 <span class="attr">#[derive(SerialDecodable, SerialEncodable, Clone, Debug)]
@@ -442,7 +389,7 @@
     channel: net::ChannelPtr,
     model: ModelPtr&lt;T&gt;,
     seen_event: SeenPtr&lt;EventId&gt;,
-    seen_inv: SeenPtr&lt;InvId&gt;,
+    seen_inv: SeenPtr&lt;EventId&gt;,
 }
 
 <span class="kw">impl</span>&lt;T&gt; ProtocolEvent&lt;T&gt;
@@ -454,7 +401,7 @@
         p2p: net::P2pPtr,
         model: ModelPtr&lt;T&gt;,
         seen_event: SeenPtr&lt;EventId&gt;,
-        seen_inv: SeenPtr&lt;InvId&gt;,
+        seen_inv: SeenPtr&lt;EventId&gt;,
     ) -&gt; net::ProtocolBasePtr {
         <span class="kw">let </span>message_subsytem = channel.get_message_subsystem();
         message_subsytem.add_dispatch::&lt;Event&lt;T&gt;&gt;().<span class="kw">await</span>;
@@ -491,7 +438,7 @@
     }
 
     <span class="kw">async fn </span>handle_receive_event(<span class="self">self</span>: Arc&lt;<span class="self">Self</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="macro">debug!</span>(target: <span class="string">&quot;ircd&quot;</span>, <span class="string">&quot;ProtocolEvent::handle_receive_event() [START]&quot;</span>);
+        <span class="macro">debug!</span>(target: <span class="string">&quot;event_graph&quot;</span>, <span class="string">&quot;ProtocolEvent::handle_receive_event() [START]&quot;</span>);
         <span class="kw">let </span>exclude_list = <span class="macro">vec!</span>[<span class="self">self</span>.channel.address()];
         <span class="kw">loop </span>{
             <span class="kw">let </span>event = <span class="self">self</span>.event_sub.receive().<span class="kw">await</span><span class="question-mark">?</span>;
@@ -512,7 +459,7 @@
     }
 
     <span class="kw">async fn </span>handle_receive_inv(<span class="self">self</span>: Arc&lt;<span class="self">Self</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="macro">debug!</span>(target: <span class="string">&quot;ircd&quot;</span>, <span class="string">&quot;ProtocolEvent::handle_receive_inv() [START]&quot;</span>);
+        <span class="macro">debug!</span>(target: <span class="string">&quot;event_graph&quot;</span>, <span class="string">&quot;ProtocolEvent::handle_receive_inv() [START]&quot;</span>);
         <span class="kw">let </span>exclude_list = <span class="macro">vec!</span>[<span class="self">self</span>.channel.address()];
         <span class="kw">loop </span>{
             <span class="kw">let </span>inv = <span class="self">self</span>.inv_sub.receive().<span class="kw">await</span><span class="question-mark">?</span>;
@@ -520,7 +467,7 @@
             <span class="kw">let </span>inv_item = inv.invs[<span class="number">0</span>].clone();
 
             <span class="comment">// for inv in inv.invs.iter() {
-            </span><span class="kw">if </span>!<span class="self">self</span>.seen_inv.push(<span class="kw-2">&amp;</span>inv_item.id).<span class="kw">await </span>{
+            </span><span class="kw">if </span>!<span class="self">self</span>.seen_inv.push(<span class="kw-2">&amp;</span>inv_item.hash).<span class="kw">await </span>{
                 <span class="kw">continue
             </span>}
 
@@ -535,7 +482,7 @@
         }
     }
     <span class="kw">async fn </span>handle_receive_getdata(<span class="self">self</span>: Arc&lt;<span class="self">Self</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="macro">debug!</span>(target: <span class="string">&quot;ircd&quot;</span>, <span class="string">&quot;ProtocolEvent::handle_receive_getdata() [START]&quot;</span>);
+        <span class="macro">debug!</span>(target: <span class="string">&quot;event_graph&quot;</span>, <span class="string">&quot;ProtocolEvent::handle_receive_getdata() [START]&quot;</span>);
         <span class="kw">loop </span>{
             <span class="kw">let </span>getdata = <span class="self">self</span>.getdata_sub.receive().<span class="kw">await</span><span class="question-mark">?</span>;
             <span class="kw">let </span>events = (<span class="kw-2">*</span>getdata).to_owned().events;
@@ -550,7 +497,7 @@
     }
 
     <span class="kw">async fn </span>handle_receive_syncevent(<span class="self">self</span>: Arc&lt;<span class="self">Self</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="macro">debug!</span>(target: <span class="string">&quot;ircd&quot;</span>, <span class="string">&quot;ProtocolEvent::handle_receive_syncevent() [START]&quot;</span>);
+        <span class="macro">debug!</span>(target: <span class="string">&quot;event_graph&quot;</span>, <span class="string">&quot;ProtocolEvent::handle_receive_syncevent() [START]&quot;</span>);
         <span class="kw">loop </span>{
             <span class="kw">let </span>syncevent = <span class="self">self</span>.syncevent_sub.receive().<span class="kw">await</span><span class="question-mark">?</span>;
 
@@ -577,6 +524,7 @@
 
     <span class="comment">// every 6 seconds send a SyncEvent msg
     </span><span class="kw">async fn </span>send_sync_hash_loop(<span class="self">self</span>: Arc&lt;<span class="self">Self</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="macro">debug!</span>(target: <span class="string">&quot;event_graph&quot;</span>, <span class="string">&quot;ProtocolEvent::send_sync_hash_loop() [START]&quot;</span>);
         <span class="kw">loop </span>{
             sleep(<span class="number">6</span>).<span class="kw">await</span>;
             <span class="kw">let </span>leaves = <span class="self">self</span>.model.lock().<span class="kw">await</span>.find_leaves();
@@ -585,6 +533,7 @@
     }
 
     <span class="kw">async fn </span>new_event(<span class="kw-2">&amp;</span><span class="self">self</span>, event: <span class="kw-2">&amp;</span>Event&lt;T&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="macro">debug!</span>(target: <span class="string">&quot;event_graph&quot;</span>, <span class="string">&quot;ProtocolEvent::new_event()&quot;</span>);
         <span class="kw">let </span><span class="kw-2">mut </span>model = <span class="self">self</span>.model.lock().<span class="kw">await</span>;
         model.add(event.clone()).<span class="kw">await</span>;
 
@@ -592,13 +541,14 @@
     }
 
     <span class="kw">async fn </span>send_inv(<span class="kw-2">&amp;</span><span class="self">self</span>, event: <span class="kw-2">&amp;</span>Event&lt;T&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>id = OsRng.next_u64();
-        <span class="self">self</span>.p2p.broadcast(Inv { invs: <span class="macro">vec!</span>[InvItem { id, hash: event.hash() }] }).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="macro">debug!</span>(target: <span class="string">&quot;event_graph&quot;</span>, <span class="string">&quot;ProtocolEvent::send_inv()&quot;</span>);
+        <span class="self">self</span>.p2p.broadcast(Inv { invs: <span class="macro">vec!</span>[InvItem { hash: event.hash() }] }).<span class="kw">await</span><span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(())
     }
 
     <span class="kw">async fn </span>send_getdata(<span class="kw-2">&amp;</span><span class="self">self</span>, events: Vec&lt;EventId&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        <span class="macro">debug!</span>(target: <span class="string">&quot;event_graph&quot;</span>, <span class="string">&quot;ProtocolEvent::send_getdata()&quot;</span>);
         <span class="self">self</span>.channel.send(GetData { events }).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
@@ -610,14 +560,14 @@
     </span>T: Send + Sync + Encodable + Decodable + Clone + EventMsg + Debug,
 {
     <span class="kw">async fn </span>start(<span class="self">self</span>: Arc&lt;<span class="self">Self</span>&gt;, executor: Arc&lt;smol::Executor&lt;<span class="lifetime">&#39;_</span>&gt;&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="macro">debug!</span>(target: <span class="string">&quot;ircd&quot;</span>, <span class="string">&quot;ProtocolEvent::start() [START]&quot;</span>);
+        <span class="macro">debug!</span>(target: <span class="string">&quot;event_graph&quot;</span>, <span class="string">&quot;ProtocolEvent::start() [START]&quot;</span>);
         <span class="self">self</span>.jobsman.clone().start(executor.clone());
         <span class="self">self</span>.jobsman.clone().spawn(<span class="self">self</span>.clone().handle_receive_event(), executor.clone()).<span class="kw">await</span>;
         <span class="self">self</span>.jobsman.clone().spawn(<span class="self">self</span>.clone().handle_receive_inv(), executor.clone()).<span class="kw">await</span>;
         <span class="self">self</span>.jobsman.clone().spawn(<span class="self">self</span>.clone().handle_receive_getdata(), executor.clone()).<span class="kw">await</span>;
         <span class="self">self</span>.jobsman.clone().spawn(<span class="self">self</span>.clone().handle_receive_syncevent(), executor.clone()).<span class="kw">await</span>;
         <span class="self">self</span>.jobsman.clone().spawn(<span class="self">self</span>.clone().send_sync_hash_loop(), executor.clone()).<span class="kw">await</span>;
-        <span class="macro">debug!</span>(target: <span class="string">&quot;ircd&quot;</span>, <span class="string">&quot;ProtocolEvent::start() [END]&quot;</span>);
+        <span class="macro">debug!</span>(target: <span class="string">&quot;event_graph&quot;</span>, <span class="string">&quot;ProtocolEvent::start() [END]&quot;</span>);
         <span class="prelude-val">Ok</span>(())
     }
 

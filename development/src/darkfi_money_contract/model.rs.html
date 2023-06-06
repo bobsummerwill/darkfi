@@ -269,6 +269,8 @@
 <a href="#269" id="269">269</a>
 <a href="#270" id="270">270</a>
 <a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -372,6 +374,8 @@
 </span><span class="kw">pub struct </span>ConsensusInput {
     <span class="doccomment">/// Epoch the coin was minted
     </span><span class="kw">pub </span>epoch: u64,
+    <span class="doccomment">/// The coin
+    </span><span class="kw">pub </span>coin: Coin,
     <span class="doccomment">/// Pedersen commitment for the staked coin&#39;s value
     </span><span class="kw">pub </span>value_commit: pallas::Point,
     <span class="doccomment">/// Revealed nullifier
