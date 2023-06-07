@@ -122,6 +122,12 @@
 <a href="#122" id="122">122</a>
 <a href="#123" id="123">123</a>
 <a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -149,14 +155,16 @@
 
 <span class="doccomment">/// Parameters for `Consensus::GenesisStake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
+</span><span class="comment">// ANCHOR: ConsensusGenesisStakeParams
 </span><span class="kw">pub struct </span>ConsensusGenesisStakeParamsV1 {
     <span class="doccomment">/// Clear input
     </span><span class="kw">pub </span>input: ClearInput,
     <span class="doccomment">/// Anonymous output
     </span><span class="kw">pub </span>output: ConsensusOutput,
 }
+<span class="comment">// ANCHOR_END: ConsensusGenesisStakeParams
 
-<span class="doccomment">/// Parameters for `Consensus::Proposal`
+</span><span class="doccomment">/// Parameters for `Consensus::Proposal`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
 </span><span class="kw">pub struct </span>ConsensusProposalParamsV1 {
     <span class="doccomment">/// Anonymous input
@@ -197,16 +205,19 @@
     </span><span class="kw">pub </span>output: Output,
 }
 
-<span class="doccomment">/// Consensus parameters configuration.
-/// Note: Always verify `pallas::Base` are correct, in case of changes,
-/// using pallas_constants tool.
-/// Number of slots in one epoch
+<span class="comment">// ==================================
+// Consensus parameters configuration
+// Note: Always verify `pallas::Base` are correct, in case of changes,
+// using pallas_constants tool.
+// ==================================
+
+</span><span class="doccomment">/// Number of slots in one epoch
 </span><span class="kw">pub const </span>EPOCH_LENGTH: u64 = <span class="number">10</span>;
 <span class="doccomment">/// Slot time in seconds
 </span><span class="kw">pub const </span>SLOT_TIME: u64 = <span class="number">90</span>;
 <span class="doccomment">/// Grace period days target
 </span><span class="kw">pub const </span>GRACE_PERIOD_DAYS: u64 = <span class="number">2</span>;
-<span class="doccomment">/// Configured reward
+<span class="doccomment">/// Configured block reward
 </span><span class="kw">pub const </span>REWARD: u64 = <span class="number">1</span>;
 <span class="doccomment">/// Reward `pallas::Base`, calculated by: pallas::Base::from(REWARD)
 </span><span class="kw">pub const </span>REWARD_PALLAS: pallas::Base = pallas::Base::from_raw([<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
@@ -242,7 +253,8 @@
 
 <span class="doccomment">/// Auxiliary function to calculate the grace(locked) period, denominated
 /// in epochs.
-</span><span class="kw">pub fn </span>calculate_grace_period() -&gt; u64 {
+</span><span class="attr">#[inline]
+</span><span class="kw">pub const fn </span>calculate_grace_period() -&gt; u64 {
     <span class="comment">// 86400 seconds in a day
     </span>(<span class="number">86400 </span>* GRACE_PERIOD_DAYS) / (SLOT_TIME * EPOCH_LENGTH)
 }

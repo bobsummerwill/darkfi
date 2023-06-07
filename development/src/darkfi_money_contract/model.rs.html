@@ -268,9 +268,6 @@
 <a href="#268" id="268">268</a>
 <a href="#269" id="269">269</a>
 <a href="#270" id="270">270</a>
-<a href="#271" id="271">271</a>
-<a href="#272" id="272">272</a>
-<a href="#273" id="273">273</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -521,12 +518,14 @@
 
 <span class="doccomment">/// State update for `Consensus::Stake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
+</span><span class="comment">// ANCHOR: ConsensusStakeUpdate
 </span><span class="kw">pub struct </span>ConsensusStakeUpdateV1 {
     <span class="doccomment">/// The newly minted coin
     </span><span class="kw">pub </span>coin: Coin,
 }
+<span class="comment">// ANCHOR_END: ConsensusStakeUpdate
 
-<span class="doccomment">/// Parameters for `Consensus::Unstake`
+</span><span class="doccomment">/// Parameters for `Consensus::Unstake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
 </span><span class="kw">pub struct </span>ConsensusUnstakeParamsV1 {
     <span class="doccomment">/// Anonymous input
@@ -539,9 +538,4 @@
     <span class="doccomment">/// Revealed nullifier
     </span><span class="kw">pub </span>nullifier: Nullifier,
 }
-
-<span class="comment">// `pallas::Base` used as prefix/suffix in poseidon hash
-</span><span class="kw">pub const </span>PALLAS_ZERO: pallas::Base = pallas::Base::zero();
-<span class="comment">// `pallas::Scalar` used as prefix/suffix in poseidon hash
-</span><span class="kw">pub const </span>SCALAR_ZERO: pallas::Scalar = pallas::Scalar::zero();
 </code></pre></div></section></main></body></html>
