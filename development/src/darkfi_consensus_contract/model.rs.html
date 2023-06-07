@@ -132,7 +132,6 @@
 <a href="#132" id="132">132</a>
 <a href="#133" id="133">133</a>
 <a href="#134" id="134">134</a>
-<a href="#135" id="135">135</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -212,22 +211,21 @@
     </span><span class="kw">pub </span>output: Output,
 }
 
-<span class="comment">// ==================================
+<span class="comment">// ======================================================================
 // Consensus parameters configuration
-// Note: Always verify `pallas::Base` are correct, in case of changes,
-// using pallas_constants tool.
-// ==================================
-
+// NOTE: In case of changes, always verify that the `pallas::Base` consts
+// are correct using the `pallas_constants` tool in `script/research/`.
+// ======================================================================
 </span><span class="doccomment">/// Number of slots in one epoch
 </span><span class="kw">pub const </span>EPOCH_LENGTH: u64 = <span class="number">10</span>;
 <span class="doccomment">/// Slot time in seconds
 </span><span class="kw">pub const </span>SLOT_TIME: u64 = <span class="number">90</span>;
 <span class="doccomment">/// Grace period days target
 </span><span class="kw">pub const </span>GRACE_PERIOD_DAYS: u64 = <span class="number">2</span>;
-<span class="doccomment">/// Configured block reward
-</span><span class="kw">pub const </span>REWARD: u64 = <span class="number">1</span>;
+<span class="doccomment">/// Configured block reward (1 DRK == 1 * 10^8)
+</span><span class="kw">pub const </span>REWARD: u64 = <span class="number">100_000_000</span>;
 <span class="doccomment">/// Reward `pallas::Base`, calculated by: pallas::Base::from(REWARD)
-</span><span class="kw">pub const </span>REWARD_PALLAS: pallas::Base = pallas::Base::from_raw([<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
+</span><span class="kw">pub const </span>REWARD_PALLAS: pallas::Base = pallas::Base::from_raw([<span class="number">100000000</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
 <span class="doccomment">/// Serial prefix, calculated by: pallas::Base::from(2)
 </span><span class="kw">pub const </span>SERIAL_PREFIX: pallas::Base = pallas::Base::from_raw([<span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
 <span class="doccomment">/// Seed prefix, calculated by: pallas::Base::from(3)

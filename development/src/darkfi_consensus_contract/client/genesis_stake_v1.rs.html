@@ -116,6 +116,24 @@
 <a href="#116" id="116">116</a>
 <a href="#117" id="117">117</a>
 <a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -164,8 +182,10 @@
 
 <span class="doccomment">/// Struct holding necessary information to build a `Consensus::GenesisStakeV1` contract call.
 </span><span class="kw">pub struct </span>ConsensusGenesisStakeCallBuilder {
-    <span class="doccomment">/// Caller&#39;s keypair
+    <span class="doccomment">/// Signer keypair, this pubkey is in the clear input, and used to sign the tx.
     </span><span class="kw">pub </span>keypair: Keypair,
+    <span class="doccomment">/// Output pubkey, to whom the minted coin goes. The secret should be managed externally.
+    </span><span class="kw">pub </span>recipient: PublicKey,
     <span class="doccomment">/// Amount of tokens we want to mint and stake
     </span><span class="kw">pub </span>amount: u64,
     <span class="doccomment">/// `ConsensusMint_V1` zkas circuit ZkBinary
@@ -183,23 +203,39 @@
         <span class="comment">// In this call, we will build one clear input and one anonymous output.
         // Only DARK_TOKEN_ID can be minted and staked on genesis slot.
         </span><span class="kw">let </span>token_id = <span class="kw-2">*</span>DARK_TOKEN_ID;
-        <span class="kw">let </span>epoch = <span class="number">0</span>;
-        <span class="kw">let </span>secret_key = <span class="self">self</span>.keypair.secret;
-        <span class="kw">let </span>public_key = PublicKey::from_secret(secret_key);
+
+        <span class="comment">// With genesis, our epoch is 0.
+        </span><span class="kw">let </span>epoch = <span class="number">0</span>;
 
         <span class="comment">// We just create the pedersen commitment blinds here. We simply
         // enforce that the clear input and the anon output have the same
         // commitments.
-        </span><span class="kw">let </span>value_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
+        </span><span class="kw">let </span>coin_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
+        <span class="kw">let </span>value_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
         <span class="kw">let </span>token_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
-        <span class="kw">let </span>serial = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
-        <span class="kw">let </span>coin_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
+        <span class="kw">let </span>reward_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
 
-        <span class="kw">let </span>c_input =
-            ClearInput { value, token_id, value_blind, token_blind, signature_public: public_key };
+        <span class="comment">// FIXME: The coin&#39;s serial number here is arbitrary, and allows grinding attacks.
+        </span><span class="kw">let </span>serial = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
 
-        <span class="kw">let </span>output =
-            ConsensusMintOutputInfo { value, epoch, public_key, value_blind, serial, coin_blind };
+        <span class="comment">// Parameters for the clear input
+        </span><span class="kw">let </span>c_input = ClearInput {
+            value,
+            token_id,
+            value_blind,
+            token_blind,
+            signature_public: <span class="self">self</span>.keypair.public,
+        };
+
+        <span class="comment">// Parameters for the anonymous output
+        </span><span class="kw">let </span>output = ConsensusMintOutputInfo {
+            value,
+            epoch,
+            public_key: <span class="self">self</span>.recipient,
+            value_blind,
+            serial,
+            coin_blind,
+        };
 
         <span class="macro">info!</span>(<span class="string">&quot;Creating genesis stake mint proof for output&quot;</span>);
         <span class="kw">let </span>(proof, public_inputs) =
@@ -213,10 +249,10 @@
             coin_blind,
             value_blind,
             reward: <span class="number">0</span>,
-            reward_blind: value_blind,
+            reward_blind,
         };
 
-        <span class="kw">let </span>encrypted_note = AeadEncryptedNote::encrypt(<span class="kw-2">&amp;</span>note, <span class="kw-2">&amp;</span>output.public_key, <span class="kw-2">&amp;mut </span>OsRng)<span class="question-mark">?</span>;
+        <span class="kw">let </span>encrypted_note = AeadEncryptedNote::encrypt(<span class="kw-2">&amp;</span>note, <span class="kw-2">&amp;</span><span class="self">self</span>.recipient, <span class="kw-2">&amp;mut </span>OsRng)<span class="question-mark">?</span>;
 
         <span class="kw">let </span>output = ConsensusOutput {
             value_commit: public_inputs.value_commit,
