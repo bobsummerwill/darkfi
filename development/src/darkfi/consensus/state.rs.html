@@ -925,6 +925,35 @@
 <a href="#925" id="925">925</a>
 <a href="#926" id="926">926</a>
 <a href="#927" id="927">927</a>
+<a href="#928" id="928">928</a>
+<a href="#929" id="929">929</a>
+<a href="#930" id="930">930</a>
+<a href="#931" id="931">931</a>
+<a href="#932" id="932">932</a>
+<a href="#933" id="933">933</a>
+<a href="#934" id="934">934</a>
+<a href="#935" id="935">935</a>
+<a href="#936" id="936">936</a>
+<a href="#937" id="937">937</a>
+<a href="#938" id="938">938</a>
+<a href="#939" id="939">939</a>
+<a href="#940" id="940">940</a>
+<a href="#941" id="941">941</a>
+<a href="#942" id="942">942</a>
+<a href="#943" id="943">943</a>
+<a href="#944" id="944">944</a>
+<a href="#945" id="945">945</a>
+<a href="#946" id="946">946</a>
+<a href="#947" id="947">947</a>
+<a href="#948" id="948">948</a>
+<a href="#949" id="949">949</a>
+<a href="#950" id="950">950</a>
+<a href="#951" id="951">951</a>
+<a href="#952" id="952">952</a>
+<a href="#953" id="953">953</a>
+<a href="#954" id="954">954</a>
+<a href="#955" id="955">955</a>
+<a href="#956" id="956">956</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -1083,11 +1112,16 @@
     }
 
     <span class="doccomment">/// Generate current slot checkpoint
-    </span><span class="kw">fn </span>generate_slot_checkpoint(<span class="kw-2">&amp;mut </span><span class="self">self</span>, sigma1: pallas::Base, sigma2: pallas::Base) {
+    </span><span class="kw">fn </span>generate_slot_checkpoint(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        fork_hashes: Vec&lt;blake3::Hash&gt;,
+        sigma1: pallas::Base,
+        sigma2: pallas::Base,
+    ) {
         <span class="kw">let </span>slot = <span class="self">self</span>.time_keeper.current_slot();
-        <span class="kw">let </span>eta = <span class="self">self</span>.get_eta();
-        <span class="macro">info!</span>(target: <span class="string">&quot;consensus::state&quot;</span>, <span class="string">&quot;generate_slot_checkpoint: slot: {:?}, eta: {:?}&quot;</span>, slot, eta);
-        <span class="kw">let </span>checkpoint = SlotCheckpoint { slot, eta, sigma1, sigma2 };
+        <span class="kw">let </span>previous_eta = <span class="self">self</span>.get_previous_eta();
+        <span class="kw">let </span>checkpoint = SlotCheckpoint { slot, previous_eta, fork_hashes, sigma1, sigma2 };
+        <span class="macro">info!</span>(target: <span class="string">&quot;consensus::state&quot;</span>, <span class="string">&quot;generate_slot_checkpoint: {:?}&quot;</span>, checkpoint);
         <span class="self">self</span>.slot_checkpoints.push(checkpoint);
     }
 
@@ -1103,10 +1137,11 @@
     /// Returns flag to signify if epoch has changed.
     </span><span class="kw">pub async fn </span>epoch_changed(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        fork_hashes: Vec&lt;blake3::Hash&gt;,
         sigma1: pallas::Base,
         sigma2: pallas::Base,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;bool&gt; {
-        <span class="self">self</span>.generate_slot_checkpoint(sigma1, sigma2);
+        <span class="self">self</span>.generate_slot_checkpoint(fork_hashes, sigma1, sigma2);
         <span class="kw">let </span>epoch = <span class="self">self</span>.time_keeper.current_epoch();
         <span class="kw">if </span>epoch &lt;= <span class="self">self</span>.epoch {
             <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
@@ -1350,7 +1385,7 @@
             <span class="kw">let </span>first_winning = coin.is_leader(
                 sigma1,
                 sigma2,
-                <span class="self">self</span>.get_eta(),
+                <span class="self">self</span>.get_previous_eta(),
                 pallas::Base::from(<span class="self">self</span>.time_keeper.current_slot()),
             );
 
@@ -1461,7 +1496,7 @@
 
     <span class="doccomment">/// Utility function to extract leader selection lottery randomness(eta),
     /// defined as the hash of the last block, converted to pallas base.
-    </span><span class="kw">pub fn </span>get_eta(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; pallas::Base {
+    </span><span class="kw">pub fn </span>get_previous_eta(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; pallas::Base {
         <span class="kw">let </span>(<span class="kw">_</span>, hash) = <span class="self">self</span>.blockchain.last().unwrap();
         <span class="kw">let </span><span class="kw-2">mut </span>bytes: [u8; <span class="number">32</span>] = <span class="kw-2">*</span>hash.as_bytes();
         <span class="comment">// Read first 254 bits
@@ -1509,6 +1544,21 @@
                 state_checkpoint.coins_tree = <span class="self">self</span>.coins_tree.clone();
             }
         }
+    }
+
+    <span class="doccomment">/// Retrieve current forks last proposal hashes.
+    /// If node holds no fork, retrieve last canonical hash.
+    </span><span class="kw">pub fn </span>fork_hashes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;blake3::Hash&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>hashes = <span class="macro">vec!</span>[];
+        <span class="kw">for </span>fork <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.forks {
+            hashes.push(fork.sequence.last().unwrap().proposal.hash);
+        }
+
+        <span class="kw">if </span>hashes.is_empty() {
+            hashes.push(<span class="self">self</span>.genesis_block);
+        }
+
+        hashes
     }
 
     <span class="doccomment">/// Auxiliary structure to reset consensus state for a resync
@@ -1595,10 +1645,11 @@
 </span><span class="kw">pub struct </span>SlotCheckpoint {
     <span class="doccomment">/// Slot UID
     </span><span class="kw">pub </span>slot: u64,
-    <span class="doccomment">/// Slot eta
-    </span><span class="comment">// TODO: this should be renamed to previous_eta,
-    //       corresponding to previous block eta.
-    </span><span class="kw">pub </span>eta: pallas::Base,
+    <span class="doccomment">/// Previous slot eta
+    </span><span class="kw">pub </span>previous_eta: pallas::Base,
+    <span class="doccomment">/// Previous slot forks last proposal/block hashes,
+    /// as observed by the validator
+    </span><span class="kw">pub </span>fork_hashes: Vec&lt;blake3::Hash&gt;,
     <span class="doccomment">/// Slot sigma1
     </span><span class="kw">pub </span>sigma1: pallas::Base,
     <span class="doccomment">/// Slot sigma2
@@ -1606,17 +1657,24 @@
 }
 
 <span class="kw">impl </span>SlotCheckpoint {
-    <span class="kw">pub fn </span>new(slot: u64, eta: pallas::Base, sigma1: pallas::Base, sigma2: pallas::Base) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{ slot, eta, sigma1, sigma2 }
+    <span class="kw">pub fn </span>new(
+        slot: u64,
+        previous_eta: pallas::Base,
+        fork_hashes: Vec&lt;blake3::Hash&gt;,
+        sigma1: pallas::Base,
+        sigma2: pallas::Base,
+    ) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{ slot, previous_eta, fork_hashes, sigma1, sigma2 }
     }
 
     <span class="doccomment">/// Generate the genesis slot checkpoint.
     </span><span class="kw">pub fn </span>genesis_slot_checkpoint() -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span>eta = pallas::Base::zero();
+        <span class="kw">let </span>previous_eta = pallas::Base::zero();
+        <span class="kw">let </span>fork_hashes = <span class="macro">vec!</span>[];
         <span class="kw">let </span>sigma1 = pallas::Base::zero();
         <span class="kw">let </span>sigma2 = pallas::Base::zero();
 
-        <span class="self">Self</span>::new(<span class="number">0</span>, eta, sigma1, sigma2)
+        <span class="self">Self</span>::new(<span class="number">0</span>, previous_eta, fork_hashes, sigma1, sigma2)
     }
 }
 

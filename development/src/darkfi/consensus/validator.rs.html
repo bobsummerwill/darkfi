@@ -1587,7 +1587,7 @@
         sigma1: pallas::Base,
         sigma2: pallas::Base,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;(BlockProposal, LeadCoin, pallas::Scalar)&gt;&gt; {
-        <span class="kw">let </span>eta = <span class="self">self</span>.consensus.get_eta();
+        <span class="kw">let </span>eta = <span class="self">self</span>.consensus.get_previous_eta();
         <span class="comment">// Check if node can produce proposals
         </span><span class="kw">if </span>!<span class="self">self</span>.consensus.proposing {
             <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
@@ -1801,7 +1801,7 @@
 
             <span class="comment">// Validate proposal public value against coin creation slot checkpoint
             </span><span class="kw">let </span>(mu_y, mu_rho) = LeadCoin::election_seeds_u64(
-                <span class="self">self</span>.consensus.get_eta(),
+                <span class="self">self</span>.consensus.get_previous_eta(),
                 <span class="self">self</span>.consensus.time_keeper.current_slot(),
             );
             <span class="comment">// y

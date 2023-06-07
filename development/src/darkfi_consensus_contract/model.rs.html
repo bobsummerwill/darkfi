@@ -128,6 +128,11 @@
 <a href="#128" id="128">128</a>
 <a href="#129" id="129">129</a>
 <a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -179,6 +184,8 @@
     </span><span class="kw">pub </span>new_serial_commit: pallas::Point,
     <span class="doccomment">/// Rewarded slot
     </span><span class="kw">pub </span>slot: u64,
+    <span class="doccomment">/// Extending fork last proposal/block hash
+    </span><span class="kw">pub </span>previous_hash: blake3::Hash,
     <span class="doccomment">/// VRF proof for eta calculation
     </span><span class="kw">pub </span>vrf_proof: VrfProof,
     <span class="doccomment">/// Coin y
@@ -243,8 +250,11 @@
 </span><span class="kw">pub struct </span>SlotCheckpoint {
     <span class="doccomment">/// Slot UID
     </span><span class="kw">pub </span>slot: u64,
-    <span class="doccomment">/// Slot eta
-    </span><span class="kw">pub </span>eta: pallas::Base,
+    <span class="doccomment">/// Previous slot eta
+    </span><span class="kw">pub </span>previous_eta: pallas::Base,
+    <span class="doccomment">/// Previous slot forks last proposal/block hashes,
+    /// as observed by the validator
+    </span><span class="kw">pub </span>fork_hashes: Vec&lt;blake3::Hash&gt;,
     <span class="doccomment">/// Slot sigma1
     </span><span class="kw">pub </span>sigma1: pallas::Base,
     <span class="doccomment">/// Slot sigma2
