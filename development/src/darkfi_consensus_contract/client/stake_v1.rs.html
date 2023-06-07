@@ -113,20 +113,6 @@
 <a href="#113" id="113">113</a>
 <a href="#114" id="114">114</a>
 <a href="#115" id="115">115</a>
-<a href="#116" id="116">116</a>
-<a href="#117" id="117">117</a>
-<a href="#118" id="118">118</a>
-<a href="#119" id="119">119</a>
-<a href="#120" id="120">120</a>
-<a href="#121" id="121">121</a>
-<a href="#122" id="122">122</a>
-<a href="#123" id="123">123</a>
-<a href="#124" id="124">124</a>
-<a href="#125" id="125">125</a>
-<a href="#126" id="126">126</a>
-<a href="#127" id="127">127</a>
-<a href="#128" id="128">128</a>
-<a href="#129" id="129">129</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -154,13 +140,10 @@
 };
 <span class="kw">use </span>darkfi_money_contract::{
     client::{ConsensusNote, OwnCoin},
-    model::{ConsensusInput, ConsensusOutput, ConsensusStakeParamsV1},
+    model::{ConsensusOutput, ConsensusStakeParamsV1, Input},
 };
 <span class="kw">use </span>darkfi_sdk::{
-    crypto::{
-        note::AeadEncryptedNote, pasta_prelude::<span class="kw-2">*</span>, MerkleNode, Nullifier, PublicKey, SecretKey,
-        DARK_TOKEN_ID,
-    },
+    crypto::{note::AeadEncryptedNote, pasta_prelude::<span class="kw-2">*</span>, PublicKey, SecretKey, DARK_TOKEN_ID},
     pasta::pallas,
 };
 <span class="kw">use </span>log::{debug, info};
@@ -182,10 +165,8 @@
     </span><span class="kw">pub </span>epoch: u64,
     <span class="doccomment">/// Blinding factor for value commitment
     </span><span class="kw">pub </span>value_blind: pallas::Scalar,
-    <span class="doccomment">/// Revealed nullifier
-    </span><span class="kw">pub </span>nullifier: Nullifier,
-    <span class="doccomment">/// Revealed Merkle root
-    </span><span class="kw">pub </span>merkle_root: MerkleNode,
+    <span class="doccomment">/// The money `Input` (comes from the previous `Money::Stake` contract call)
+    </span><span class="kw">pub </span>money_input: Input,
     <span class="doccomment">/// `ConsensusMint_V1` zkas circuit ZkBinary
     </span><span class="kw">pub </span>mint_zkbin: ZkBinary,
     <span class="doccomment">/// Proving key for the `ConsensusMint_V1` zk circuit
@@ -236,17 +217,8 @@
             note: encrypted_note,
         };
 
-        <span class="kw">let </span>input = ConsensusInput {
-            epoch: <span class="self">self</span>.epoch,
-            coin: <span class="self">self</span>.coin.coin,
-            value_commit: public_inputs.value_commit,
-            nullifier: <span class="self">self</span>.nullifier,
-            merkle_root: <span class="self">self</span>.merkle_root,
-            signature_public: public_key,
-        };
-
         <span class="comment">// We now fill this with necessary stuff
-        </span><span class="kw">let </span>params = ConsensusStakeParamsV1 { input, output };
+        </span><span class="kw">let </span>params = ConsensusStakeParamsV1 { input: <span class="self">self</span>.money_input.clone(), output };
         <span class="kw">let </span>proofs = <span class="macro">vec!</span>[proof];
 
         <span class="comment">// Now we should have all the params and zk proof.

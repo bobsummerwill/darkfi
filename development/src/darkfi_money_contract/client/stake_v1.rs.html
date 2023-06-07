@@ -227,6 +227,8 @@
 <a href="#227" id="227">227</a>
 <a href="#228" id="228">228</a>
 <a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -345,10 +347,12 @@
         };
         <span class="macro">debug!</span>(<span class="string">&quot;Finished building input&quot;</span>);
 
-        <span class="kw">let </span>value_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
+        <span class="comment">// Create new random blinds and an ephemeral signature key
+        </span><span class="kw">let </span>value_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
         <span class="kw">let </span>token_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
         <span class="kw">let </span>signature_secret = SecretKey::random(<span class="kw-2">&amp;mut </span>OsRng);
         <span class="kw">let </span>user_data_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
+
         <span class="macro">info!</span>(<span class="string">&quot;Creating stake burn proof for input&quot;</span>);
         <span class="kw">let </span>(proof, public_inputs) = create_stake_burn_proof(
             <span class="kw-2">&amp;</span><span class="self">self</span>.burn_zkbin,

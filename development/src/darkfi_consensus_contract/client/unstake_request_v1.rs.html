@@ -172,7 +172,7 @@
 };
 <span class="kw">use </span>darkfi_money_contract::{
     client::{ConsensusNote, ConsensusOwnCoin},
-    model::{ConsensusInput, ConsensusOutput, ConsensusStakeParamsV1},
+    model::{ConsensusInput, ConsensusOutput, ConsensusUnstakeReqParamsV1},
 };
 <span class="kw">use </span>darkfi_sdk::{
     crypto::{note::AeadEncryptedNote, pasta_prelude::<span class="kw-2">*</span>, MerkleTree, SecretKey},
@@ -188,7 +188,7 @@
 };
 
 <span class="kw">pub struct </span>ConsensusUnstakeRequestCallDebris {
-    <span class="kw">pub </span>params: ConsensusStakeParamsV1,
+    <span class="kw">pub </span>params: ConsensusUnstakeReqParamsV1,
     <span class="kw">pub </span>proofs: Vec&lt;Proof&gt;,
     <span class="kw">pub </span>signature_secret: SecretKey,
 }
@@ -283,7 +283,7 @@
         };
 
         <span class="comment">// We now fill this with necessary stuff
-        </span><span class="kw">let </span>params = ConsensusStakeParamsV1 { input, output };
+        </span><span class="kw">let </span>params = ConsensusUnstakeReqParamsV1 { input, output };
         <span class="kw">let </span>proofs = <span class="macro">vec!</span>[burn_proof, mint_proof];
 
         <span class="comment">// Now we should have all the params, zk proof, and signature secret.

@@ -268,6 +268,11 @@
 <a href="#268" id="268">268</a>
 <a href="#269" id="269">269</a>
 <a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -383,14 +388,6 @@
     </span><span class="kw">pub </span>signature_public: PublicKey,
 }
 
-<span class="kw">impl </span>PartialEq&lt;ConsensusInput&gt; <span class="kw">for </span>Input {
-    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>ConsensusInput) -&gt; bool {
-        <span class="self">self</span>.value_commit == other.value_commit &amp;&amp;
-            <span class="self">self</span>.nullifier == other.nullifier &amp;&amp;
-            <span class="self">self</span>.merkle_root == other.merkle_root
-    }
-}
-
 <span class="doccomment">/// A contract call&#39;s anonymous output
 </span><span class="attr">#[derive(Clone, Debug, PartialEq, SerialEncodable, SerialDecodable)]
 </span><span class="kw">pub struct </span>Output {
@@ -469,21 +466,25 @@
 
 <span class="doccomment">/// Parameters for `Money::Stake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
+</span><span class="comment">// ANCHOR: MoneyStakeParams
 </span><span class="kw">pub struct </span>MoneyStakeParamsV1 {
     <span class="doccomment">/// Blinding factor for `token_id`
     </span><span class="kw">pub </span>token_blind: pallas::Scalar,
     <span class="doccomment">/// Anonymous input
     </span><span class="kw">pub </span>input: Input,
 }
+<span class="comment">// ANCHOR_END: MoneyStakeParams
 
-<span class="doccomment">/// State update for `Money::Stake`
+</span><span class="doccomment">/// State update for `Money::Stake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
+</span><span class="comment">// ANCHOR: MoneyStakeUpdate
 </span><span class="kw">pub struct </span>MoneyStakeUpdateV1 {
     <span class="doccomment">/// Revealed nullifier
     </span><span class="kw">pub </span>nullifier: Nullifier,
 }
+<span class="comment">// ANCHOR_END: MoneyStakeUpdate
 
-<span class="doccomment">/// Parameters for `Money::Unstake`
+</span><span class="doccomment">/// Parameters for `Money::Unstake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
 </span><span class="kw">pub struct </span>MoneyUnstakeParamsV1 {
     <span class="doccomment">/// Burnt token revealed info
@@ -509,14 +510,16 @@
 
 <span class="doccomment">/// Parameters for `Consensus::Stake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
+</span><span class="comment">// ANCHOR: ConsensusStakeParams
 </span><span class="kw">pub struct </span>ConsensusStakeParamsV1 {
     <span class="doccomment">/// Burnt token revealed info
-    </span><span class="kw">pub </span>input: ConsensusInput,
+    </span><span class="kw">pub </span>input: Input,
     <span class="doccomment">/// Anonymous output
     </span><span class="kw">pub </span>output: ConsensusOutput,
 }
+<span class="comment">// ANCHOR_END: ConsensusStakeParams
 
-<span class="doccomment">/// State update for `Consensus::Stake`
+</span><span class="doccomment">/// State update for `Consensus::Stake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
 </span><span class="comment">// ANCHOR: ConsensusStakeUpdate
 </span><span class="kw">pub struct </span>ConsensusStakeUpdateV1 {
@@ -525,7 +528,14 @@
 }
 <span class="comment">// ANCHOR_END: ConsensusStakeUpdate
 
-</span><span class="doccomment">/// Parameters for `Consensus::Unstake`
+</span><span class="doccomment">/// Parameters for `Consensus::UnstakeRequest`
+</span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
+</span><span class="kw">pub struct </span>ConsensusUnstakeReqParamsV1 {
+    <span class="kw">pub </span>input: ConsensusInput,
+    <span class="kw">pub </span>output: ConsensusOutput,
+}
+
+<span class="doccomment">/// Parameters for `Consensus::Unstake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
 </span><span class="kw">pub struct </span>ConsensusUnstakeParamsV1 {
     <span class="doccomment">/// Anonymous input
