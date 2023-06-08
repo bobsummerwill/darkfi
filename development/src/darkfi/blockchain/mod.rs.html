@@ -393,7 +393,7 @@
         <span class="kw">let </span>headers = HeaderStore::new(db, genesis_ts, genesis_data)<span class="question-mark">?</span>;
         <span class="kw">let </span>blocks = BlockStore::new(db, genesis_ts, genesis_data)<span class="question-mark">?</span>;
         <span class="kw">let </span>order = BlockOrderStore::new(db, genesis_ts, genesis_data)<span class="question-mark">?</span>;
-        <span class="kw">let </span>slot_checkpoints = SlotCheckpointStore::new(db)<span class="question-mark">?</span>;
+        <span class="kw">let </span>slot_checkpoints = SlotCheckpointStore::new(db, genesis_data)<span class="question-mark">?</span>;
         <span class="kw">let </span>transactions = TxStore::new(db)<span class="question-mark">?</span>;
         <span class="kw">let </span>pending_txs = PendingTxStore::new(db)<span class="question-mark">?</span>;
         <span class="kw">let </span>pending_txs_order = PendingTxOrderStore::new(db)<span class="question-mark">?</span>;

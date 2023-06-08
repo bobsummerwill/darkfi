@@ -337,6 +337,10 @@
 <a href="#337" id="337">337</a>
 <a href="#338" id="338">338</a>
 <a href="#339" id="339">339</a>
+<a href="#340" id="340">340</a>
+<a href="#341" id="341">341</a>
+<a href="#342" id="342">342</a>
+<a href="#343" id="343">343</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -525,14 +529,18 @@
     <span class="comment">// Keep a record of slot to verify if next slot got skipped during processing
     </span><span class="kw">let </span>processing_slot = state.read().<span class="kw">await</span>.consensus.time_keeper.current_slot();
 
-    <span class="comment">// Retrieve current forks last hash
-    </span><span class="kw">let </span>fork_hashes = state.read().<span class="kw">await</span>.consensus.fork_hashes();
+    <span class="comment">// Retrieve current forks last and second to last hash
+    </span><span class="kw">let </span>(fork_hashes, fork_previous_hashes) = state.read().<span class="kw">await</span>.consensus.fork_hashes();
 
     <span class="comment">// Retrieve slot sigmas
     </span><span class="kw">let </span>(sigma1, sigma2) = state.write().<span class="kw">await</span>.consensus.sigmas();
     <span class="comment">// Node checks if epoch has changed and generate slot checkpoint
-    </span><span class="kw">let </span>epoch_changed =
-        state.write().<span class="kw">await</span>.consensus.epoch_changed(fork_hashes, sigma1, sigma2).<span class="kw">await</span>;
+    </span><span class="kw">let </span>epoch_changed = state
+        .write()
+        .<span class="kw">await
+        </span>.consensus
+        .epoch_changed(fork_hashes, fork_previous_hashes, sigma1, sigma2)
+        .<span class="kw">await</span>;
     <span class="kw">match </span>epoch_changed {
         <span class="prelude-val">Ok</span>(changed) =&gt; {
             <span class="kw">if </span>changed {
