@@ -182,6 +182,151 @@ and propose blocks.</p>
 <li><code>Money::Stake</code></li>
 <li><code>Consensus::Stake</code></li>
 </ol>
+<p>The ZK proof we use to prove burning of the coin in <em>Money</em> is the
+<code>Burn_V1</code> circuit:</p>
+<pre><code>constant &quot;Burn_V1&quot; {
+	EcFixedPointShort VALUE_COMMIT_VALUE,
+	EcFixedPoint VALUE_COMMIT_RANDOM,
+	EcFixedPointBase NULLIFIER_K,
+}
+
+witness &quot;Burn_V1&quot; {
+	# The value of this coin
+	Base value,
+	# The token ID
+	Base token,
+	# Random blinding factor for value commitment
+	Scalar value_blind,
+	# Random blinding factor for the token ID
+	Scalar token_blind,
+	# Unique serial number corresponding to this coin
+	Base serial,
+	# Allows composing this ZK proof to invoke other contracts
+	Base spend_hook,
+	# Data passed from this coin to the invoked contract
+	Base user_data,
+	# Blinding factor for the encrypted user_data
+	Base user_data_blind,
+	# Random blinding factor for coin
+	Base coin_blind,
+	# Secret key used to derive nullifier and coin's public key
+	Base secret,
+	# Leaf position of the coin in the Merkle tree of coins
+	Uint32 leaf_pos,
+	# Merkle path to the coin
+	MerklePath path,
+	# Secret key used to derive public key for the tx signature
+	Base signature_secret,
+}
+
+circuit &quot;Burn_V1&quot; {
+	# Poseidon hash of the nullifier
+	nullifier = poseidon_hash(secret, serial);
+	constrain_instance(nullifier);
+
+	# Pedersen commitment for coin's value
+	vcv = ec_mul_short(value, VALUE_COMMIT_VALUE);
+	vcr = ec_mul(value_blind, VALUE_COMMIT_RANDOM);
+	value_commit = ec_add(vcv, vcr);
+	# Since value_commit is a curve point, we fetch its coordinates
+	# and constrain them:
+	constrain_instance(ec_get_x(value_commit));
+	constrain_instance(ec_get_y(value_commit));
+
+	# Pedersen commitment for coin's token ID
+	tcv = ec_mul_base(token, NULLIFIER_K);
+	tcr = ec_mul(token_blind, VALUE_COMMIT_RANDOM);
+	token_commit = ec_add(tcv, tcr);
+	# Since token_commit is also a curve point, we'll do the same
+	# coordinate dance:
+	constrain_instance(ec_get_x(token_commit));
+	constrain_instance(ec_get_y(token_commit));
+
+	# Coin hash
+	pub = ec_mul_base(secret, NULLIFIER_K);
+	pub_x = ec_get_x(pub);
+	pub_y = ec_get_y(pub);
+	C = poseidon_hash(
+		pub_x,
+		pub_y,
+		value,
+		token,
+		serial,
+		spend_hook,
+		user_data,
+		coin_blind,
+	);
+
+	# Merkle root
+	root = merkle_root(leaf_pos, path, C);
+	constrain_instance(root);
+
+	# Export user_data
+	user_data_enc = poseidon_hash(user_data, user_data_blind);
+	constrain_instance(user_data_enc);
+
+	# Finally, we derive a public key for the signature and
+	# constrain its coordinates:
+	signature_public = ec_mul_base(signature_secret, NULLIFIER_K);
+	signature_x = ec_get_x(signature_public);
+	signature_y = ec_get_y(signature_public);
+	constrain_instance(signature_x);
+	constrain_instance(signature_y);
+
+	# At this point we've enforced all of our public inputs.
+}
+</code></pre>
+<p>The ZK proof we use to prove minting of the coin in <em>Consensus</em> is the
+<code>ConsensusMint_V1</code> circuit:</p>
+<pre><code>constant &quot;ConsensusMint_V1&quot; {
+	EcFixedPointShort VALUE_COMMIT_VALUE,
+	EcFixedPoint VALUE_COMMIT_RANDOM,
+}
+
+witness &quot;ConsensusMint_V1&quot; {
+	# X coordinate for public key
+	Base pub_x,
+	# Y coordinate for public key
+	Base pub_y,
+	# The value of this coin
+	Base value,
+	# The epoch this coin was minted on
+	Base epoch,
+	# Unique serial number corresponding to this coin
+	Base serial,
+	# Random blinding factor for coin
+	Base coin_blind,
+	# Random blinding factor for the value commitment
+	Scalar value_blind,
+}
+
+circuit &quot;ConsensusMint_V1&quot; {
+	# Constrain the epoch this coin was minted on
+	constrain_instance(epoch);
+
+	# Poseidon hash of the coin
+	C = poseidon_hash(
+		pub_x,
+		pub_y,
+		value,
+		epoch,
+		serial,
+		coin_blind,
+	);
+	constrain_instance(C);
+
+	# Pedersen commitment for coin's value
+	vcv = ec_mul_short(value, VALUE_COMMIT_VALUE);
+	vcr = ec_mul(value_blind, VALUE_COMMIT_RANDOM);
+	value_commit = ec_add(vcv, vcr);
+	# Since the value commit is a curve point, we fetch its coordinates
+	# and constrain them:
+	constrain_instance(ec_get_x(value_commit));
+	constrain_instance(ec_get_y(value_commit));
+
+	# At this point we've enforced all of our public inputs.
+}
+</code></pre>
 <h2 id="contract-logic"><a class="header" href="#contract-logic">Contract logic</a></h2>
 <h3 id="moneyget_metadata"><a class="header" href="#moneyget_metadata"><a href="https://github.com/darkrenaissance/darkfi/blob/master/src/contract/money/src/entrypoint/stake_v1.rs#L40"><code>Money::get_metadata()</code></a></a></h3>
 <p>In the <code>money_stake_get_metadata_v1</code> function, we gather the input

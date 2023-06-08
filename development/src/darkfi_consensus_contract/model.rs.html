@@ -137,6 +137,9 @@
 <a href="#137" id="137">137</a>
 <a href="#138" id="138">138</a>
 <a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -175,6 +178,7 @@
 
 </span><span class="doccomment">/// Parameters for `Consensus::Proposal`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
+</span><span class="comment">// ANCHOR: ConsensusProposalParams
 </span><span class="kw">pub struct </span>ConsensusProposalParamsV1 {
     <span class="doccomment">/// Anonymous input
     </span><span class="kw">pub </span>input: ConsensusInput,
@@ -182,10 +186,8 @@
     </span><span class="kw">pub </span>output: ConsensusOutput,
     <span class="doccomment">/// Reward value
     </span><span class="kw">pub </span>reward: u64,
-    <span class="doccomment">/// Blinding factor for reward value
+    <span class="doccomment">/// Revealed blinding factor for reward value
     </span><span class="kw">pub </span>reward_blind: pallas::Scalar,
-    <span class="doccomment">/// Pedersen commitment for the output&#39;s serial number
-    </span><span class="kw">pub </span>new_serial_commit: pallas::Point,
     <span class="doccomment">/// Rewarded slot
     </span><span class="kw">pub </span>slot: u64,
     <span class="doccomment">/// Extending fork last proposal/block hash
@@ -199,8 +201,9 @@
     <span class="doccomment">/// Lottery rho used
     </span><span class="kw">pub </span>rho: pallas::Base,
 }
+<span class="comment">// ANCHOR_END: ConsensusProposalParams
 
-<span class="doccomment">/// State update for `Consensus::Proposal`
+</span><span class="doccomment">/// State update for `Consensus::Proposal`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
 </span><span class="kw">pub struct </span>ConsensusProposalUpdateV1 {
     <span class="doccomment">/// Revealed nullifier
@@ -227,8 +230,8 @@
 </span><span class="kw">pub const </span>EPOCH_LENGTH: u64 = <span class="number">10</span>;
 <span class="doccomment">/// Slot time in seconds
 </span><span class="kw">pub const </span>SLOT_TIME: u64 = <span class="number">90</span>;
-<span class="doccomment">/// Grace period days target
-</span><span class="kw">pub const </span>GRACE_PERIOD_DAYS: u64 = <span class="number">2</span>;
+<span class="comment">// Stake/Unstake timelock length in epochs
+</span><span class="kw">pub const </span>GRACE_PERIOD: u64 = calculate_grace_period();
 <span class="doccomment">/// Configured block reward (1 DRK == 1 * 10^8)
 </span><span class="kw">pub const </span>REWARD: u64 = <span class="number">100_000_000</span>;
 <span class="doccomment">/// Reward `pallas::Base`, calculated by: pallas::Base::from(REWARD)
@@ -269,10 +272,13 @@
     </span><span class="kw">pub </span>sigma2: pallas::Base,
 }
 
-<span class="doccomment">/// Auxiliary function to calculate the grace(locked) period, denominated
+<span class="doccomment">/// Auxiliary function to calculate the grace (locked) period, denominated
 /// in epochs.
 </span><span class="attr">#[inline]
 </span><span class="kw">pub const fn </span>calculate_grace_period() -&gt; u64 {
+    <span class="comment">// Grace period days target
+    </span><span class="kw">const </span>GRACE_PERIOD_DAYS: u64 = <span class="number">2</span>;
+
     <span class="comment">// 86400 seconds in a day
     </span>(<span class="number">86400 </span>* GRACE_PERIOD_DAYS) / (SLOT_TIME * EPOCH_LENGTH)
 }
