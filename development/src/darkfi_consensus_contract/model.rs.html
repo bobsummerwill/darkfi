@@ -140,6 +140,8 @@
 <a href="#140" id="140">140</a>
 <a href="#141" id="141">141</a>
 <a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -205,14 +207,16 @@
 
 </span><span class="doccomment">/// State update for `Consensus::Proposal`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
+</span><span class="comment">// ANCHOR: ConsensusProposalUpdate
 </span><span class="kw">pub struct </span>ConsensusProposalUpdateV1 {
     <span class="doccomment">/// Revealed nullifier
     </span><span class="kw">pub </span>nullifier: Nullifier,
     <span class="doccomment">/// The newly minted coin
     </span><span class="kw">pub </span>coin: Coin,
 }
+<span class="comment">// ANCHOR_END: ConsensusProposalUpdate
 
-<span class="doccomment">/// Parameters for `Consensus::UnstakeRequest`
+</span><span class="doccomment">/// Parameters for `Consensus::UnstakeRequest`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
 </span><span class="kw">pub struct </span>ConsensusUnstakeRequestParamsV1 {
     <span class="doccomment">/// Burnt token revealed info
