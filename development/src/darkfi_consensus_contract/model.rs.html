@@ -190,8 +190,6 @@
     </span><span class="kw">pub </span>reward: u64,
     <span class="doccomment">/// Revealed blinding factor for reward value
     </span><span class="kw">pub </span>reward_blind: pallas::Scalar,
-    <span class="doccomment">/// Rewarded slot
-    </span><span class="kw">pub </span>slot: u64,
     <span class="doccomment">/// Extending fork last proposal/block hash
     </span><span class="kw">pub </span>fork_hash: blake3::Hash,
     <span class="doccomment">/// Extending fork second to last proposal/block hash
@@ -218,14 +216,16 @@
 
 </span><span class="doccomment">/// Parameters for `Consensus::UnstakeRequest`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
+</span><span class="comment">// ANCHOR: ConsensusUnstakeRequestParams
 </span><span class="kw">pub struct </span>ConsensusUnstakeRequestParamsV1 {
     <span class="doccomment">/// Burnt token revealed info
     </span><span class="kw">pub </span>input: ConsensusInput,
     <span class="doccomment">/// Anonymous output
     </span><span class="kw">pub </span>output: Output,
 }
+<span class="comment">// ANCHOR_END: ConsensusUnstakeRequestParams
 
-<span class="comment">// ======================================================================
+// ======================================================================
 // Consensus parameters configuration
 // NOTE: In case of changes, always verify that the `pallas::Base` consts
 // are correct using the `pallas_constants` tool in `script/research/`.

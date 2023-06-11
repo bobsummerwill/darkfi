@@ -271,6 +271,8 @@
 <a href="#271" id="271">271</a>
 <a href="#272" id="272">272</a>
 <a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -526,12 +528,14 @@
 
 </span><span class="doccomment">/// Parameters for `Consensus::UnstakeRequest`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
+</span><span class="comment">// ANCHOR: ConsensusUnstakeReqParams
 </span><span class="kw">pub struct </span>ConsensusUnstakeReqParamsV1 {
     <span class="kw">pub </span>input: ConsensusInput,
     <span class="kw">pub </span>output: ConsensusOutput,
 }
+<span class="comment">// ANCHOR_END: ConsensusUnstakeReqParams
 
-<span class="doccomment">/// Parameters for `Consensus::Unstake`
+</span><span class="doccomment">/// Parameters for `Consensus::Unstake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
 </span><span class="kw">pub struct </span>ConsensusUnstakeParamsV1 {
     <span class="doccomment">/// Anonymous input
