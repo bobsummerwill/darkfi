@@ -484,29 +484,25 @@
 
 </span><span class="doccomment">/// Parameters for `Money::Unstake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
+</span><span class="comment">// ANCHOR: MoneyUnstakeParams
 </span><span class="kw">pub struct </span>MoneyUnstakeParamsV1 {
     <span class="doccomment">/// Burnt token revealed info
     </span><span class="kw">pub </span>input: ConsensusInput,
-    <span class="doccomment">/// Spend hook used to invoke other contracts.
-    /// If this value is nonzero then the subsequent contract call in the tx
-    /// must have this value as its ID.
-    </span><span class="kw">pub </span>spend_hook: pallas::Base,
-    <span class="doccomment">/// Encrypted user data field. An encrypted commitment to arbitrary data.
-    /// When spend hook is set (it is nonzero), then this field may be user
-    /// to pass data to the invoked contract.
-    </span><span class="kw">pub </span>user_data_enc: pallas::Base,
     <span class="doccomment">/// Anonymous output
     </span><span class="kw">pub </span>output: Output,
 }
+<span class="comment">// ANCHOR_END: MoneyUnstakeParams
 
-<span class="doccomment">/// State update for `Money::Unstake`
+</span><span class="doccomment">/// State update for `Money::Unstake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
+</span><span class="comment">// ANCHOR: MoneyUnstakeUpdate
 </span><span class="kw">pub struct </span>MoneyUnstakeUpdateV1 {
     <span class="doccomment">/// The newly minted coin
     </span><span class="kw">pub </span>coin: Coin,
 }
+<span class="comment">// ANCHOR_END: MoneyUnstakeUpdate
 
-<span class="doccomment">/// Parameters for `Consensus::Stake`
+</span><span class="doccomment">/// Parameters for `Consensus::Stake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
 </span><span class="comment">// ANCHOR: ConsensusStakeParams
 </span><span class="kw">pub struct </span>ConsensusStakeParamsV1 {
@@ -537,15 +533,19 @@
 
 </span><span class="doccomment">/// Parameters for `Consensus::Unstake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
+</span><span class="comment">// ANCHOR: ConsensusUnstakeParams
 </span><span class="kw">pub struct </span>ConsensusUnstakeParamsV1 {
     <span class="doccomment">/// Anonymous input
     </span><span class="kw">pub </span>input: ConsensusInput,
 }
+<span class="comment">// ANCHOR_END: ConsensusUnstakeParams
 
-<span class="doccomment">/// State update for `Consensus::Unstake`
+</span><span class="doccomment">/// State update for `Consensus::Unstake`
 </span><span class="attr">#[derive(Clone, Debug, SerialEncodable, SerialDecodable)]
+</span><span class="comment">// ANCHOR: ConsensusUnstakeUpdate
 </span><span class="kw">pub struct </span>ConsensusUnstakeUpdateV1 {
     <span class="doccomment">/// Revealed nullifier
     </span><span class="kw">pub </span>nullifier: Nullifier,
 }
-</code></pre></div></section></main></body></html>
+<span class="comment">// ANCHOR_END: ConsensusUnstakeUpdate
+</span></code></pre></div></section></main></body></html>

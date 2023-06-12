@@ -144,6 +144,12 @@
 <a href="#144" id="144">144</a>
 <a href="#145" id="145">145</a>
 <a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
+<a href="#152" id="152">152</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -174,7 +180,7 @@
     model::{ConsensusInput, ConsensusOutput, ConsensusUnstakeReqParamsV1},
 };
 <span class="kw">use </span>darkfi_sdk::{
-    crypto::{note::AeadEncryptedNote, pasta_prelude::<span class="kw-2">*</span>, MerkleTree, SecretKey},
+    crypto::{note::AeadEncryptedNote, pasta_prelude::<span class="kw-2">*</span>, Keypair, MerkleTree, SecretKey},
     incrementalmerkletree::Tree,
     pasta::pallas,
 };
@@ -187,15 +193,20 @@
 };
 
 <span class="kw">pub struct </span>ConsensusUnstakeRequestCallDebris {
-    <span class="kw">pub </span>params: ConsensusUnstakeReqParamsV1,
-    <span class="kw">pub </span>proofs: Vec&lt;Proof&gt;,
-    <span class="kw">pub </span>signature_secret: SecretKey,
+    <span class="doccomment">/// Payload params
+    </span><span class="kw">pub </span>params: ConsensusUnstakeReqParamsV1,
+    <span class="doccomment">/// ZK proofs
+    </span><span class="kw">pub </span>proofs: Vec&lt;Proof&gt;,
+    <span class="doccomment">/// The new output keypair (used in the minted coin)
+    </span><span class="kw">pub </span>keypair: Keypair,
+    <span class="doccomment">/// Secret key used to sign the transaction
+    </span><span class="kw">pub </span>signature_secret: SecretKey,
 }
 
 <span class="doccomment">/// Struct holding necessary information to build a `Consensus::UnstakeRequestV1` contract call.
 </span><span class="kw">pub struct </span>ConsensusUnstakeRequestCallBuilder {
     <span class="doccomment">/// `ConsensusOwnCoin` we&#39;re given to use in this builder
-    </span><span class="kw">pub </span>coin: ConsensusOwnCoin,
+    </span><span class="kw">pub </span>owncoin: ConsensusOwnCoin,
     <span class="doccomment">/// Epoch unstaked coin is minted
     </span><span class="kw">pub </span>epoch: u64,
     <span class="doccomment">/// Merkle tree of coins used to create inclusion proofs
@@ -212,81 +223,82 @@
 
 <span class="kw">impl </span>ConsensusUnstakeRequestCallBuilder {
     <span class="kw">pub fn </span>build(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;ConsensusUnstakeRequestCallDebris&gt; {
-        <span class="macro">debug!</span>(<span class="string">&quot;Building Consensus::UnstakeRequestV1 contract call&quot;</span>);
-        <span class="macro">assert!</span>(<span class="self">self</span>.coin.note.value != <span class="number">0</span>);
+        <span class="macro">info!</span>(<span class="string">&quot;Building Consensus::UnstakeRequestV1 contract call&quot;</span>);
+        <span class="macro">assert!</span>(<span class="self">self</span>.owncoin.note.value != <span class="number">0</span>);
 
-        <span class="macro">debug!</span>(<span class="string">&quot;Building anonymous input&quot;</span>);
-        <span class="kw">let </span>leaf_position = <span class="self">self</span>.coin.leaf_position;
+        <span class="macro">debug!</span>(<span class="string">&quot;Building Consensus::UnstakeRequestV1 anonymous input&quot;</span>);
         <span class="kw">let </span>root = <span class="self">self</span>.tree.root(<span class="number">0</span>).unwrap();
-        <span class="kw">let </span>merkle_path = <span class="self">self</span>.tree.authentication_path(leaf_position, <span class="kw-2">&amp;</span>root).unwrap();
-        <span class="kw">let </span>value_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
-        <span class="kw">let </span>input = ConsensusBurnInputInfo {
-            leaf_position,
-            merkle_path,
-            secret: <span class="self">self</span>.coin.secret,
-            note: <span class="self">self</span>.coin.note.clone(),
-            value_blind,
-        };
-        <span class="macro">debug!</span>(<span class="string">&quot;Finished building input&quot;</span>);
+        <span class="kw">let </span>merkle_path = <span class="self">self</span>.tree.authentication_path(<span class="self">self</span>.owncoin.leaf_position, <span class="kw-2">&amp;</span>root).unwrap();
 
-        <span class="macro">info!</span>(<span class="string">&quot;Creating unstake burn proof for input&quot;</span>);
-        <span class="kw">let </span>value_blind = input.value_blind;
+        <span class="kw">let </span>input = ConsensusBurnInputInfo {
+            leaf_position: <span class="self">self</span>.owncoin.leaf_position,
+            merkle_path,
+            secret: <span class="self">self</span>.owncoin.secret,
+            note: <span class="self">self</span>.owncoin.note.clone(),
+            value_blind: pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng),
+        };
+
+        <span class="macro">debug!</span>(<span class="string">&quot;Building Consensus::UnstakeRequestV1 anonymous output&quot;</span>);
+        <span class="kw">let </span>output_serial = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
+        <span class="kw">let </span>output_coin_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
+
+        <span class="comment">// We create a new random keypair for the output
+        </span><span class="kw">let </span>output_keypair = Keypair::random(<span class="kw-2">&amp;mut </span>OsRng);
+
+        <span class="kw">let </span>output = ConsensusMintOutputInfo {
+            value: <span class="self">self</span>.owncoin.note.value,
+            epoch: <span class="self">self</span>.epoch,
+            public_key: output_keypair.public,
+            value_blind: input.value_blind,
+            serial: output_serial,
+            coin_blind: output_coin_blind,
+        };
+
+        <span class="macro">info!</span>(<span class="string">&quot;Building Consensus::UnstakeRequestV1 Burn ZK proof&quot;</span>);
         <span class="kw">let </span>(burn_proof, public_inputs, signature_secret) =
             create_consensus_burn_proof(<span class="kw-2">&amp;</span><span class="self">self</span>.burn_zkbin, <span class="kw-2">&amp;</span><span class="self">self</span>.burn_pk, <span class="kw-2">&amp;</span>input)<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>input = ConsensusInput {
-            epoch: <span class="self">self</span>.coin.note.epoch,
+        <span class="kw">let </span>tx_input = ConsensusInput {
+            epoch: <span class="self">self</span>.owncoin.note.epoch,
             value_commit: public_inputs.value_commit,
             nullifier: public_inputs.nullifier,
             merkle_root: public_inputs.merkle_root,
             signature_public: public_inputs.signature_public,
         };
 
-        <span class="macro">debug!</span>(<span class="string">&quot;Building anonymous output&quot;</span>);
-        <span class="kw">let </span>serial = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
-        <span class="kw">let </span>coin_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
-        <span class="kw">let </span>public_key = public_inputs.signature_public;
-
-        <span class="kw">let </span>output = ConsensusMintOutputInfo {
-            value: <span class="self">self</span>.coin.note.value,
-            epoch: <span class="self">self</span>.epoch,
-            public_key,
-            value_blind,
-            serial,
-            coin_blind,
-        };
-        <span class="macro">debug!</span>(<span class="string">&quot;Finished building output&quot;</span>);
-
-        <span class="macro">info!</span>(<span class="string">&quot;Creating stake mint proof for output&quot;</span>);
+        <span class="macro">info!</span>(<span class="string">&quot;Building Consensus::UnstakeRequestV1 Mint ZK proof&quot;</span>);
         <span class="kw">let </span>(mint_proof, public_inputs) =
             create_consensus_mint_proof(<span class="kw-2">&amp;</span><span class="self">self</span>.mint_zkbin, <span class="kw-2">&amp;</span><span class="self">self</span>.mint_pk, <span class="kw-2">&amp;</span>output)<span class="question-mark">?</span>;
 
         <span class="comment">// Encrypted note
         </span><span class="kw">let </span>note = ConsensusNote {
-            serial,
+            serial: output_serial,
             value: output.value,
-            epoch: <span class="self">self</span>.epoch,
-            coin_blind,
-            value_blind,
+            epoch: output.epoch,
+            coin_blind: output_coin_blind,
+            value_blind: input.value_blind,
             reward: <span class="number">0</span>,
-            reward_blind: value_blind,
+            reward_blind: pallas::Scalar::ZERO,
         };
 
         <span class="kw">let </span>encrypted_note = AeadEncryptedNote::encrypt(<span class="kw-2">&amp;</span>note, <span class="kw-2">&amp;</span>output.public_key, <span class="kw-2">&amp;mut </span>OsRng)<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>output = ConsensusOutput {
+        <span class="kw">let </span>tx_output = ConsensusOutput {
             value_commit: public_inputs.value_commit,
             coin: public_inputs.coin,
             note: encrypted_note,
         };
 
         <span class="comment">// We now fill this with necessary stuff
-        </span><span class="kw">let </span>params = ConsensusUnstakeReqParamsV1 { input, output };
-        <span class="kw">let </span>proofs = <span class="macro">vec!</span>[burn_proof, mint_proof];
+        </span><span class="kw">let </span>params = ConsensusUnstakeReqParamsV1 { input: tx_input, output: tx_output };
 
-        <span class="comment">// Now we should have all the params, zk proof, and signature secret.
-        // We return it all and let the caller deal with it.
-        </span><span class="kw">let </span>debris = ConsensusUnstakeRequestCallDebris { params, proofs, signature_secret };
+        <span class="comment">// Construct debris
+        </span><span class="kw">let </span>debris = ConsensusUnstakeRequestCallDebris {
+            params,
+            proofs: <span class="macro">vec!</span>[burn_proof, mint_proof],
+            keypair: output_keypair,
+            signature_secret,
+        };
         <span class="prelude-val">Ok</span>(debris)
     }
 }

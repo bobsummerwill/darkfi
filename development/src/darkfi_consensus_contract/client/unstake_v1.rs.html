@@ -98,6 +98,10 @@
 <a href="#98" id="98">98</a>
 <a href="#99" id="99">99</a>
 <a href="#100" id="100">100</a>
+<a href="#101" id="101">101</a>
+<a href="#102" id="102">102</a>
+<a href="#103" id="103">103</a>
+<a href="#104" id="104">104</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -138,16 +142,20 @@
 <span class="kw">use </span><span class="kw">crate</span>::client::common::{create_consensus_burn_proof, ConsensusBurnInputInfo};
 
 <span class="kw">pub struct </span>ConsensusUnstakeCallDebris {
-    <span class="kw">pub </span>params: ConsensusUnstakeParamsV1,
-    <span class="kw">pub </span>proofs: Vec&lt;Proof&gt;,
-    <span class="kw">pub </span>signature_secret: SecretKey,
-    <span class="kw">pub </span>value_blind: pallas::Scalar,
+    <span class="doccomment">/// Payload params
+    </span><span class="kw">pub </span>params: ConsensusUnstakeParamsV1,
+    <span class="doccomment">/// ZK proofs
+    </span><span class="kw">pub </span>proofs: Vec&lt;Proof&gt;,
+    <span class="doccomment">/// Secret key used to sign the transaction
+    </span><span class="kw">pub </span>signature_secret: SecretKey,
+    <span class="doccomment">/// Value blind to be used in the `Money::UnstakeV1` call
+    </span><span class="kw">pub </span>value_blind: pallas::Scalar,
 }
 
 <span class="doccomment">/// Struct holding necessary information to build a `Consensus::UnstakeV1` contract call.
 </span><span class="kw">pub struct </span>ConsensusUnstakeCallBuilder {
     <span class="doccomment">/// `ConsensusOwnCoin` we&#39;re given to use in this builder
-    </span><span class="kw">pub </span>coin: ConsensusOwnCoin,
+    </span><span class="kw">pub </span>owncoin: ConsensusOwnCoin,
     <span class="doccomment">/// Merkle tree of coins used to create inclusion proofs
     </span><span class="kw">pub </span>tree: MerkleTree,
     <span class="doccomment">/// `ConsensusBurn_V1` zkas circuit ZkBinary
@@ -158,30 +166,27 @@
 
 <span class="kw">impl </span>ConsensusUnstakeCallBuilder {
     <span class="kw">pub fn </span>build(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;ConsensusUnstakeCallDebris&gt; {
-        <span class="macro">debug!</span>(<span class="string">&quot;Building Consensus::UnstakeV1 contract call&quot;</span>);
-        <span class="macro">assert!</span>(<span class="self">self</span>.coin.note.value != <span class="number">0</span>);
+        <span class="macro">info!</span>(<span class="string">&quot;Building Consensus::UnstakeV1 contract call&quot;</span>);
+        <span class="macro">assert!</span>(<span class="self">self</span>.owncoin.note.value != <span class="number">0</span>);
 
-        <span class="macro">debug!</span>(<span class="string">&quot;Building anonymous input&quot;</span>);
-        <span class="kw">let </span>leaf_position = <span class="self">self</span>.coin.leaf_position;
+        <span class="macro">debug!</span>(<span class="string">&quot;Building Consensus::UnstakeV1 anonymous input&quot;</span>);
         <span class="kw">let </span>root = <span class="self">self</span>.tree.root(<span class="number">0</span>).unwrap();
-        <span class="kw">let </span>merkle_path = <span class="self">self</span>.tree.authentication_path(leaf_position, <span class="kw-2">&amp;</span>root).unwrap();
-        <span class="kw">let </span>value_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
-        <span class="kw">let </span>input = ConsensusBurnInputInfo {
-            leaf_position,
-            merkle_path,
-            secret: <span class="self">self</span>.coin.secret,
-            note: <span class="self">self</span>.coin.note.clone(),
-            value_blind,
-        };
-        <span class="macro">debug!</span>(<span class="string">&quot;Finished building input&quot;</span>);
+        <span class="kw">let </span>merkle_path = <span class="self">self</span>.tree.authentication_path(<span class="self">self</span>.owncoin.leaf_position, <span class="kw-2">&amp;</span>root).unwrap();
 
-        <span class="macro">info!</span>(<span class="string">&quot;Creating unstake burn proof for input&quot;</span>);
-        <span class="kw">let </span>value_blind = input.value_blind;
+        <span class="kw">let </span>input = ConsensusBurnInputInfo {
+            leaf_position: <span class="self">self</span>.owncoin.leaf_position,
+            merkle_path,
+            secret: <span class="self">self</span>.owncoin.secret,
+            note: <span class="self">self</span>.owncoin.note.clone(),
+            value_blind: pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng),
+        };
+
+        <span class="macro">info!</span>(<span class="string">&quot;Building Consensus::UnstakeV1 Burn ZK proof&quot;</span>);
         <span class="kw">let </span>(proof, public_inputs, signature_secret) =
             create_consensus_burn_proof(<span class="kw-2">&amp;</span><span class="self">self</span>.burn_zkbin, <span class="kw-2">&amp;</span><span class="self">self</span>.burn_pk, <span class="kw-2">&amp;</span>input)<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>input = ConsensusInput {
-            epoch: <span class="self">self</span>.coin.note.epoch,
+        <span class="kw">let </span>tx_input = ConsensusInput {
+            epoch: <span class="self">self</span>.owncoin.note.epoch,
             value_commit: public_inputs.value_commit,
             nullifier: public_inputs.nullifier,
             merkle_root: public_inputs.merkle_root,
@@ -189,12 +194,15 @@
         };
 
         <span class="comment">// We now fill this with necessary stuff
-        </span><span class="kw">let </span>params = ConsensusUnstakeParamsV1 { input };
-        <span class="kw">let </span>proofs = <span class="macro">vec!</span>[proof];
+        </span><span class="kw">let </span>params = ConsensusUnstakeParamsV1 { input: tx_input };
 
-        <span class="comment">// Now we should have all the params, zk proof, signature secret and token blind.
-        // We return it all and let the caller deal with it.
-        </span><span class="kw">let </span>debris = ConsensusUnstakeCallDebris { params, proofs, signature_secret, value_blind };
+        <span class="comment">// Construct debris
+        </span><span class="kw">let </span>debris = ConsensusUnstakeCallDebris {
+            params,
+            proofs: <span class="macro">vec!</span>[proof],
+            signature_secret,
+            value_blind: input.value_blind,
+        };
         <span class="prelude-val">Ok</span>(debris)
     }
 }

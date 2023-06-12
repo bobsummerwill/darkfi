@@ -289,14 +289,16 @@
 <span class="doccomment">/// Struct holding necessary information to build a `Money::UnstakeV1` contract call.
 </span><span class="kw">pub struct </span>MoneyUnstakeCallBuilder {
     <span class="doccomment">/// `ConsensusOwnCoin` we&#39;re given to use in this builder
-    </span><span class="kw">pub </span>coin: ConsensusOwnCoin,
+    </span><span class="kw">pub </span>owncoin: ConsensusOwnCoin,
+    <span class="doccomment">/// Recipient pubkey of the minted output
+    </span><span class="kw">pub </span>recipient: PublicKey,
     <span class="doccomment">/// Blinding factor for value commitment
     </span><span class="kw">pub </span>value_blind: pallas::Scalar,
     <span class="doccomment">/// Revealed nullifier
     </span><span class="kw">pub </span>nullifier: Nullifier,
     <span class="doccomment">/// Revealed Merkle root
     </span><span class="kw">pub </span>merkle_root: MerkleNode,
-    <span class="doccomment">/// Public key for the signature
+    <span class="doccomment">/// Signature public key used in the input
     </span><span class="kw">pub </span>signature_public: PublicKey,
     <span class="doccomment">/// `Mint_V1` zkas circuit ZkBinary
     </span><span class="kw">pub </span>mint_zkbin: ZkBinary,
@@ -306,24 +308,23 @@
 
 <span class="kw">impl </span>MoneyUnstakeCallBuilder {
     <span class="kw">pub fn </span>build(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;MoneyUnstakeCallDebris&gt; {
-        <span class="macro">debug!</span>(<span class="string">&quot;Building Money::UnstakeV1 contract call&quot;</span>);
-        <span class="macro">assert!</span>(<span class="self">self</span>.coin.note.value != <span class="number">0</span>);
+        <span class="macro">info!</span>(<span class="string">&quot;Building Money::UnstakeV1 contract call&quot;</span>);
+        <span class="macro">assert!</span>(<span class="self">self</span>.owncoin.note.value != <span class="number">0</span>);
 
-        <span class="macro">debug!</span>(<span class="string">&quot;Building anonymous output&quot;</span>);
+        <span class="macro">debug!</span>(<span class="string">&quot;Building Money::UnstakeV1 anonymous output&quot;</span>);
         <span class="kw">let </span>output = TransactionBuilderOutputInfo {
-            value: <span class="self">self</span>.coin.note.value,
+            value: <span class="self">self</span>.owncoin.note.value,
             token_id: <span class="kw-2">*</span>DARK_TOKEN_ID,
-            public_key: <span class="self">self</span>.signature_public,
+            public_key: <span class="self">self</span>.recipient,
         };
-        <span class="macro">debug!</span>(<span class="string">&quot;Finished building output&quot;</span>);
 
         <span class="kw">let </span>serial = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
         <span class="kw">let </span>spend_hook = pallas::Base::ZERO;
-        <span class="kw">let </span>user_data_enc = pallas::Base::ZERO;
+        <span class="kw">let </span>user_data_enc = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
         <span class="kw">let </span>token_blind = pallas::Scalar::ZERO;
         <span class="kw">let </span>coin_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
 
-        <span class="macro">info!</span>(<span class="string">&quot;Creating unstake mint proof for output&quot;</span>);
+        <span class="macro">info!</span>(<span class="string">&quot;Building Money::UnstakeV1 Mint ZK proof&quot;</span>);
         <span class="kw">let </span>(proof, public_inputs) = create_unstake_mint_proof(
             <span class="kw-2">&amp;</span><span class="self">self</span>.mint_zkbin,
             <span class="kw-2">&amp;</span><span class="self">self</span>.mint_pk,
@@ -351,15 +352,15 @@
 
         <span class="kw">let </span>encrypted_note = AeadEncryptedNote::encrypt(<span class="kw-2">&amp;</span>note, <span class="kw-2">&amp;</span>output.public_key, <span class="kw-2">&amp;mut </span>OsRng)<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>output = Output {
+        <span class="kw">let </span>tx_output = Output {
             value_commit: public_inputs.value_commit,
             token_commit: public_inputs.token_commit,
             coin: public_inputs.coin,
             note: encrypted_note,
         };
 
-        <span class="kw">let </span>input = ConsensusInput {
-            epoch: <span class="self">self</span>.coin.note.epoch,
+        <span class="kw">let </span>tx_input = ConsensusInput {
+            epoch: <span class="self">self</span>.owncoin.note.epoch,
             value_commit: public_inputs.value_commit,
             nullifier: <span class="self">self</span>.nullifier,
             merkle_root: <span class="self">self</span>.merkle_root,
@@ -367,12 +368,11 @@
         };
 
         <span class="comment">// We now fill this with necessary stuff
-        </span><span class="kw">let </span>params = MoneyUnstakeParamsV1 { input, spend_hook, user_data_enc, output };
-        <span class="kw">let </span>proofs = <span class="macro">vec!</span>[proof];
+        </span><span class="kw">let </span>params = MoneyUnstakeParamsV1 { input: tx_input, output: tx_output };
 
         <span class="comment">// Now we should have all the params and zk proof.
         // We return it all and let the caller deal with it.
-        </span><span class="kw">let </span>debris = MoneyUnstakeCallDebris { params, proofs };
+        </span><span class="kw">let </span>debris = MoneyUnstakeCallDebris { params, proofs: <span class="macro">vec!</span>[proof] };
         <span class="prelude-val">Ok</span>(debris)
     }
 }
