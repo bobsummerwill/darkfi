@@ -507,9 +507,6 @@
 <a href="#507" id="507">507</a>
 <a href="#508" id="508">508</a>
 <a href="#509" id="509">509</a>
-<a href="#510" id="510">510</a>
-<a href="#511" id="511">511</a>
-<a href="#512" id="512">512</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -533,9 +530,8 @@
         pedersen::{pedersen_commitment_base, pedersen_commitment_u64},
         poseidon_hash,
         util::mod_r_p,
-        MerkleNode, SecretKey,
+        MerkleNode, MerkleTree, SecretKey,
     },
-    incrementalmerkletree::{bridgetree::BridgeTree, Tree},
     pasta::{arithmetic::CurveAffine, group::Curve, pallas},
 };
 <span class="kw">use </span>darkfi_serial::{SerialDecodable, SerialEncodable};
@@ -621,7 +617,7 @@
         <span class="comment">// coin1 nonce
         </span>seed: pallas::Base,
         <span class="comment">// Merkle tree of coin commitments
-        </span>coin_commitment_tree: <span class="kw-2">&amp;mut </span>BridgeTree&lt;MerkleNode, MERKLE_DEPTH&gt;,
+        </span>coin_commitment_tree: <span class="kw-2">&amp;mut </span>MerkleTree,
     ) -&gt; <span class="self">Self </span>{
         <span class="comment">// Generate random blinding values for commitments:
         </span><span class="kw">let </span>coin1_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
@@ -634,12 +630,11 @@
         <span class="kw">let </span>c1_base_msg = [<span class="kw-2">*</span>c1_cm_coords.x(), <span class="kw-2">*</span>c1_cm_coords.y()];
         <span class="kw">let </span>coin1_commitment_base = poseidon_hash(c1_base_msg);
         <span class="comment">// Append the element to the Merkle tree
-        </span>coin_commitment_tree.append(<span class="kw-2">&amp;</span>MerkleNode::from(coin1_commitment_base));
-        <span class="kw">let </span>coin1_commitment_pos = coin_commitment_tree.witness().unwrap();
+        </span>coin_commitment_tree.append(MerkleNode::from(coin1_commitment_base));
+        <span class="kw">let </span>coin1_commitment_pos = coin_commitment_tree.mark().unwrap();
         <span class="kw">let </span>coin1_commitment_root = coin_commitment_tree.root(<span class="number">0</span>).unwrap();
-        <span class="kw">let </span>coin1_commitment_merkle_path = coin_commitment_tree
-            .authentication_path(coin1_commitment_pos, <span class="kw-2">&amp;</span>coin1_commitment_root)
-            .unwrap();
+        <span class="kw">let </span>coin1_commitment_merkle_path =
+            coin_commitment_tree.witness(coin1_commitment_pos, <span class="number">0</span>).unwrap();
 
         <span class="self">Self </span>{
             value,
@@ -647,7 +642,7 @@
             nonce: seed,
             coin1_commitment,
             coin1_commitment_root,
-            coin1_commitment_pos: u32::try_from(usize::from(coin1_commitment_pos)).unwrap(),
+            coin1_commitment_pos: u32::try_from(u64::from(coin1_commitment_pos)).unwrap(),
             coin1_commitment_merkle_path,
             coin1_sk,
             coin1_sk_root,
@@ -811,7 +806,7 @@
     /// in lottery.
     </span><span class="kw">pub fn </span>derive_coin(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        coin_commitment_tree: <span class="kw-2">&amp;mut </span>BridgeTree&lt;MerkleNode, MERKLE_DEPTH&gt;,
+        coin_commitment_tree: <span class="kw-2">&amp;mut </span>MerkleTree,
         derived_blind: pallas::Scalar,
     ) -&gt; LeadCoin {
         <span class="macro">info!</span>(target: <span class="string">&quot;consensus::leadcoin&quot;</span>, <span class="string">&quot;derive_coin(): Deriving new coin!&quot;</span>);
@@ -820,18 +815,17 @@
         <span class="kw">let </span>derived_c1_cm_coord = derived_c1_cm.to_affine().coordinates().unwrap();
         <span class="kw">let </span>derived_c1_cm_msg = [<span class="kw-2">*</span>derived_c1_cm_coord.x(), <span class="kw-2">*</span>derived_c1_cm_coord.y()];
         <span class="kw">let </span>derived_c1_cm_base = poseidon_hash(derived_c1_cm_msg);
-        coin_commitment_tree.append(<span class="kw-2">&amp;</span>MerkleNode::from(derived_c1_cm_base));
-        <span class="kw">let </span>leaf_pos = coin_commitment_tree.witness().unwrap();
+        coin_commitment_tree.append(MerkleNode::from(derived_c1_cm_base));
+        <span class="kw">let </span>leaf_pos = coin_commitment_tree.mark().unwrap();
         <span class="kw">let </span>commitment_root = coin_commitment_tree.root(<span class="number">0</span>).unwrap();
-        <span class="kw">let </span>commitment_merkle_path =
-            coin_commitment_tree.authentication_path(leaf_pos, <span class="kw-2">&amp;</span>commitment_root).unwrap();
+        <span class="kw">let </span>commitment_merkle_path = coin_commitment_tree.witness(leaf_pos, <span class="number">0</span>).unwrap();
         LeadCoin {
             value: <span class="self">self</span>.value + constants::REWARD,
             slot: <span class="self">self</span>.slot,
             nonce: derived_c1_rho,
             coin1_commitment: derived_c1_cm,
             coin1_commitment_root: commitment_root,
-            coin1_commitment_pos: u32::try_from(usize::from(leaf_pos)).unwrap(),
+            coin1_commitment_pos: u32::try_from(u64::from(leaf_pos)).unwrap(),
             coin1_commitment_merkle_path: commitment_merkle_path,
             coin1_sk: <span class="self">self</span>.coin1_sk,
             coin1_sk_root: <span class="self">self</span>.coin1_sk_root,
@@ -988,7 +982,7 @@
     /// sk[n] -&gt; derive_function(sk[n-1]),
     /// ```
     </span><span class="kw">pub fn </span>generate() -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span><span class="kw-2">mut </span>tree = BridgeTree::&lt;MerkleNode, MERKLE_DEPTH&gt;::new(EPOCH_LENGTH);
+        <span class="kw">let </span><span class="kw-2">mut </span>tree = MerkleTree::new(EPOCH_LENGTH);
         <span class="kw">let </span><span class="kw-2">mut </span>sks = Vec::with_capacity(EPOCH_LENGTH);
         <span class="kw">let </span><span class="kw-2">mut </span>root_sks = Vec::with_capacity(EPOCH_LENGTH);
         <span class="kw">let </span><span class="kw-2">mut </span>path_sks = Vec::with_capacity(EPOCH_LENGTH);
@@ -1010,10 +1004,10 @@
             prev_sk = secret_key;
 
             <span class="kw">let </span>node = MerkleNode::from(secret_key.inner());
-            tree.append(<span class="kw-2">&amp;</span>node);
-            <span class="kw">let </span>leaf_pos = tree.witness().unwrap();
+            tree.append(node);
+            <span class="kw">let </span>leaf_pos = tree.mark().unwrap();
             <span class="kw">let </span>root = tree.root(<span class="number">0</span>).unwrap();
-            <span class="kw">let </span>path = tree.authentication_path(leaf_pos, <span class="kw-2">&amp;</span>root).unwrap();
+            <span class="kw">let </span>path = tree.witness(leaf_pos, <span class="number">0</span>).unwrap();
 
             root_sks.push(root);
             path_sks.push(path);

@@ -1325,10 +1325,10 @@
     DaoFunction,
 };
 <span class="kw">use </span>darkfi_sdk::{
+    bridgetree,
     crypto::{
         poseidon_hash, MerkleNode, MerkleTree, PublicKey, SecretKey, TokenId, DAO_CONTRACT_ID,
     },
-    incrementalmerkletree::{Position, Tree},
     pasta::pallas,
 };
 <span class="kw">use </span>darkfi_serial::{deserialize, serialize, SerialDecodable, SerialEncodable};
@@ -1403,7 +1403,7 @@
     <span class="doccomment">/// DAO bulla blind
     </span><span class="kw">pub </span>bulla_blind: pallas::Base,
     <span class="doccomment">/// Leaf position of the DAO in the Merkle tree of DAOs
-    </span><span class="kw">pub </span>leaf_position: <span class="prelude-ty">Option</span>&lt;Position&gt;,
+    </span><span class="kw">pub </span>leaf_position: <span class="prelude-ty">Option</span>&lt;bridgetree::Position&gt;,
     <span class="doccomment">/// The transaction hash where the DAO was deployed
     </span><span class="kw">pub </span>tx_hash: <span class="prelude-ty">Option</span>&lt;blake3::Hash&gt;,
     <span class="doccomment">/// The call index in the transaction where the DAO was deployed
@@ -1481,7 +1481,7 @@
     <span class="doccomment">/// Proposal&#39;s bulla blind
     </span><span class="kw">pub </span>bulla_blind: pallas::Base,
     <span class="doccomment">/// Leaf position of this proposal in the Merkle tree of proposals
-    </span><span class="kw">pub </span>leaf_position: <span class="prelude-ty">Option</span>&lt;Position&gt;,
+    </span><span class="kw">pub </span>leaf_position: <span class="prelude-ty">Option</span>&lt;bridgetree::Position&gt;,
     <span class="doccomment">/// Transaction hash where this proposal was proposed
     </span><span class="kw">pub </span>tx_hash: <span class="prelude-ty">Option</span>&lt;blake3::Hash&gt;,
     <span class="doccomment">/// call index in the transaction where this proposal was proposed
@@ -2300,7 +2300,7 @@
         // have to make sure it&#39;s the same for everyone.
         </span><span class="kw">if </span>confirm {
             <span class="kw">for </span>new_bulla <span class="kw">in </span>new_dao_bullas {
-                daos_tree.append(<span class="kw-2">&amp;</span>MerkleNode::from(new_bulla.<span class="number">0</span>.inner()));
+                daos_tree.append(MerkleNode::from(new_bulla.<span class="number">0</span>.inner()));
                 <span class="kw">for </span>dao <span class="kw">in </span>daos.iter_mut() {
                     <span class="kw">if </span>dao.bulla() == new_bulla.<span class="number">0 </span>{
                         <span class="macro">eprintln!</span>(
@@ -2308,7 +2308,7 @@
                             new_bulla.<span class="number">0
                         </span>);
                         <span class="comment">// We have this DAO imported in our wallet. Add the metadata:
-                        </span>dao.leaf_position = daos_tree.witness();
+                        </span>dao.leaf_position = daos_tree.mark();
                         dao.tx_hash = new_bulla.<span class="number">1</span>;
                         dao.call_index = <span class="prelude-val">Some</span>(new_bulla.<span class="number">2</span>);
                         daos_to_confirm.push(dao.clone());
@@ -2317,7 +2317,7 @@
             }
 
             <span class="kw">for </span>proposal <span class="kw">in </span>new_dao_proposals {
-                proposals_tree.append(<span class="kw-2">&amp;</span>MerkleNode::from(proposal.<span class="number">0</span>.proposal_bulla));
+                proposals_tree.append(MerkleNode::from(proposal.<span class="number">0</span>.proposal_bulla));
                 <span class="comment">// FIXME: EncryptedNote2 should perhaps be something generic?
                 </span><span class="kw">let </span>enc_note = EncryptedNote2 {
                     ciphertext: proposal.<span class="number">0</span>.ciphertext,
@@ -2343,7 +2343,7 @@
                             amount: note.proposal.amount,
                             token_id: note.proposal.token_id,
                             bulla_blind: note.proposal.blind,
-                            leaf_position: proposals_tree.witness(),
+                            leaf_position: proposals_tree.mark(),
                             tx_hash: proposal.<span class="number">1</span>,
                             call_index: <span class="prelude-val">Some</span>(proposal.<span class="number">2</span>),
                             vote_id: <span class="prelude-val">None</span>,

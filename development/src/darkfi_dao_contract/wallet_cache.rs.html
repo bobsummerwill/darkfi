@@ -97,8 +97,9 @@
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */
 
-</span><span class="kw">use </span>darkfi_sdk::crypto::{
-    merkle_prelude::<span class="kw-2">*</span>, note::AeadEncryptedNote, MerkleNode, MerklePosition, MerkleTree, SecretKey,
+</span><span class="kw">use </span>darkfi_sdk::{
+    bridgetree,
+    crypto::{note::AeadEncryptedNote, MerkleNode, MerkleTree, SecretKey},
 };
 
 <span class="kw">use </span>darkfi_money_contract::{client::MoneyNote, model::Coin};
@@ -106,7 +107,7 @@
 <span class="kw">pub struct </span>OwnCoin {
     <span class="kw">pub </span>coin: Coin,
     <span class="kw">pub </span>note: MoneyNote,
-    <span class="kw">pub </span>leaf_position: MerklePosition,
+    <span class="kw">pub </span>leaf_position: bridgetree::Position,
 }
 
 <span class="kw">pub struct </span>WalletCache {
@@ -147,14 +148,13 @@
 
     <span class="kw">pub fn </span>try_decrypt_note(<span class="kw-2">&amp;mut </span><span class="self">self</span>, coin: Coin, ciphertext: <span class="kw-2">&amp;</span>AeadEncryptedNote) {
         <span class="comment">// Add the new coins to the Merkle tree
-        </span><span class="kw">let </span>node = MerkleNode::from(coin.inner());
-        <span class="self">self</span>.tree.append(<span class="kw-2">&amp;</span>node);
+        </span><span class="self">self</span>.tree.append(MerkleNode::from(coin.inner()));
 
         <span class="comment">// Loop through all our secret keys...
         </span><span class="kw">for </span>(secret, own_coins) <span class="kw">in </span><span class="self">self</span>.cache.iter_mut() {
             <span class="comment">// .. attempt to decrypt the note ...
             </span><span class="kw">if let </span><span class="prelude-val">Ok</span>(note) = ciphertext.decrypt(secret) {
-                <span class="kw">let </span>leaf_position = <span class="self">self</span>.tree.witness().expect(<span class="string">&quot;coin should be in tree&quot;</span>);
+                <span class="kw">let </span>leaf_position = <span class="self">self</span>.tree.mark().expect(<span class="string">&quot;coin should be in tree&quot;</span>);
                 own_coins.push(OwnCoin { coin, note, leaf_position });
             }
         }

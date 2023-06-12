@@ -195,6 +195,7 @@
 <a href="#195" id="195">195</a>
 <a href="#196" id="196">196</a>
 <a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -224,7 +225,8 @@
 //! are able to abstract away any wallet interfaces to client implementations.
 
 </span><span class="kw">use </span>darkfi_sdk::{
-    crypto::{pasta_prelude::<span class="kw-2">*</span>, MerklePosition, Nullifier, SecretKey, TokenId, DARK_TOKEN_ID},
+    bridgetree,
+    crypto::{pasta_prelude::<span class="kw-2">*</span>, Nullifier, SecretKey, TokenId, DARK_TOKEN_ID},
     pasta::pallas,
 };
 <span class="kw">use </span>darkfi_serial::{SerialDecodable, SerialEncodable};
@@ -328,7 +330,7 @@
     <span class="doccomment">/// Coin&#39;s nullifier
     </span><span class="kw">pub </span>nullifier: Nullifier,
     <span class="doccomment">/// Coin&#39;s leaf position in the Merkle tree of coins
-    </span><span class="kw">pub </span>leaf_position: MerklePosition,
+    </span><span class="kw">pub </span>leaf_position: bridgetree::Position,
 }
 
 <span class="doccomment">/// `ConsensusNote` holds the inner attributes of a `Coin`.
@@ -378,7 +380,7 @@
     <span class="doccomment">/// Coin&#39;s nullifier
     </span><span class="kw">pub </span>nullifier: Nullifier,
     <span class="doccomment">/// Coin&#39;s leaf position in the Merkle tree of coins
-    </span><span class="kw">pub </span>leaf_position: MerklePosition,
+    </span><span class="kw">pub </span>leaf_position: bridgetree::Position,
 }
 
 <span class="kw">impl </span>From&lt;ConsensusOwnCoin&gt; <span class="kw">for </span>OwnCoin {

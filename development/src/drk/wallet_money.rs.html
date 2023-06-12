@@ -791,7 +791,6 @@
 <a href="#791" id="791">791</a>
 <a href="#792" id="792">792</a>
 <a href="#793" id="793">793</a>
-<a href="#794" id="794">794</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -833,12 +832,11 @@
     MoneyFunction,
 };
 <span class="kw">use </span>darkfi_sdk::{
+    bridgetree,
     crypto::{
         poseidon_hash, Keypair, MerkleNode, MerkleTree, Nullifier, PublicKey, SecretKey, TokenId,
         MONEY_CONTRACT_ID,
     },
-    incrementalmerkletree,
-    incrementalmerkletree::Tree,
     pasta::pallas,
 };
 <span class="kw">use </span>darkfi_serial::{deserialize, serialize};
@@ -1126,7 +1124,7 @@
             <span class="kw">let </span>nullifier: Nullifier = deserialize(<span class="kw-2">&amp;</span>nullifier_bytes)<span class="question-mark">?</span>;
 
             <span class="kw">let </span>leaf_position_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">12</span>].clone())<span class="question-mark">?</span>;
-            <span class="kw">let </span>leaf_position: incrementalmerkletree::Position = deserialize(<span class="kw-2">&amp;</span>leaf_position_bytes)<span class="question-mark">?</span>;
+            <span class="kw">let </span>leaf_position: bridgetree::Position = deserialize(<span class="kw-2">&amp;</span>leaf_position_bytes)<span class="question-mark">?</span>;
 
             <span class="kw">let </span>memo: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">13</span>].clone())<span class="question-mark">?</span>;
 
@@ -1340,14 +1338,14 @@
             <span class="kw">let </span>coin = output.coin;
 
             <span class="comment">// Append the new coin to the Merkle tree. Every coin has to be added.
-            </span>tree.append(<span class="kw-2">&amp;</span>MerkleNode::from(coin.inner()));
+            </span>tree.append(MerkleNode::from(coin.inner()));
 
             <span class="comment">// Attempt to decrypt the note
             </span><span class="kw">for </span>secret <span class="kw">in </span>secrets.iter().chain(dao_secrets.iter()) {
                 <span class="kw">if let </span><span class="prelude-val">Ok</span>(note) = output.note.decrypt::&lt;MoneyNote&gt;(secret) {
                     <span class="macro">eprintln!</span>(<span class="string">&quot;Successfully decrypted a Money Note&quot;</span>);
                     <span class="macro">eprintln!</span>(<span class="string">&quot;Witnessing coin in Merkle tree&quot;</span>);
-                    <span class="kw">let </span>leaf_position = tree.witness().unwrap();
+                    <span class="kw">let </span>leaf_position = tree.mark().unwrap();
 
                     <span class="kw">let </span>owncoin = OwnCoin {
                         coin,

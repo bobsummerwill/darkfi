@@ -185,7 +185,6 @@
 <a href="#185" id="185">185</a>
 <a href="#186" id="186">186</a>
 <a href="#187" id="187">187</a>
-<a href="#188" id="188">188</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -207,9 +206,9 @@
 </span><span class="kw">use </span>core::{fmt, str::FromStr};
 <span class="kw">use </span>std::{io, iter};
 
+<span class="kw">use </span>bridgetree::{BridgeTree, Hashable, Level};
 <span class="kw">use </span>darkfi_serial::{SerialDecodable, SerialEncodable};
 <span class="kw">use </span>halo2_gadgets::sinsemilla::primitives::HashDomain;
-<span class="kw">use </span>incrementalmerkletree::{bridgetree::BridgeTree, Altitude, Hashable};
 <span class="kw">use </span>lazy_static::lazy_static;
 <span class="kw">use </span>pasta_curves::{
     group::ff::{PrimeField, PrimeFieldBits},
@@ -222,7 +221,7 @@
     MERKLE_DEPTH,
 };
 
-<span class="kw">pub type </span>MerkleTree = BridgeTree&lt;MerkleNode, { MERKLE_DEPTH }&gt;;
+<span class="kw">pub type </span>MerkleTree = BridgeTree&lt;MerkleNode, usize, { MERKLE_DEPTH }&gt;;
 
 <span class="macro">lazy_static! </span>{
     <span class="kw">static </span><span class="kw-2">ref </span>UNCOMMITTED_ORCHARD: pallas::Base = pallas::Base::from(<span class="number">2</span>);
@@ -325,7 +324,7 @@
     ///       above the the leaves, i.e. layer = 31, l = 0
     ///     - when hashing to the final root, we produce the anchor
     ///       with layer = 0, l = 31.
-    </span><span class="kw">fn </span>combine(altitude: Altitude, left: <span class="kw-2">&amp;</span><span class="self">Self</span>, right: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">fn </span>combine(altitude: Level, left: <span class="kw-2">&amp;</span><span class="self">Self</span>, right: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="self">Self </span>{
         <span class="comment">// MerkleCRH Sinsemilla hash domain.
         </span><span class="kw">let </span>domain = HashDomain::new(MERKLE_CRH_PERSONALIZATION);
 
@@ -341,7 +340,7 @@
         )
     }
 
-    <span class="kw">fn </span>empty_root(altitude: Altitude) -&gt; <span class="self">Self </span>{
+    <span class="kw">fn </span>empty_root(altitude: Level) -&gt; <span class="self">Self </span>{
         EMPTY_ROOTS[&lt;usize&gt;::from(altitude)]
     }
 }
@@ -351,7 +350,6 @@
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
     <span class="kw">use </span>halo2_proofs::arithmetic::Field;
-    <span class="kw">use </span>incrementalmerkletree::Tree;
     <span class="kw">use </span>pasta_curves::pallas;
     <span class="kw">use </span>rand::rngs::OsRng;
 
@@ -361,11 +359,11 @@
         <span class="kw">let </span><span class="kw-2">mut </span>tree = MerkleTree::new(MAX_CHECKPOINTS);
         <span class="kw">let </span><span class="kw-2">mut </span>roots = <span class="macro">vec!</span>[];
 
-        <span class="kw">for _ in </span><span class="number">0</span>..MAX_CHECKPOINTS {
+        <span class="kw">for </span>id <span class="kw">in </span><span class="number">0</span>..MAX_CHECKPOINTS {
             <span class="kw">let </span>leaf = MerkleNode::from(pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng));
-            tree.append(<span class="kw-2">&amp;</span>leaf);
+            tree.append(leaf);
             roots.push(tree.root(<span class="number">0</span>).unwrap());
-            tree.checkpoint();
+            tree.checkpoint(id);
         }
 
         <span class="kw">for </span>root <span class="kw">in </span>roots.iter().rev() {

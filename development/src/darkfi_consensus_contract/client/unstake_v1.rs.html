@@ -100,8 +100,6 @@
 <a href="#100" id="100">100</a>
 <a href="#101" id="101">101</a>
 <a href="#102" id="102">102</a>
-<a href="#103" id="103">103</a>
-<a href="#104" id="104">104</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -133,7 +131,6 @@
 };
 <span class="kw">use </span>darkfi_sdk::{
     crypto::{pasta_prelude::<span class="kw-2">*</span>, MerkleTree, SecretKey},
-    incrementalmerkletree::Tree,
     pasta::pallas,
 };
 <span class="kw">use </span>log::{debug, info};
@@ -170,8 +167,7 @@
         <span class="macro">assert!</span>(<span class="self">self</span>.owncoin.note.value != <span class="number">0</span>);
 
         <span class="macro">debug!</span>(<span class="string">&quot;Building Consensus::UnstakeV1 anonymous input&quot;</span>);
-        <span class="kw">let </span>root = <span class="self">self</span>.tree.root(<span class="number">0</span>).unwrap();
-        <span class="kw">let </span>merkle_path = <span class="self">self</span>.tree.authentication_path(<span class="self">self</span>.owncoin.leaf_position, <span class="kw-2">&amp;</span>root).unwrap();
+        <span class="kw">let </span>merkle_path = <span class="self">self</span>.tree.witness(<span class="self">self</span>.owncoin.leaf_position, <span class="number">0</span>).unwrap();
 
         <span class="kw">let </span>input = ConsensusBurnInputInfo {
             leaf_position: <span class="self">self</span>.owncoin.leaf_position,

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["bridgetree"],"struct":["Altitude","Position"],"trait":["Frontier","Hashable","Tree"]};
+window.SIDEBAR_ITEMS = {"enum":["Retention","Source"],"mod":["frontier"],"struct":["Address","Level","MerklePath","Position"],"trait":["Hashable"]};

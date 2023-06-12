@@ -84,6 +84,9 @@
 <a href="#84" id="84">84</a>
 <a href="#85" id="85">85</a>
 <a href="#86" id="86">86</a>
+<a href="#87" id="87">87</a>
+<a href="#88" id="88">88</a>
+<a href="#89" id="89">89</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -107,7 +110,10 @@
     zkas::ZkBinary,
     <span class="prelude-ty">Result</span>,
 };
-<span class="kw">use </span>darkfi_sdk::crypto::{pallas, poseidon_hash, PublicKey, SecretKey, TokenId};
+<span class="kw">use </span>darkfi_sdk::{
+    crypto::{poseidon_hash, PublicKey, SecretKey, TokenId},
+    pasta::pallas,
+};
 <span class="kw">use </span>log::debug;
 <span class="kw">use </span>rand::rngs::OsRng;
 

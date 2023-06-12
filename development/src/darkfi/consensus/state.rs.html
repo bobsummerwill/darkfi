@@ -973,7 +973,6 @@
 <a href="#973" id="973">973</a>
 <a href="#974" id="974">974</a>
 <a href="#975" id="975">975</a>
-<a href="#976" id="976">976</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -993,8 +992,7 @@
  */
 
 </span><span class="kw">use </span>darkfi_sdk::{
-    crypto::{constants::MERKLE_DEPTH, pasta_prelude::<span class="kw-2">*</span>, MerkleNode},
-    incrementalmerkletree::bridgetree::BridgeTree,
+    crypto::{pasta_prelude::<span class="kw-2">*</span>, MerkleTree},
     pasta::{group::ff::PrimeField, pallas},
 };
 <span class="kw">use </span>darkfi_serial::{deserialize, serialize, SerialDecodable, SerialEncodable};
@@ -1062,7 +1060,7 @@
     </span><span class="doccomment">/// Canonical competing coins
     </span><span class="kw">pub </span>coins: Vec&lt;LeadCoin&gt;,
     <span class="doccomment">/// Canonical coin commitments tree
-    </span><span class="kw">pub </span>coins_tree: BridgeTree&lt;MerkleNode, MERKLE_DEPTH&gt;,
+    </span><span class="kw">pub </span>coins_tree: MerkleTree,
     <span class="doccomment">/// Canonical seen nullifiers from proposals
     </span><span class="kw">pub </span>nullifiers: Vec&lt;pallas::Base&gt;,
 }
@@ -1099,7 +1097,7 @@
             f_history: <span class="macro">vec!</span>[constants::FLOAT10_ZERO.clone()],
             err_history: <span class="macro">vec!</span>[constants::FLOAT10_ZERO.clone(), constants::FLOAT10_ZERO.clone()],
             coins: <span class="macro">vec!</span>[],
-            coins_tree: BridgeTree::&lt;MerkleNode, MERKLE_DEPTH&gt;::new(constants::EPOCH_LENGTH * <span class="number">100</span>),
+            coins_tree: MerkleTree::new(constants::EPOCH_LENGTH * <span class="number">100</span>),
             nullifiers: <span class="macro">vec!</span>[],
         }
     }
@@ -1758,7 +1756,7 @@
     <span class="doccomment">/// Node competing coins current state
     </span><span class="kw">pub </span>coins: Vec&lt;LeadCoin&gt;,
     <span class="doccomment">/// Coin commitments tree current state
-    </span><span class="kw">pub </span>coins_tree: BridgeTree&lt;MerkleNode, MERKLE_DEPTH&gt;,
+    </span><span class="kw">pub </span>coins_tree: MerkleTree,
     <span class="doccomment">/// Seen nullifiers from proposals current state
     </span><span class="kw">pub </span>nullifiers: Vec&lt;pallas::Base&gt;,
 }
@@ -1767,7 +1765,7 @@
     <span class="kw">pub fn </span>new(
         proposal: BlockProposal,
         coins: Vec&lt;LeadCoin&gt;,
-        coins_tree: BridgeTree&lt;MerkleNode, MERKLE_DEPTH&gt;,
+        coins_tree: MerkleTree,
         nullifiers: Vec&lt;pallas::Base&gt;,
     ) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{ proposal, coins, coins_tree, nullifiers }
@@ -1794,7 +1792,7 @@
         <span class="self">Self </span>{
             proposal: state_checkpoint_info.proposal,
             coins: <span class="macro">vec!</span>[],
-            coins_tree: BridgeTree::&lt;MerkleNode, MERKLE_DEPTH&gt;::new(constants::EPOCH_LENGTH * <span class="number">100</span>),
+            coins_tree: MerkleTree::new(constants::EPOCH_LENGTH * <span class="number">100</span>),
             nullifiers: state_checkpoint_info.nullifiers,
         }
     }

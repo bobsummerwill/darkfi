@@ -581,13 +581,6 @@
 <a href="#581" id="581">581</a>
 <a href="#582" id="582">582</a>
 <a href="#583" id="583">583</a>
-<a href="#584" id="584">584</a>
-<a href="#585" id="585">585</a>
-<a href="#586" id="586">586</a>
-<a href="#587" id="587">587</a>
-<a href="#588" id="588">588</a>
-<a href="#589" id="589">589</a>
-<a href="#590" id="590">590</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -628,7 +621,6 @@
         pedersen_commitment_u64, Keypair, PublicKey, SecretKey, TokenId, DAO_CONTRACT_ID,
         MONEY_CONTRACT_ID,
     },
-    incrementalmerkletree::Tree,
     pasta::pallas,
     ContractCall,
 };
@@ -768,9 +760,7 @@
 
         <span class="comment">// Get the Merkle path for the gov coin in the money tree
         </span><span class="kw">let </span>money_merkle_tree = <span class="self">self</span>.get_money_tree().<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">let </span>root = money_merkle_tree.root(<span class="number">0</span>).unwrap();
-        <span class="kw">let </span>gov_coin_merkle_path =
-            money_merkle_tree.authentication_path(gov_coin.leaf_position, <span class="kw-2">&amp;</span>root).unwrap();
+        <span class="kw">let </span>gov_coin_merkle_path = money_merkle_tree.witness(gov_coin.leaf_position, <span class="number">0</span>).unwrap();
 
         <span class="comment">// Fetch the daos Merkle tree
         </span><span class="kw">let </span>(daos_tree, <span class="kw">_</span>) = <span class="self">self</span>.get_dao_trees().<span class="kw">await</span><span class="question-mark">?</span>;
@@ -786,7 +776,7 @@
         <span class="kw">let </span>(dao_merkle_path, dao_merkle_root) = {
             <span class="kw">let </span>root = daos_tree.root(<span class="number">0</span>).unwrap();
             <span class="kw">let </span>leaf_pos = dao.leaf_position.unwrap();
-            <span class="kw">let </span>dao_merkle_path = daos_tree.authentication_path(leaf_pos, <span class="kw-2">&amp;</span>root).unwrap();
+            <span class="kw">let </span>dao_merkle_path = daos_tree.witness(leaf_pos, <span class="number">0</span>).unwrap();
             (dao_merkle_path, root)
         };
 
@@ -880,9 +870,8 @@
             <span class="kw">let </span>signature_secret = SecretKey::random(<span class="kw-2">&amp;mut </span>OsRng);
             input_secrets.push(signature_secret);
 
-            <span class="kw">let </span>root = money_tree.root(<span class="number">0</span>).unwrap();
             <span class="kw">let </span>leaf_position = coin.leaf_position;
-            <span class="kw">let </span>merkle_path = money_tree.authentication_path(coin.leaf_position, <span class="kw-2">&amp;</span>root).unwrap();
+            <span class="kw">let </span>merkle_path = money_tree.witness(coin.leaf_position, <span class="number">0</span>).unwrap();
 
             <span class="kw">let </span>input = DaoVoteInput {
                 secret: coin.secret,
@@ -1011,7 +1000,6 @@
         }
 
         <span class="kw">let </span>money_merkle_tree = <span class="self">self</span>.get_money_tree().<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">let </span>money_merkle_root = money_merkle_tree.root(<span class="number">0</span>).unwrap();
 
         <span class="kw">let </span><span class="kw-2">mut </span>input_value_blind = pallas::Scalar::from(<span class="number">0</span>);
         <span class="kw">for </span>coin <span class="kw">in </span><span class="kw-2">&amp;</span>input_coins {
@@ -1021,9 +1009,7 @@
 
             xfer_inputs.push(money_client::TransferInput {
                 leaf_position: coin.leaf_position,
-                merkle_path: money_merkle_tree
-                    .authentication_path(coin.leaf_position, <span class="kw-2">&amp;</span>money_merkle_root)
-                    .unwrap(),
+                merkle_path: money_merkle_tree.witness(coin.leaf_position, <span class="number">0</span>).unwrap(),
                 secret: dao.secret_key,
                 note: coin.note.clone(),
                 user_data_blind,

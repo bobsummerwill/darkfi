@@ -192,6 +192,7 @@
 <a href="#192" id="192">192</a>
 <a href="#193" id="193">193</a>
 <a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -210,8 +211,9 @@
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */
 
-</span><span class="kw">use </span>darkfi_sdk::crypto::{
-    pallas, pasta_prelude::<span class="kw-2">*</span>, pedersen_commitment_u64, poseidon_hash, SecretKey,
+</span><span class="kw">use </span>darkfi_sdk::{
+    crypto::{pasta_prelude::<span class="kw-2">*</span>, pedersen_commitment_u64, poseidon_hash, SecretKey},
+    pasta::pallas,
 };
 
 <span class="kw">use </span>halo2_proofs::circuit::Value;

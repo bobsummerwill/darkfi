@@ -1221,8 +1221,6 @@
 <a href="#1221" id="1221">1221</a>
 <a href="#1222" id="1222">1222</a>
 <a href="#1223" id="1223">1223</a>
-<a href="#1224" id="1224">1224</a>
-<a href="#1225" id="1225">1225</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -1246,12 +1244,10 @@
 <span class="kw">use </span>async_std::sync::{Arc, RwLock};
 <span class="kw">use </span>darkfi_sdk::{
     crypto::{
-        constants::MERKLE_DEPTH,
         contract_id::{CONSENSUS_CONTRACT_ID, DAO_CONTRACT_ID, MONEY_CONTRACT_ID},
         schnorr::{SchnorrPublic, SchnorrSecret},
-        MerkleNode, PublicKey, SecretKey,
+        MerkleNode, MerkleTree, PublicKey, SecretKey,
     },
-    incrementalmerkletree::{bridgetree::BridgeTree, Tree},
     pasta::{group::ff::PrimeField, pallas},
 };
 <span class="kw">use </span>darkfi_serial::{serialize, Decodable, Encodable, WriteExt};
@@ -1606,12 +1602,12 @@
         <span class="kw">if </span>!erroneous_txs.is_empty() {
             unproposed_txs.retain(|x| !erroneous_txs.contains(x));
         }
-        <span class="kw">let </span><span class="kw-2">mut </span>tree = BridgeTree::&lt;MerkleNode, MERKLE_DEPTH&gt;::new(<span class="number">100</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>tree = MerkleTree::new(<span class="number">100</span>);
         <span class="comment">// The following is pretty weird, so something better should be done.
         </span><span class="kw">for </span>tx <span class="kw">in </span><span class="kw-2">&amp;</span>unproposed_txs {
             <span class="kw">let </span><span class="kw-2">mut </span>hash = [<span class="number">0_u8</span>; <span class="number">32</span>];
             hash[<span class="number">0</span>..<span class="number">31</span>].copy_from_slice(<span class="kw-2">&amp;</span>blake3::hash(<span class="kw-2">&amp;</span>serialize(tx)).as_bytes()[<span class="number">0</span>..<span class="number">31</span>]);
-            tree.append(<span class="kw-2">&amp;</span>MerkleNode::from(pallas::Base::from_repr(hash).unwrap()));
+            tree.append(MerkleNode::from(pallas::Base::from_repr(hash).unwrap()));
         }
         <span class="kw">let </span>root = tree.root(<span class="number">0</span>).unwrap();
 

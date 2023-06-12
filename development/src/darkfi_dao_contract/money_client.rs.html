@@ -225,6 +225,10 @@
 <a href="#225" id="225">225</a>
 <a href="#226" id="226">226</a>
 <a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -251,9 +255,13 @@
     zkas::ZkBinary,
     <span class="prelude-ty">Result</span>,
 };
-<span class="kw">use </span>darkfi_sdk::crypto::{
-    note::AeadEncryptedNote, pallas, pasta_prelude::<span class="kw-2">*</span>, MerkleNode, MerklePosition, PublicKey,
-    SecretKey, TokenId, ValueBlind,
+<span class="kw">use </span>darkfi_sdk::{
+    bridgetree,
+    crypto::{
+        note::AeadEncryptedNote, pasta_prelude::<span class="kw-2">*</span>, MerkleNode, PublicKey, SecretKey, TokenId,
+        ValueBlind,
+    },
+    pasta::pallas,
 };
 
 <span class="kw">use </span>rand::rngs::OsRng;
@@ -282,7 +290,7 @@
 }
 
 <span class="kw">pub struct </span>TransferInput {
-    <span class="kw">pub </span>leaf_position: MerklePosition,
+    <span class="kw">pub </span>leaf_position: bridgetree::Position,
     <span class="kw">pub </span>merkle_path: Vec&lt;MerkleNode&gt;,
     <span class="kw">pub </span>secret: SecretKey,
     <span class="kw">pub </span>note: MoneyNote,

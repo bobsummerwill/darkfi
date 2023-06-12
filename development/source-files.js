@@ -3,6 +3,7 @@ var sourcesIndex = JSON.parse('{\
 "adler":["",[],["algo.rs","lib.rs"]],\
 "aead":["",[],["lib.rs"]],\
 "ahash":["",[],["convert.rs","fallback_hash.rs","lib.rs","operations.rs","random_state.rs","specialize.rs"]],\
+"allocator_api2":["",[["stable",[["alloc",[],["global.rs","mod.rs"]],["vec",[],["drain.rs","into_iter.rs","mod.rs","partial_eq.rs","set_len_on_drop.rs","splice.rs"]]],["boxed.rs","macros.rs","mod.rs","raw_vec.rs"]]],["lib.rs"]],\
 "alsa":["",[["direct",[],["ffi.rs","pcm.rs"]]],["card.rs","chmap.rs","ctl_int.rs","device_name.rs","direct.rs","error.rs","hctl.rs","io.rs","lib.rs","mixer.rs","pcm.rs","poll.rs","rawmidi.rs","seq.rs"]],\
 "alsa_sys":["",[],["generated.rs","lib.rs"]],\
 "anstream":["",[["adapter",[],["mod.rs","strip.rs","wincon.rs"]]],["auto.rs","buffer.rs","lib.rs","lockable.rs","macros.rs","raw.rs","strip.rs"]],\
@@ -37,6 +38,7 @@ var sourcesIndex = JSON.parse('{\
 "blake3":["",[],["ffi_avx2.rs","ffi_avx512.rs","ffi_sse2.rs","ffi_sse41.rs","guts.rs","join.rs","lib.rs","platform.rs","portable.rs"]],\
 "block_buffer":["",[],["lib.rs","sealed.rs"]],\
 "blocking":["",[],["lib.rs"]],\
+"bridgetree":["",[],["lib.rs"]],\
 "bs58":["",[],["alphabet.rs","decode.rs","encode.rs","lib.rs"]],\
 "bumpalo":["",[],["alloc.rs","lib.rs"]],\
 "bytecheck":["",[],["lib.rs"]],\
@@ -95,7 +97,7 @@ var sourcesIndex = JSON.parse('{\
 "darkfi_derive_internal":["",[],["helpers.rs","lib.rs"]],\
 "darkfi_money_contract":["",[["client",[],["genesis_mint_v1.rs","mod.rs","stake_v1.rs","swap_v1.rs","token_freeze_v1.rs","token_mint_v1.rs","transfer_v1.rs","unstake_v1.rs"]]],["error.rs","lib.rs","model.rs"]],\
 "darkfi_sdk":["",[["crypto",[["constants",[["fixed_bases",[],["commit_ivk_r.rs","note_commit_r.rs","nullifier_k.rs","spend_auth_g.rs","value_commit_r.rs","value_commit_v.rs"]]],["fixed_bases.rs","sinsemilla.rs","util.rs"]]],["constants.rs","contract_id.rs","diffie_hellman.rs","ecvrf.rs","keypair.rs","merkle_node.rs","mimc_vdf.rs","mod.rs","note.rs","nullifier.rs","pedersen.rs","schnorr.rs","smt.rs","token_id.rs","util.rs"]]],["db.rs","entrypoint.rs","error.rs","lib.rs","log.rs","merkle.rs","tx.rs","util.rs"]],\
-"darkfi_serial":["",[["types",[],["collections.rs","hash.rs","incrementalmerkletree.rs","pasta.rs","url.rs"]]],["async_serial.rs","endian.rs","lib.rs","types.rs"]],\
+"darkfi_serial":["",[["types",[],["bridgetree.rs","collections.rs","hash.rs","pasta.rs","url.rs"]]],["async_serial.rs","endian.rs","lib.rs","types.rs"]],\
 "darkfid":["",[],["error.rs","main.rs","rpc_blockchain.rs","rpc_misc.rs","rpc_tx.rs","rpc_wallet.rs"]],\
 "darkirc":["",[["irc",[["server",[],["nickserv.rs"]]],["client.rs","mod.rs","server.rs"]]],["crypto.rs","main.rs","privmsg.rs","rpc.rs","settings.rs"]],\
 "darling":["",[],["lib.rs","macros_public.rs"]],\
@@ -170,7 +172,7 @@ var sourcesIndex = JSON.parse('{\
 "iana_time_zone":["",[],["ffi_utils.rs","lib.rs","tz_linux.rs"]],\
 "ident_case":["",[],["lib.rs"]],\
 "idna":["",[],["lib.rs","punycode.rs","uts46.rs"]],\
-"incrementalmerkletree":["",[],["bridgetree.rs","lib.rs","sample.rs"]],\
+"incrementalmerkletree":["",[],["frontier.rs","lib.rs"]],\
 "indexmap":["",[["map",[["core",[],["raw.rs"]]],["core.rs"]]],["arbitrary.rs","equivalent.rs","lib.rs","macros.rs","map.rs","mutable_keys.rs","set.rs","util.rs"]],\
 "indicatif":["",[],["draw_target.rs","format.rs","iter.rs","lib.rs","multi.rs","progress_bar.rs","state.rs","style.rs","term_like.rs"]],\
 "inout":["",[],["errors.rs","inout.rs","inout_buf.rs","lib.rs","reserved.rs"]],\
@@ -253,7 +255,7 @@ var sourcesIndex = JSON.parse('{\
 "rkyv_derive":["",[["serde",[],["mod.rs","receiver.rs","respan.rs"]]],["archive.rs","attributes.rs","deserialize.rs","lib.rs","repr.rs","serialize.rs","util.rs","with.rs"]],\
 "rodio":["",[["conversions",[],["channels.rs","mod.rs","sample.rs","sample_rate.rs"]],["decoder",[],["mod.rs","mp3.rs"]],["source",[],["amplify.rs","blt.rs","buffered.rs","channel_volume.rs","crossfade.rs","delay.rs","done.rs","empty.rs","fadein.rs","from_factory.rs","from_iter.rs","mix.rs","mod.rs","pausable.rs","periodic.rs","repeat.rs","samples_converter.rs","sine.rs","skip.rs","skippable.rs","spatial.rs","speed.rs","stoppable.rs","take.rs","uniform.rs","zero.rs"]]],["buffer.rs","dynamic_mixer.rs","lib.rs","queue.rs","sink.rs","spatial_sink.rs","static_buffer.rs","stream.rs"]],\
 "rustc_demangle":["",[],["legacy.rs","lib.rs","v0.rs"]],\
-"rustix":["",[["backend",[["linux_raw",[["arch",[["inline",[],["mod.rs","x86_64.rs"]]],["mod.rs"]],["fs",[],["dir.rs","inotify.rs","makedev.rs","mod.rs","syscalls.rs","types.rs"]],["io",[],["epoll.rs","errno.rs","mod.rs","poll_fd.rs","syscalls.rs","types.rs"]],["process",[],["cpu_set.rs","mod.rs","syscalls.rs","types.rs","wait.rs"]],["termios",[],["mod.rs","syscalls.rs","types.rs"]],["time",[],["mod.rs","types.rs"]]],["c.rs","conv.rs","elf.rs","mod.rs","reg.rs"]]]],["ffi",[],["mod.rs"]],["fs",[],["abs.rs","at.rs","constants.rs","copy_file_range.rs","cwd.rs","dir.rs","fadvise.rs","fcntl.rs","fd.rs","file_type.rs","makedev.rs","memfd_create.rs","mod.rs","mount.rs","openat2.rs","raw_dir.rs","sendfile.rs","statx.rs","sync.rs","xattr.rs"]],["io",[],["close.rs","dup.rs","errno.rs","eventfd.rs","fcntl.rs","ioctl.rs","is_read_write.rs","mod.rs","pipe.rs","poll.rs","read_write.rs","seek_from.rs","stdio.rs"]],["path",[],["arg.rs","mod.rs"]],["process",[],["chdir.rs","chroot.rs","exit.rs","id.rs","kill.rs","membarrier.rs","mod.rs","pidfd.rs","prctl.rs","priority.rs","rlimit.rs","sched.rs","sched_yield.rs","system.rs","umask.rs","wait.rs"]],["termios",[],["cf.rs","constants.rs","mod.rs","tc.rs","tty.rs"]]],["const_assert.rs","cstr.rs","lib.rs","utils.rs","weak.rs"]],\
+"rustix":["",[["backend",[["linux_raw",[["arch",[["inline",[],["mod.rs","x86_64.rs"]]],["mod.rs"]],["fs",[],["dir.rs","inotify.rs","makedev.rs","mod.rs","syscalls.rs","types.rs"]],["io",[],["epoll.rs","errno.rs","mod.rs","poll_fd.rs","syscalls.rs","types.rs"]],["process",[],["cpu_set.rs","mod.rs","syscalls.rs","types.rs","wait.rs"]],["termios",[],["mod.rs","syscalls.rs","types.rs"]],["time",[],["mod.rs","types.rs"]]],["c.rs","conv.rs","elf.rs","mod.rs","reg.rs"]]]],["ffi",[],["mod.rs"]],["fs",[],["abs.rs","at.rs","constants.rs","copy_file_range.rs","cwd.rs","dir.rs","fadvise.rs","fcntl.rs","fd.rs","file_type.rs","makedev.rs","memfd_create.rs","mod.rs","mount.rs","openat2.rs","raw_dir.rs","sendfile.rs","statx.rs","sync.rs","xattr.rs"]],["io",[],["close.rs","dup.rs","errno.rs","eventfd.rs","fcntl.rs","ioctl.rs","mod.rs","pipe.rs","poll.rs","read_write.rs","seek_from.rs","stdio.rs"]],["path",[],["arg.rs","mod.rs"]],["process",[],["chdir.rs","chroot.rs","exit.rs","id.rs","ioctl.rs","kill.rs","membarrier.rs","mod.rs","pidfd.rs","prctl.rs","priority.rs","rlimit.rs","sched.rs","sched_yield.rs","system.rs","umask.rs","wait.rs"]],["termios",[],["cf.rs","constants.rs","mod.rs","tc.rs","tty.rs"]]],["const_assert.rs","cstr.rs","lib.rs","utils.rs","weak.rs"]],\
 "rustls":["",[["client",[],["builder.rs","client_conn.rs","common.rs","handy.rs","hs.rs","tls12.rs","tls13.rs"]],["manual",[],["defaults.rs","features.rs","howto.rs","implvulns.rs","mod.rs","tlsvulns.rs"]],["msgs",[],["alert.rs","base.rs","ccs.rs","codec.rs","deframer.rs","enums.rs","fragmenter.rs","handshake.rs","macros.rs","message.rs","mod.rs","persist.rs"]],["server",[],["builder.rs","common.rs","handy.rs","hs.rs","server_conn.rs","tls12.rs","tls13.rs"]],["tls12",[],["cipher.rs","mod.rs","prf.rs"]],["tls13",[],["key_schedule.rs","mod.rs"]]],["anchors.rs","bs_debug.rs","builder.rs","check.rs","cipher.rs","common_state.rs","conn.rs","enums.rs","error.rs","hash_hs.rs","key.rs","key_log.rs","key_log_file.rs","kx.rs","lib.rs","limited_cache.rs","rand.rs","record_layer.rs","sign.rs","stream.rs","suites.rs","ticketer.rs","vecbuf.rs","verify.rs","versions.rs","x509.rs"]],\
 "rustls_pemfile":["",[],["lib.rs","pemfile.rs"]],\
 "ryu":["",[["buffer",[],["mod.rs"]],["pretty",[],["exponent.rs","mantissa.rs","mod.rs"]]],["common.rs","d2s.rs","d2s_full_table.rs","d2s_intrinsics.rs","digit_table.rs","f2s.rs","f2s_intrinsics.rs","lib.rs"]],\

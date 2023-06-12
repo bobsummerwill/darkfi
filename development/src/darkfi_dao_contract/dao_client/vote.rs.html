@@ -279,6 +279,11 @@
 <a href="#279" id="279">279</a>
 <a href="#280" id="280">280</a>
 <a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -297,9 +302,14 @@
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */
 
-</span><span class="kw">use </span>darkfi_sdk::crypto::{
-    merkle_prelude::<span class="kw-2">*</span>, pallas, pasta_prelude::<span class="kw-2">*</span>, pedersen_commitment_u64, poseidon_hash, Keypair,
-    MerkleNode, MerklePosition, Nullifier, PublicKey, SecretKey,
+</span><span class="kw">use </span>darkfi_sdk::{
+    bridgetree,
+    bridgetree::Hashable,
+    crypto::{
+        pasta_prelude::<span class="kw-2">*</span>, pedersen_commitment_u64, poseidon_hash, Keypair, MerkleNode, Nullifier,
+        PublicKey, SecretKey,
+    },
+    pasta::pallas,
 };
 <span class="kw">use </span>darkfi_serial::{SerialDecodable, SerialEncodable};
 <span class="kw">use </span>log::debug;
@@ -329,7 +339,7 @@
 <span class="kw">pub struct </span>DaoVoteInput {
     <span class="kw">pub </span>secret: SecretKey,
     <span class="kw">pub </span>note: darkfi_money_contract::client::MoneyNote,
-    <span class="kw">pub </span>leaf_position: MerklePosition,
+    <span class="kw">pub </span>leaf_position: bridgetree::Position,
     <span class="kw">pub </span>merkle_path: Vec&lt;MerkleNode&gt;,
     <span class="kw">pub </span>signature_secret: SecretKey,
 }

@@ -169,6 +169,7 @@
 <a href="#169" id="169">169</a>
 <a href="#170" id="170">170</a>
 <a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -188,8 +189,9 @@
  */
 
 </span><span class="kw">use </span>darkfi_sdk::{
-    crypto::{pallas, pasta_prelude::<span class="kw-2">*</span>, MerkleNode, Nullifier, PublicKey},
+    crypto::{pasta_prelude::<span class="kw-2">*</span>, MerkleNode, Nullifier, PublicKey},
     error::ContractError,
+    pasta::pallas,
 };
 <span class="kw">use </span>darkfi_serial::{SerialDecodable, SerialEncodable};
 

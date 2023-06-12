@@ -271,7 +271,6 @@
 <a href="#271" id="271">271</a>
 <a href="#272" id="272">272</a>
 <a href="#273" id="273">273</a>
-<a href="#274" id="274">274</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -293,8 +292,7 @@
 </span><span class="kw">use </span>std::fmt;
 
 <span class="kw">use </span>darkfi_sdk::{
-    crypto::{constants::MERKLE_DEPTH, MerkleNode},
-    incrementalmerkletree::{bridgetree::BridgeTree, Tree},
+    crypto::{MerkleNode, MerkleTree},
     pasta::pallas,
 };
 <span class="kw">use </span>darkfi_serial::{serialize, SerialDecodable, SerialEncodable};
@@ -336,7 +334,7 @@
 
     <span class="doccomment">/// Generate the genesis block.
     </span><span class="kw">pub fn </span>genesis_header(genesis_ts: Timestamp, genesis_data: blake3::Hash) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span>tree = BridgeTree::&lt;MerkleNode, MERKLE_DEPTH&gt;::new(<span class="number">100</span>);
+        <span class="kw">let </span>tree = MerkleTree::new(<span class="number">100</span>);
         <span class="kw">let </span>root = tree.root(<span class="number">0</span>).unwrap();
 
         <span class="self">Self</span>::new(genesis_data, <span class="number">0</span>, <span class="number">0</span>, genesis_ts, root)

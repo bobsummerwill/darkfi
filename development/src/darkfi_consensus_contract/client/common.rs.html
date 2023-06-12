@@ -193,6 +193,7 @@
 <a href="#193" id="193">193</a>
 <a href="#194" id="194">194</a>
 <a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -220,11 +221,12 @@
 };
 <span class="kw">use </span>darkfi_money_contract::{client::ConsensusNote, model::Coin};
 <span class="kw">use </span>darkfi_sdk::{
+    bridgetree,
+    bridgetree::Hashable,
     crypto::{
-        pasta_prelude::<span class="kw-2">*</span>, pedersen_commitment_u64, poseidon_hash, MerkleNode, MerklePosition,
-        Nullifier, PublicKey, SecretKey,
+        pasta_prelude::<span class="kw-2">*</span>, pedersen_commitment_u64, poseidon_hash, MerkleNode, Nullifier, PublicKey,
+        SecretKey,
     },
-    incrementalmerkletree::Hashable,
     pasta::pallas,
 };
 <span class="kw">use </span>rand::rngs::OsRng;
@@ -239,7 +241,7 @@
 }
 
 <span class="kw">pub struct </span>ConsensusBurnInputInfo {
-    <span class="kw">pub </span>leaf_position: MerklePosition,
+    <span class="kw">pub </span>leaf_position: bridgetree::Position,
     <span class="kw">pub </span>merkle_path: Vec&lt;MerkleNode&gt;,
     <span class="kw">pub </span>secret: SecretKey,
     <span class="kw">pub </span>note: ConsensusNote,

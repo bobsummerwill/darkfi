@@ -809,8 +809,6 @@
 <a href="#809" id="809">809</a>
 <a href="#810" id="810">810</a>
 <a href="#811" id="811">811</a>
-<a href="#812" id="812">812</a>
-<a href="#813" id="813">813</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -858,10 +856,8 @@
 };
 <span class="kw">use </span>darkfi_sdk::{
     crypto::{
-        constants::MERKLE_DEPTH, contract_id::MONEY_CONTRACT_ID, mimc_vdf, Keypair, MerkleNode,
-        PublicKey, DARK_TOKEN_ID,
+        contract_id::MONEY_CONTRACT_ID, mimc_vdf, Keypair, MerkleTree, PublicKey, DARK_TOKEN_ID,
     },
-    incrementalmerkletree::bridgetree::BridgeTree,
     num_bigint::BigUint,
     num_traits::Num,
     pasta::{group::ff::PrimeField, pallas},
@@ -1004,7 +1000,7 @@
     validator_state: ValidatorStatePtr,
     keypair: Keypair,
     _wallet: WalletPtr,
-    merkle_tree: BridgeTree&lt;MerkleNode, MERKLE_DEPTH&gt;,
+    merkle_tree: MerkleTree,
     airdrop_timeout: i64,
     airdrop_limit: u64,
     airdrop_map: AirdropMap,
@@ -1109,7 +1105,7 @@
         <span class="prelude-val">Ok</span>(faucetd)
     }
 
-    <span class="kw">async fn </span>initialize_wallet(wallet: WalletPtr) -&gt; <span class="prelude-ty">Result</span>&lt;BridgeTree&lt;MerkleNode, MERKLE_DEPTH&gt;&gt; {
+    <span class="kw">async fn </span>initialize_wallet(wallet: WalletPtr) -&gt; <span class="prelude-ty">Result</span>&lt;MerkleTree&gt; {
         <span class="comment">// Perform wallet initialization for the money contract
         </span><span class="kw">let </span>wallet_schema = <span class="macro">include_str!</span>(<span class="string">&quot;../../../src/contract/money/wallet.sql&quot;</span>);
 
@@ -1127,7 +1123,7 @@
                 deserialize(t.get(MONEY_TREE_COL_TREE))<span class="question-mark">?
             </span>}
             <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
-                <span class="kw">let </span>tree = BridgeTree::&lt;MerkleNode, MERKLE_DEPTH&gt;::new(<span class="number">100</span>);
+                <span class="kw">let </span>tree = MerkleTree::new(<span class="number">100</span>);
                 <span class="kw">let </span>tree_bytes = serialize(<span class="kw-2">&amp;</span>tree);
                 <span class="kw">let </span>query = <span class="macro">format!</span>(
                     <span class="string">&quot;DELETE FROM {}; INSERT INTO {} ({}) VALUES (?1)&quot;</span>,

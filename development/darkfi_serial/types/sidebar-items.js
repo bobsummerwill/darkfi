@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["collections","hash","incrementalmerkletree","pasta","url"]};
+window.SIDEBAR_ITEMS = {"mod":["bridgetree","collections","hash","pasta","url"]};
