@@ -257,9 +257,6 @@
 <a href="#257" id="257">257</a>
 <a href="#258" id="258">258</a>
 <a href="#259" id="259">259</a>
-<a href="#260" id="260">260</a>
-<a href="#261" id="261">261</a>
-<a href="#262" id="262">262</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -282,8 +279,8 @@
     bridgetree,
     bridgetree::Hashable,
     crypto::{
-        pasta_prelude::<span class="kw-2">*</span>, pedersen::pedersen_commitment_u64, poseidon_hash, MerkleNode, PublicKey,
-        SecretKey, TokenId,
+        note::AeadEncryptedNote, pasta_prelude::<span class="kw-2">*</span>, pedersen::pedersen_commitment_u64,
+        poseidon_hash, MerkleNode, PublicKey, SecretKey, TokenId,
     },
     pasta::pallas,
 };
@@ -296,10 +293,7 @@
     <span class="prelude-ty">Result</span>,
 };
 
-<span class="kw">use crate</span>::{
-    dao_model::{DaoProposeParams, DaoProposeParamsInput},
-    note,
-};
+<span class="kw">use </span><span class="kw">crate</span>::dao_model::{DaoProposeParams, DaoProposeParamsInput};
 
 <span class="kw">use </span><span class="kw">super</span>::DaoInfo;
 
@@ -509,7 +503,7 @@
         proofs.push(main_proof);
 
         <span class="kw">let </span>note = DaoProposeNote { proposal: <span class="self">self</span>.proposal };
-        <span class="kw">let </span>enc_note = note::encrypt(<span class="kw-2">&amp;</span>note, <span class="kw-2">&amp;</span><span class="self">self</span>.dao.public_key).unwrap();
+        <span class="kw">let </span>enc_note = AeadEncryptedNote::encrypt(<span class="kw-2">&amp;</span>note, <span class="kw-2">&amp;</span><span class="self">self</span>.dao.public_key, <span class="kw-2">&amp;mut </span>OsRng).unwrap();
         <span class="kw">let </span>params = DaoProposeParams {
             dao_merkle_root: <span class="self">self</span>.dao_merkle_root,
             proposal_bulla,

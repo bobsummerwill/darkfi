@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["AEAD_TAG_SIZE"],"fn":["encrypt"],"struct":["EncryptedNote2"]};

@@ -1278,7 +1278,6 @@
 <a href="#1278" id="1278">1278</a>
 <a href="#1279" id="1279">1279</a>
 <a href="#1280" id="1280">1280</a>
-<a href="#1281" id="1281">1281</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -1321,13 +1320,13 @@
         DAO_VOTES_COL_VOTE_OPTION, DAO_VOTES_COL_YES_VOTE_BLIND, DAO_VOTES_TABLE,
     },
     dao_model::{DaoBulla, DaoMintParams, DaoProposeParams, DaoVoteParams},
-    note::EncryptedNote2,
     DaoFunction,
 };
 <span class="kw">use </span>darkfi_sdk::{
     bridgetree,
     crypto::{
-        poseidon_hash, MerkleNode, MerkleTree, PublicKey, SecretKey, TokenId, DAO_CONTRACT_ID,
+        note::AeadEncryptedNote, poseidon_hash, MerkleNode, MerkleTree, PublicKey, SecretKey,
+        TokenId, DAO_CONTRACT_ID,
     },
     pasta::pallas,
 };
@@ -2318,8 +2317,7 @@
 
             <span class="kw">for </span>proposal <span class="kw">in </span>new_dao_proposals {
                 proposals_tree.append(MerkleNode::from(proposal.<span class="number">0</span>.proposal_bulla));
-                <span class="comment">// FIXME: EncryptedNote2 should perhaps be something generic?
-                </span><span class="kw">let </span>enc_note = EncryptedNote2 {
+                <span class="kw">let </span>enc_note = AeadEncryptedNote {
                     ciphertext: proposal.<span class="number">0</span>.ciphertext,
                     ephem_public: proposal.<span class="number">0</span>.ephem_public,
                 };
@@ -2356,7 +2354,7 @@
             }
 
             <span class="kw">for </span>vote <span class="kw">in </span>new_dao_votes {
-                <span class="kw">let </span>enc_note = EncryptedNote2 {
+                <span class="kw">let </span>enc_note = AeadEncryptedNote {
                     ciphertext: vote.<span class="number">0</span>.ciphertext,
                     ephem_public: vote.<span class="number">0</span>.ephem_public,
                 };

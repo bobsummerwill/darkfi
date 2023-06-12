@@ -282,8 +282,6 @@
 <a href="#282" id="282">282</a>
 <a href="#283" id="283">283</a>
 <a href="#284" id="284">284</a>
-<a href="#285" id="285">285</a>
-<a href="#286" id="286">286</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -306,8 +304,8 @@
     bridgetree,
     bridgetree::Hashable,
     crypto::{
-        pasta_prelude::<span class="kw-2">*</span>, pedersen_commitment_u64, poseidon_hash, Keypair, MerkleNode, Nullifier,
-        PublicKey, SecretKey,
+        note::AeadEncryptedNote, pasta_prelude::<span class="kw-2">*</span>, pedersen_commitment_u64, poseidon_hash, Keypair,
+        MerkleNode, Nullifier, PublicKey, SecretKey,
     },
     pasta::pallas,
 };
@@ -322,10 +320,7 @@
 };
 
 <span class="kw">use super</span>::{DaoInfo, DaoProposalInfo};
-<span class="kw">use crate</span>::{
-    dao_model::{DaoVoteParams, DaoVoteParamsInput},
-    note,
-};
+<span class="kw">use </span><span class="kw">crate</span>::dao_model::{DaoVoteParams, DaoVoteParamsInput};
 
 <span class="attr">#[derive(SerialEncodable, SerialDecodable)]
 </span><span class="kw">pub struct </span>DaoVoteNote {
@@ -556,7 +551,8 @@
             all_vote_value,
             all_vote_blind,
         };
-        <span class="kw">let </span>enc_note = note::encrypt(<span class="kw-2">&amp;</span>note, <span class="kw-2">&amp;</span><span class="self">self</span>.vote_keypair.public).unwrap();
+        <span class="kw">let </span>enc_note =
+            AeadEncryptedNote::encrypt(<span class="kw-2">&amp;</span>note, <span class="kw-2">&amp;</span><span class="self">self</span>.vote_keypair.public, <span class="kw-2">&amp;mut </span>OsRng).unwrap();
 
         <span class="kw">let </span>params = DaoVoteParams {
             token_commit,
