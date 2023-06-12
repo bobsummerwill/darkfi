@@ -367,7 +367,7 @@ pub struct ContractCall {
     pub data: Vec&lt;u8&gt;,
 }</code></pre>
 <p>As we can see the ZK proofs and signatures are separate from the
-actuall <code>call_data</code> interpreted by <code>state_transition()</code>. They are
+actual <code>call_data</code> interpreted by <code>state_transition()</code>. They are
 both automatically verified by the VM.</p>
 <p>However for verification to work, the ZK proofs also need corresponding
 public values, and the signatures need the public keys. We do this

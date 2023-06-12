@@ -164,7 +164,7 @@ blockchain achieve consensus.</p>
 <tr><td>Leader</td><td>Block producer</td></tr>
 <tr><td>Unproposed Transaction</td><td>Transaction that exists in the memory pool but has not yet been included in a block</td></tr>
 <tr><td>Block proposal</td><td>Block that has not yet been appended onto the canonical blockchain</td></tr>
-<tr><td>P2P network</td><td>Peer-to-peer network on which nodes communicate with eachother</td></tr>
+<tr><td>P2P network</td><td>Peer-to-peer network on which nodes communicate with each other</td></tr>
 <tr><td>Finalization</td><td>State achieved when a block and its contents are appended to the canonical blockchain</td></tr>
 <tr><td>Fork</td><td>Chain of block proposals that begins with the last block of the canonical blockchain</td></tr>
 </tbody></table>
@@ -212,7 +212,7 @@ longest fork they hold. </p>
 </tbody></table>
 </div>
 <h3 id="visual-examples"><a class="header" href="#visual-examples">Visual Examples</a></h3>
-<div class="table-wrapper"><table><thead><tr><th>Sympol</th><th>Description</th></tr></thead><tbody>
+<div class="table-wrapper"><table><thead><tr><th>Symbol</th><th>Description</th></tr></thead><tbody>
 <tr><td>[C]</td><td>Canonical(finalized) blockchain block</td></tr>
 <tr><td>[C]--...--[C]</td><td>Sequence of canonical blocks</td></tr>
 <tr><td>[Ln]</td><td>Proposal produced by Leader n</td></tr>
@@ -258,7 +258,7 @@ to the canonical blockchain.</p>
 <p>Once finalized, all fork chains are removed from the memory pool.
 Practically this means that no finalization can occur while there are
 competing fork chains of the same length. In such a case, finalization
-can only occur when we have a a slot with a single leader.</p>
+can only occur when we have a slot with a single leader.</p>
 <p>We continue Case 3 from the previous section to visualize this logic.
 On slot 5, a node observes 2 proposals. One extends the F0 fork,
 and the other extends the F2 fork:</p>
