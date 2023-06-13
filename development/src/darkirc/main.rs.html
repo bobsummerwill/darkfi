@@ -200,6 +200,34 @@
 <a href="#200" id="200">200</a>
 <a href="#201" id="201">201</a>
 <a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
+<a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -223,6 +251,8 @@
     sync::{Arc, Mutex},
     task,
 };
+
+<span class="kw">use </span>chrono::{Duration, Utc};
 <span class="kw">use </span>irc::ClientSubMsg;
 <span class="kw">use </span>log::{debug, error, info, warn};
 <span class="kw">use </span>rand::rngs::OsRng;
@@ -234,14 +264,14 @@
     async_daemonize,
     event_graph::{
         events_queue::EventsQueue,
-        model::Model,
+        model::{Model, ModelPtr},
         protocol_event::{ProtocolEvent, Seen},
         view::View,
     },
     net,
     rpc::server::listen_and_serve,
     system::{Subscriber, SubscriberPtr},
-    util::{file::save_json_file, path::expand_path},
+    util::{async_util::sleep, file::save_json_file, path::expand_path, time::Timestamp},
     <span class="prelude-ty">Result</span>,
 };
 
@@ -296,6 +326,7 @@
     <span class="kw">let </span>model = Arc::new(Mutex::new(Model::new(events_queue.clone())));
     <span class="kw">let </span>view = Arc::new(Mutex::new(View::new(events_queue)));
     <span class="kw">let </span>model_clone = model.clone();
+    <span class="kw">let </span>model_clone2 = model.clone();
 
     <span class="comment">////////////////////
     // P2p setup
@@ -357,7 +388,10 @@
 
     <span class="comment">// Start the irc server and detach it
     </span><span class="kw">let </span>executor_cloned = executor.clone();
-    executor_cloned.spawn(<span class="kw">async move </span>{ irc_server.start(executor.clone()).<span class="kw">await </span>}).detach();
+    executor.spawn(<span class="kw">async move </span>{ irc_server.start(executor_cloned).<span class="kw">await </span>}).detach();
+
+    <span class="comment">// Reset root task
+    </span>executor.spawn(<span class="kw">async move </span>{ reset_root(model_clone2).<span class="kw">await </span>}).detach();
 
     <span class="comment">////////////////////
     // Wait for termination signal
@@ -401,5 +435,27 @@
         }
     }
     <span class="prelude-val">Ok</span>(())
+}
+
+<span class="kw">async fn </span>reset_root(model: ModelPtr&lt;PrivMsgEvent&gt;) {
+    <span class="kw">loop </span>{
+        <span class="kw">let </span>now = Utc::now();
+
+        <span class="comment">// clocks are valid, safe to unwrap
+        </span><span class="kw">let </span>next_midnight = (now + Duration::days(<span class="number">1</span>)).date_naive().and_hms_opt(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>).unwrap();
+
+        <span class="kw">let </span>duration = next_midnight.signed_duration_since(now.naive_utc()).to_std().unwrap();
+
+        <span class="comment">// make sure the root is the same as everyone else&#39;s at
+        // startup by passing today&#39;s date 00:00 AM UTC as
+        // timestamp to root_event
+        </span><span class="kw">let </span>now_datetime = now.date_naive().and_hms_opt(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>).unwrap();
+        <span class="kw">let </span>timestamp = now_datetime.timestamp() <span class="kw">as </span>u64;
+
+        model.lock().<span class="kw">await</span>.reset_root(Timestamp(timestamp));
+
+        sleep(duration.as_secs()).<span class="kw">await</span>;
+        <span class="macro">info!</span>(<span class="string">&quot;Resetting root&quot;</span>);
+    }
 }
 </code></pre></div></section></main></body></html>
