@@ -164,6 +164,8 @@
 <a href="#164" id="164">164</a>
 <a href="#165" id="165">165</a>
 <a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -182,14 +184,16 @@
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */
 
-</span><span class="kw">use </span>anyhow::{anyhow, <span class="prelude-ty">Result</span>};
+</span><span class="kw">use </span>std::str::FromStr;
+
+<span class="kw">use </span>anyhow::{anyhow, <span class="prelude-ty">Result</span>};
 <span class="kw">use </span>darkfi::{
     tx::Transaction,
     util::parse::{decode_base10, encode_base10},
     zk::{halo2::Field, proof::ProvingKey, vm::ZkCircuit, vm_heap::empty_witnesses},
     zkas::ZkBinary,
 };
-<span class="kw">use </span>darkfi_dao_contract::dao_model::DaoBulla;
+<span class="kw">use </span>darkfi_dao_contract::model::DaoBulla;
 <span class="kw">use </span>darkfi_money_contract::{
     client::{transfer_v1::TransferCallBuilder, OwnCoin},
     MoneyFunction, MONEY_CONTRACT_ZKAS_BURN_NS_V1, MONEY_CONTRACT_ZKAS_MINT_NS_V1,
@@ -222,7 +226,7 @@
                 <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">anyhow!</span>(<span class="string">&quot;Missing DAO bulla in parameters&quot;</span>))
             };
 
-            <span class="prelude-val">Some</span>(DaoBulla::try_from(dao_bulla.as_str())<span class="question-mark">?</span>)
+            <span class="prelude-val">Some</span>(DaoBulla::from_str(dao_bulla.as_str())<span class="question-mark">?</span>)
         } <span class="kw">else </span>{
             <span class="prelude-val">None
         </span>};

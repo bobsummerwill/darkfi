@@ -65,6 +65,27 @@
 <a href="#65" id="65">65</a>
 <a href="#66" id="66">66</a>
 <a href="#67" id="67">67</a>
+<a href="#68" id="68">68</a>
+<a href="#69" id="69">69</a>
+<a href="#70" id="70">70</a>
+<a href="#71" id="71">71</a>
+<a href="#72" id="72">72</a>
+<a href="#73" id="73">73</a>
+<a href="#74" id="74">74</a>
+<a href="#75" id="75">75</a>
+<a href="#76" id="76">76</a>
+<a href="#77" id="77">77</a>
+<a href="#78" id="78">78</a>
+<a href="#79" id="79">79</a>
+<a href="#80" id="80">80</a>
+<a href="#81" id="81">81</a>
+<a href="#82" id="82">82</a>
+<a href="#83" id="83">83</a>
+<a href="#84" id="84">84</a>
+<a href="#85" id="85">85</a>
+<a href="#86" id="86">86</a>
+<a href="#87" id="87">87</a>
+<a href="#88" id="88">88</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -83,35 +104,12 @@
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */
 
+</span><span class="doccomment">//! Smart contract implementing Anonymous DAOs on DarkFi
+
 </span><span class="kw">use </span>darkfi_sdk::error::ContractError;
 
-<span class="attr">#[cfg(not(feature = <span class="string">&quot;no-entrypoint&quot;</span>))]
-</span><span class="kw">pub mod </span>entrypoint;
-
-<span class="attr">#[cfg(feature = <span class="string">&quot;client&quot;</span>)]
-</span><span class="doccomment">/// Transaction building API for clients interacting with DAO contract
-</span><span class="kw">pub mod </span>dao_client;
-
-<span class="kw">pub mod </span>dao_model;
-
-<span class="attr">#[cfg(feature = <span class="string">&quot;client&quot;</span>)]
-</span><span class="doccomment">/// Transaction building API for clients interacting with money contract
-</span><span class="kw">pub mod </span>money_client;
-
-<span class="attr">#[cfg(feature = <span class="string">&quot;client&quot;</span>)]
-</span><span class="doccomment">/// Decrypt incoming transaction notes to track coins sent to us
-</span><span class="kw">pub mod </span>wallet_cache;
-
-<span class="comment">// These are the zkas circuit namespaces
-</span><span class="kw">pub const </span>DAO_CONTRACT_ZKAS_DAO_MINT_NS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DaoMint&quot;</span>;
-<span class="kw">pub const </span>DAO_CONTRACT_ZKAS_DAO_EXEC_NS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DaoExec&quot;</span>;
-<span class="kw">pub const </span>DAO_CONTRACT_ZKAS_DAO_VOTE_BURN_NS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DaoVoteInput&quot;</span>;
-<span class="kw">pub const </span>DAO_CONTRACT_ZKAS_DAO_VOTE_MAIN_NS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DaoVoteMain&quot;</span>;
-<span class="kw">pub const </span>DAO_CONTRACT_ZKAS_DAO_PROPOSE_BURN_NS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DaoProposeInput&quot;</span>;
-<span class="kw">pub const </span>DAO_CONTRACT_ZKAS_DAO_PROPOSE_MAIN_NS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DaoProposeMain&quot;</span>;
-
-<span class="attr">#[repr(u8)]
-#[derive(PartialEq, Debug)]
+<span class="doccomment">/// Functions available in the contract
+</span><span class="attr">#[repr(u8)]
 </span><span class="kw">pub enum </span>DaoFunction {
     Mint = <span class="number">0x00</span>,
     Propose = <span class="number">0x01</span>,
@@ -122,8 +120,8 @@
 <span class="kw">impl </span>TryFrom&lt;u8&gt; <span class="kw">for </span>DaoFunction {
     <span class="kw">type </span>Error = ContractError;
 
-    <span class="kw">fn </span>try_from(x: u8) -&gt; core::result::Result&lt;DaoFunction, <span class="self">Self</span>::Error&gt; {
-        <span class="kw">match </span>x {
+    <span class="kw">fn </span>try_from(b: u8) -&gt; core::result::Result&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        <span class="kw">match </span>b {
             <span class="number">0x00 </span>=&gt; <span class="prelude-val">Ok</span>(DaoFunction::Mint),
             <span class="number">0x01 </span>=&gt; <span class="prelude-val">Ok</span>(DaoFunction::Propose),
             <span class="number">0x02 </span>=&gt; <span class="prelude-val">Ok</span>(DaoFunction::Vote),
@@ -132,4 +130,48 @@
         }
     }
 }
+
+<span class="doccomment">/// Internal contract errors
+</span><span class="kw">pub mod </span>error;
+
+<span class="doccomment">/// Call parameters definitions
+</span><span class="kw">pub mod </span>model;
+
+<span class="attr">#[cfg(not(feature = <span class="string">&quot;no-entrypoint&quot;</span>))]
+</span><span class="doccomment">/// WASM entrypoint functions
+</span><span class="kw">pub mod </span>entrypoint;
+
+<span class="attr">#[cfg(feature = <span class="string">&quot;client&quot;</span>)]
+</span><span class="doccomment">/// Client API for interaction with this smart contract
+</span><span class="kw">pub mod </span>client;
+
+<span class="comment">// TODO: Delete these and use the proper API
+</span><span class="attr">#[cfg(feature = <span class="string">&quot;client&quot;</span>)]
+</span><span class="kw">pub mod </span>money_client;
+<span class="attr">#[cfg(feature = <span class="string">&quot;client&quot;</span>)]
+</span><span class="kw">pub mod </span>wallet_cache;
+
+<span class="comment">// These are the different sled trees that will be created
+</span><span class="kw">pub const </span>DAO_CONTRACT_DB_INFO_TREE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;dao_info&quot;</span>;
+<span class="kw">pub const </span>DAO_CONTRACT_DB_DAO_BULLAS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;dao_bullas&quot;</span>;
+<span class="kw">pub const </span>DAO_CONTRACT_DB_DAO_MERKLE_ROOTS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;dao_roots&quot;</span>;
+<span class="kw">pub const </span>DAO_CONTRACT_DB_PROPOSAL_BULLAS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;dao_proposals&quot;</span>;
+<span class="kw">pub const </span>DAO_CONTRACT_DB_VOTE_NULLIFIERS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;dao_vote_nullifiers&quot;</span>;
+
+<span class="comment">// These are keys inside the info tree
+</span><span class="kw">pub const </span>DAO_CONTRACT_KEY_DB_VERSION: <span class="kw-2">&amp;</span>str = <span class="string">&quot;db_version&quot;</span>;
+<span class="kw">pub const </span>DAO_CONTRACT_KEY_DAO_MERKLE_TREE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;dao_merkle_tree&quot;</span>;
+
+<span class="doccomment">/// zkas dao mint circuit namespace
+</span><span class="kw">pub const </span>DAO_CONTRACT_ZKAS_DAO_MINT_NS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DaoMint&quot;</span>;
+<span class="doccomment">/// zkas dao exec circuit namespace
+</span><span class="kw">pub const </span>DAO_CONTRACT_ZKAS_DAO_EXEC_NS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DaoExec&quot;</span>;
+<span class="doccomment">/// zkas dao vote input circuit namespace
+</span><span class="kw">pub const </span>DAO_CONTRACT_ZKAS_DAO_VOTE_BURN_NS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DaoVoteInput&quot;</span>;
+<span class="doccomment">/// zkas dao vote main circuit namespace
+</span><span class="kw">pub const </span>DAO_CONTRACT_ZKAS_DAO_VOTE_MAIN_NS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DaoVoteMain&quot;</span>;
+<span class="doccomment">/// zkas dao propose input circuit namespace
+</span><span class="kw">pub const </span>DAO_CONTRACT_ZKAS_DAO_PROPOSE_BURN_NS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DaoProposeInput&quot;</span>;
+<span class="doccomment">/// zkas dao propose main circuit namespace
+</span><span class="kw">pub const </span>DAO_CONTRACT_ZKAS_DAO_PROPOSE_MAIN_NS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;DaoProposeMain&quot;</span>;
 </code></pre></div></section></main></body></html>
