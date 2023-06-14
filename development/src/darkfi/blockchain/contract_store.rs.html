@@ -283,6 +283,7 @@
 <a href="#283" id="283">283</a>
 <a href="#284" id="284">284</a>
 <a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -448,6 +449,7 @@ r* This program is distributed in the hope that it will be useful,
         }
 
         <span class="comment">// We open the tree and clear it. This is unfortunately not atomic.
+        // TODO: FIXME: Can we make it atomic?
         </span><span class="kw">let </span>tree = db.open_tree(ptr)<span class="question-mark">?</span>;
         tree.clear()<span class="question-mark">?</span>;
 

@@ -603,6 +603,7 @@
 <a href="#603" id="603">603</a>
 <a href="#604" id="604">604</a>
 <a href="#605" id="605">605</a>
+<a href="#606" id="606">606</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -852,10 +853,6 @@
             <span class="comment">// join all channels
             </span><span class="self">self</span>.on_receive_join(<span class="self">self</span>.irc_config.auto_channels.clone()).<span class="kw">await</span><span class="question-mark">?</span>;
             <span class="self">self</span>.on_receive_join(<span class="self">self</span>.irc_config.channels.keys().cloned().collect()).<span class="kw">await</span><span class="question-mark">?</span>;
-
-            <span class="kw">if </span><span class="kw-2">*</span><span class="self">self</span>.irc_config.capabilities.get(<span class="string">&quot;no-history&quot;</span>).unwrap() {
-                <span class="kw">return </span><span class="prelude-val">Ok</span>(())
-            }
         }
         <span class="prelude-val">Ok</span>(())
     }
@@ -1160,6 +1157,11 @@
                 <span class="self">self</span>.reply(<span class="kw-2">&amp;</span>t).<span class="kw">await</span><span class="question-mark">?</span>;
             }
         }
+
+        <span class="kw">if </span><span class="kw-2">*</span><span class="self">self</span>.irc_config.capabilities.get(<span class="string">&quot;no-history&quot;</span>).unwrap() {
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(())
+        }
+
         <span class="comment">// Process missed messages if any (sorted by event&#39;s timestamp)
         </span><span class="kw">let </span><span class="kw-2">mut </span>hash_vec = <span class="self">self</span>.missed_events.lock().<span class="kw">await</span>.clone();
         hash_vec.sort_by(|a, b| a.timestamp.<span class="number">0</span>.cmp(<span class="kw-2">&amp;</span>b.timestamp.<span class="number">0</span>));
