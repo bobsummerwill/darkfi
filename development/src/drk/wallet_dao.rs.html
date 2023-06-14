@@ -1268,6 +1268,44 @@
 <a href="#1268" id="1268">1268</a>
 <a href="#1269" id="1269">1269</a>
 <a href="#1270" id="1270">1270</a>
+<a href="#1271" id="1271">1271</a>
+<a href="#1272" id="1272">1272</a>
+<a href="#1273" id="1273">1273</a>
+<a href="#1274" id="1274">1274</a>
+<a href="#1275" id="1275">1275</a>
+<a href="#1276" id="1276">1276</a>
+<a href="#1277" id="1277">1277</a>
+<a href="#1278" id="1278">1278</a>
+<a href="#1279" id="1279">1279</a>
+<a href="#1280" id="1280">1280</a>
+<a href="#1281" id="1281">1281</a>
+<a href="#1282" id="1282">1282</a>
+<a href="#1283" id="1283">1283</a>
+<a href="#1284" id="1284">1284</a>
+<a href="#1285" id="1285">1285</a>
+<a href="#1286" id="1286">1286</a>
+<a href="#1287" id="1287">1287</a>
+<a href="#1288" id="1288">1288</a>
+<a href="#1289" id="1289">1289</a>
+<a href="#1290" id="1290">1290</a>
+<a href="#1291" id="1291">1291</a>
+<a href="#1292" id="1292">1292</a>
+<a href="#1293" id="1293">1293</a>
+<a href="#1294" id="1294">1294</a>
+<a href="#1295" id="1295">1295</a>
+<a href="#1296" id="1296">1296</a>
+<a href="#1297" id="1297">1297</a>
+<a href="#1298" id="1298">1298</a>
+<a href="#1299" id="1299">1299</a>
+<a href="#1300" id="1300">1300</a>
+<a href="#1301" id="1301">1301</a>
+<a href="#1302" id="1302">1302</a>
+<a href="#1303" id="1303">1303</a>
+<a href="#1304" id="1304">1304</a>
+<a href="#1305" id="1305">1305</a>
+<a href="#1306" id="1306">1306</a>
+<a href="#1307" id="1307">1307</a>
+<a href="#1308" id="1308">1308</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -1301,13 +1339,14 @@
         DAO_DAOS_COL_NAME, DAO_DAOS_COL_PROPOSER_LIMIT, DAO_DAOS_COL_QUORUM, DAO_DAOS_COL_SECRET,
         DAO_DAOS_COL_TX_HASH, DAO_DAOS_TABLE, DAO_PROPOSALS_COL_AMOUNT,
         DAO_PROPOSALS_COL_BULLA_BLIND, DAO_PROPOSALS_COL_CALL_INDEX, DAO_PROPOSALS_COL_DAO_ID,
-        DAO_PROPOSALS_COL_LEAF_POSITION, DAO_PROPOSALS_COL_OUR_VOTE_ID,
-        DAO_PROPOSALS_COL_PROPOSAL_ID, DAO_PROPOSALS_COL_RECV_PUBLIC,
-        DAO_PROPOSALS_COL_SENDCOIN_TOKEN_ID, DAO_PROPOSALS_COL_TX_HASH, DAO_PROPOSALS_TABLE,
-        DAO_TREES_COL_DAOS_TREE, DAO_TREES_COL_PROPOSALS_TREE, DAO_TREES_TABLE,
-        DAO_VOTES_COL_ALL_VOTE_BLIND, DAO_VOTES_COL_ALL_VOTE_VALUE, DAO_VOTES_COL_CALL_INDEX,
-        DAO_VOTES_COL_PROPOSAL_ID, DAO_VOTES_COL_TX_HASH, DAO_VOTES_COL_VOTE_ID,
-        DAO_VOTES_COL_VOTE_OPTION, DAO_VOTES_COL_YES_VOTE_BLIND, DAO_VOTES_TABLE,
+        DAO_PROPOSALS_COL_LEAF_POSITION, DAO_PROPOSALS_COL_MONEY_SNAPSHOT_TREE,
+        DAO_PROPOSALS_COL_OUR_VOTE_ID, DAO_PROPOSALS_COL_PROPOSAL_ID,
+        DAO_PROPOSALS_COL_RECV_PUBLIC, DAO_PROPOSALS_COL_SENDCOIN_TOKEN_ID,
+        DAO_PROPOSALS_COL_TX_HASH, DAO_PROPOSALS_TABLE, DAO_TREES_COL_DAOS_TREE,
+        DAO_TREES_COL_PROPOSALS_TREE, DAO_TREES_TABLE, DAO_VOTES_COL_ALL_VOTE_BLIND,
+        DAO_VOTES_COL_ALL_VOTE_VALUE, DAO_VOTES_COL_CALL_INDEX, DAO_VOTES_COL_PROPOSAL_ID,
+        DAO_VOTES_COL_TX_HASH, DAO_VOTES_COL_VOTE_ID, DAO_VOTES_COL_VOTE_OPTION,
+        DAO_VOTES_COL_YES_VOTE_BLIND, DAO_VOTES_TABLE,
     },
     model::{DaoBulla, DaoMintParams, DaoProposeParams, DaoVoteParams},
     DaoFunction,
@@ -1470,6 +1509,8 @@
     </span><span class="kw">pub </span>bulla_blind: pallas::Base,
     <span class="doccomment">/// Leaf position of this proposal in the Merkle tree of proposals
     </span><span class="kw">pub </span>leaf_position: <span class="prelude-ty">Option</span>&lt;bridgetree::Position&gt;,
+    <span class="doccomment">/// Snapshotted Money Merkle tree
+    </span><span class="kw">pub </span>money_snapshot_tree: <span class="prelude-ty">Option</span>&lt;MerkleTree&gt;,
     <span class="doccomment">/// Transaction hash where this proposal was proposed
     </span><span class="kw">pub </span>tx_hash: <span class="prelude-ty">Option</span>&lt;blake3::Hash&gt;,
     <span class="doccomment">/// call index in the transaction where this proposal was proposed
@@ -1984,6 +2025,8 @@
             QueryType::OptionBlob <span class="kw">as </span>u8,
             DAO_PROPOSALS_COL_LEAF_POSITION,
             QueryType::OptionBlob <span class="kw">as </span>u8,
+            DAO_PROPOSALS_COL_MONEY_SNAPSHOT_TREE,
+            QueryType::OptionBlob <span class="kw">as </span>u8,
             DAO_PROPOSALS_COL_TX_HASH,
             QueryType::OptionInteger <span class="kw">as </span>u8,
             DAO_PROPOSALS_COL_CALL_INDEX,
@@ -2024,16 +2067,25 @@
             <span class="kw">let </span>bulla_blind = deserialize(<span class="kw-2">&amp;</span>bulla_blind_bytes)<span class="question-mark">?</span>;
 
             <span class="kw">let </span>leaf_position_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">6</span>].clone())<span class="question-mark">?</span>;
-            <span class="kw">let </span>tx_hash_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">7</span>].clone())<span class="question-mark">?</span>;
 
-            <span class="kw">let </span>call_index = serde_json::from_value(row[<span class="number">8</span>].clone())<span class="question-mark">?</span>;
+            <span class="kw">let </span>money_snapshot_tree_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">7</span>].clone())<span class="question-mark">?</span>;
 
-            <span class="kw">let </span>vote_id_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">9</span>].clone())<span class="question-mark">?</span>;
+            <span class="kw">let </span>tx_hash_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">8</span>].clone())<span class="question-mark">?</span>;
+
+            <span class="kw">let </span>call_index = serde_json::from_value(row[<span class="number">9</span>].clone())<span class="question-mark">?</span>;
+
+            <span class="kw">let </span>vote_id_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">10</span>].clone())<span class="question-mark">?</span>;
 
             <span class="kw">let </span>leaf_position = <span class="kw">if </span>leaf_position_bytes.is_empty() {
                 <span class="prelude-val">None
             </span>} <span class="kw">else </span>{
                 <span class="prelude-val">Some</span>(deserialize(<span class="kw-2">&amp;</span>leaf_position_bytes)<span class="question-mark">?</span>)
+            };
+
+            <span class="kw">let </span>money_snapshot_tree = <span class="kw">if </span>money_snapshot_tree_bytes.is_empty() {
+                <span class="prelude-val">None
+            </span>} <span class="kw">else </span>{
+                <span class="prelude-val">Some</span>(deserialize(<span class="kw-2">&amp;</span>money_snapshot_tree_bytes)<span class="question-mark">?</span>)
             };
 
             <span class="kw">let </span>tx_hash =
@@ -2050,6 +2102,7 @@
                 token_id,
                 bulla_blind,
                 leaf_position,
+                money_snapshot_tree,
                 tx_hash,
                 call_index,
                 vote_id,
@@ -2088,6 +2141,8 @@
             QueryType::OptionBlob <span class="kw">as </span>u8,
             DAO_PROPOSALS_COL_LEAF_POSITION,
             QueryType::OptionBlob <span class="kw">as </span>u8,
+            DAO_PROPOSALS_COL_MONEY_SNAPSHOT_TREE,
+            QueryType::OptionBlob <span class="kw">as </span>u8,
             DAO_PROPOSALS_COL_TX_HASH,
             QueryType::OptionInteger <span class="kw">as </span>u8,
             DAO_PROPOSALS_COL_CALL_INDEX,
@@ -2118,11 +2173,14 @@
         <span class="kw">let </span>bulla_blind = deserialize(<span class="kw-2">&amp;</span>bulla_blind_bytes)<span class="question-mark">?</span>;
 
         <span class="kw">let </span>leaf_position_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">6</span>].clone())<span class="question-mark">?</span>;
-        <span class="kw">let </span>tx_hash_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">7</span>].clone())<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>call_index = serde_json::from_value(row[<span class="number">8</span>].clone())<span class="question-mark">?</span>;
+        <span class="kw">let </span>money_snapshot_tree_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">7</span>].clone())<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>vote_id_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">9</span>].clone())<span class="question-mark">?</span>;
+        <span class="kw">let </span>tx_hash_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">8</span>].clone())<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>call_index = serde_json::from_value(row[<span class="number">9</span>].clone())<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>vote_id_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">10</span>].clone())<span class="question-mark">?</span>;
 
         <span class="kw">let </span>leaf_position = <span class="kw">if </span>leaf_position_bytes.is_empty() {
             <span class="prelude-val">None
@@ -2132,6 +2190,12 @@
 
         <span class="kw">let </span>tx_hash =
             <span class="kw">if </span>tx_hash_bytes.is_empty() { <span class="prelude-val">None </span>} <span class="kw">else </span>{ <span class="prelude-val">Some</span>(deserialize(<span class="kw-2">&amp;</span>tx_hash_bytes)<span class="question-mark">?</span>) };
+
+        <span class="kw">let </span>money_snapshot_tree = <span class="kw">if </span>money_snapshot_tree_bytes.is_empty() {
+            <span class="prelude-val">None
+        </span>} <span class="kw">else </span>{
+            <span class="prelude-val">Some</span>(deserialize(<span class="kw-2">&amp;</span>money_snapshot_tree_bytes)<span class="question-mark">?</span>)
+        };
 
         <span class="kw">let </span>vote_id =
             <span class="kw">if </span>vote_id_bytes.is_empty() { <span class="prelude-val">None </span>} <span class="kw">else </span>{ <span class="prelude-val">Some</span>(deserialize(<span class="kw-2">&amp;</span>vote_id_bytes)<span class="question-mark">?</span>) };
@@ -2146,6 +2210,7 @@
             token_id,
             bulla_blind,
             leaf_position,
+            money_snapshot_tree,
             tx_hash,
             call_index,
             vote_id,
@@ -2244,7 +2309,12 @@
         <span class="comment">// DAOs that have been minted
         </span><span class="kw">let </span><span class="kw-2">mut </span>new_dao_bullas: Vec&lt;(DaoBulla, <span class="prelude-ty">Option</span>&lt;blake3::Hash&gt;, u32)&gt; = <span class="macro">vec!</span>[];
         <span class="comment">// DAO proposals that have been minted
-        </span><span class="kw">let </span><span class="kw-2">mut </span>new_dao_proposals: Vec&lt;(DaoProposeParams, <span class="prelude-ty">Option</span>&lt;blake3::Hash&gt;, u32)&gt; = <span class="macro">vec!</span>[];
+        </span><span class="kw">let </span><span class="kw-2">mut </span>new_dao_proposals: Vec&lt;(
+            DaoProposeParams,
+            <span class="prelude-ty">Option</span>&lt;MerkleTree&gt;,
+            <span class="prelude-ty">Option</span>&lt;blake3::Hash&gt;,
+            u32,
+        )&gt; = <span class="macro">vec!</span>[];
         <span class="kw">let </span><span class="kw-2">mut </span>our_proposals: Vec&lt;DaoProposal&gt; = <span class="macro">vec!</span>[];
         <span class="comment">// DAO votes that have been seen
         </span><span class="kw">let </span><span class="kw-2">mut </span>new_dao_votes: Vec&lt;(DaoVoteParams, <span class="prelude-ty">Option</span>&lt;blake3::Hash&gt;, u32)&gt; = <span class="macro">vec!</span>[];
@@ -2264,7 +2334,9 @@
                 <span class="macro">eprintln!</span>(<span class="string">&quot;Found Dao::Propose in call {}&quot;</span>, i);
                 <span class="kw">let </span>params: DaoProposeParams = deserialize(<span class="kw-2">&amp;</span>call.data[<span class="number">1</span>..])<span class="question-mark">?</span>;
                 <span class="kw">let </span>tx_hash = <span class="kw">if </span>confirm { <span class="prelude-val">Some</span>(blake3::hash(<span class="kw-2">&amp;</span>serialize(tx))) } <span class="kw">else </span>{ <span class="prelude-val">None </span>};
-                new_dao_proposals.push((params, tx_hash, i <span class="kw">as </span>u32));
+                <span class="comment">// We need to clone the tree here for reproducing the snapshot Merkle root
+                </span><span class="kw">let </span>money_tree = <span class="kw">if </span>confirm { <span class="prelude-val">Some</span>(<span class="self">self</span>.get_money_tree().<span class="kw">await</span><span class="question-mark">?</span>) } <span class="kw">else </span>{ <span class="prelude-val">None </span>};
+                new_dao_proposals.push((params, money_tree, tx_hash, i <span class="kw">as </span>u32));
                 <span class="kw">continue
             </span>}
 
@@ -2327,8 +2399,9 @@
                             token_id: note.proposal.token_id,
                             bulla_blind: note.proposal.blind,
                             leaf_position: proposals_tree.mark(),
-                            tx_hash: proposal.<span class="number">1</span>,
-                            call_index: <span class="prelude-val">Some</span>(proposal.<span class="number">2</span>),
+                            money_snapshot_tree: proposal.<span class="number">1</span>,
+                            tx_hash: proposal.<span class="number">2</span>,
+                            call_index: <span class="prelude-val">Some</span>(proposal.<span class="number">3</span>),
                             vote_id: <span class="prelude-val">None</span>,
                         };
 
@@ -2456,7 +2529,7 @@
             };
 
             <span class="kw">let </span>query = <span class="macro">format!</span>(
-                <span class="string">&quot;INSERT INTO {} ({}, {}, {}, {}, {}, {}, {}, {}) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8);&quot;</span>,
+                <span class="string">&quot;INSERT INTO {} ({}, {}, {}, {}, {}, {}, {}, {}, {}) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9);&quot;</span>,
                 DAO_PROPOSALS_TABLE,
                 DAO_PROPOSALS_COL_DAO_ID,
                 DAO_PROPOSALS_COL_RECV_PUBLIC,
@@ -2464,6 +2537,7 @@
                 DAO_PROPOSALS_COL_SENDCOIN_TOKEN_ID,
                 DAO_PROPOSALS_COL_BULLA_BLIND,
                 DAO_PROPOSALS_COL_LEAF_POSITION,
+                DAO_PROPOSALS_COL_MONEY_SNAPSHOT_TREE,
                 DAO_PROPOSALS_COL_TX_HASH,
                 DAO_PROPOSALS_COL_CALL_INDEX,
             );
@@ -2482,6 +2556,8 @@
                 serialize(<span class="kw-2">&amp;</span>proposal.bulla_blind),
                 QueryType::Blob <span class="kw">as </span>u8,
                 serialize(<span class="kw-2">&amp;</span>proposal.leaf_position.unwrap()),
+                QueryType::Blob <span class="kw">as </span>u8,
+                serialize(<span class="kw-2">&amp;</span>proposal.money_snapshot_tree.clone().unwrap()),
                 QueryType::Blob <span class="kw">as </span>u8,
                 serialize(<span class="kw-2">&amp;</span>proposal.tx_hash.unwrap()),
                 QueryType::Integer <span class="kw">as </span>u8,

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["DaoBlindAggregateVote","DaoBulla","DaoExecParams","DaoExecUpdate","DaoMintParams","DaoMintUpdate","DaoProposeParams","DaoProposeParamsInput","DaoProposeUpdate","DaoVoteParams","DaoVoteParamsInput","DaoVoteUpdate"]};
+window.SIDEBAR_ITEMS = {"struct":["DaoBlindAggregateVote","DaoBulla","DaoExecParams","DaoExecUpdate","DaoMintParams","DaoMintUpdate","DaoProposalMetadata","DaoProposeParams","DaoProposeParamsInput","DaoProposeUpdate","DaoVoteParams","DaoVoteParamsInput","DaoVoteUpdate"]};

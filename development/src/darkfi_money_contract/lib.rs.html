@@ -109,6 +109,9 @@
 <a href="#109" id="109">109</a>
 <a href="#110" id="110">110</a>
 <a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -187,6 +190,7 @@
 <span class="comment">// These are keys inside the info tree
 </span><span class="kw">pub const </span>MONEY_CONTRACT_DB_VERSION: <span class="kw-2">&amp;</span>str = <span class="string">&quot;db_version&quot;</span>;
 <span class="kw">pub const </span>MONEY_CONTRACT_COIN_MERKLE_TREE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;coin_tree&quot;</span>;
+<span class="kw">pub const </span>MONEY_CONTRACT_LATEST_COIN_ROOT: <span class="kw-2">&amp;</span>str = <span class="string">&quot;last_root&quot;</span>;
 <span class="kw">pub const </span>MONEY_CONTRACT_FAUCET_PUBKEYS: <span class="kw-2">&amp;</span>str = <span class="string">&quot;faucet_pubkeys&quot;</span>;
 
 <span class="doccomment">/// zkas mint circuit namespace
@@ -212,7 +216,9 @@
 <span class="comment">// These are keys inside the consensus info tree
 </span><span class="kw">pub const </span>CONSENSUS_CONTRACT_DB_VERSION: <span class="kw-2">&amp;</span>str = <span class="string">&quot;db_version&quot;</span>;
 <span class="kw">pub const </span>CONSENSUS_CONTRACT_STAKED_COIN_MERKLE_TREE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;consensus_staked_coin_tree&quot;</span>;
+<span class="kw">pub const </span>CONSENSUS_CONTRACT_STAKED_COIN_LATEST_COIN_ROOT: <span class="kw-2">&amp;</span>str = <span class="string">&quot;consensus_staked_last_root&quot;</span>;
 <span class="kw">pub const </span>CONSENSUS_CONTRACT_UNSTAKED_COIN_MERKLE_TREE: <span class="kw-2">&amp;</span>str = <span class="string">&quot;consensus_unstaked_coin_tree&quot;</span>;
+<span class="kw">pub const </span>CONSENSUS_CONTRACT_UNSTAKED_COIN_LATEST_COIN_ROOT: <span class="kw-2">&amp;</span>str = <span class="string">&quot;consensus_unstaked_last_root&quot;</span>;
 
 <span class="doccomment">/// zkas consensus mint circuit namespace
 </span><span class="kw">pub const </span>CONSENSUS_CONTRACT_ZKAS_MINT_NS_V1: <span class="kw-2">&amp;</span>str = <span class="string">&quot;ConsensusMint_V1&quot;</span>;

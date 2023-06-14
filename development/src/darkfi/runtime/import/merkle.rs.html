@@ -207,6 +207,26 @@
 <a href="#207" id="207">207</a>
 <a href="#208" id="208">208</a>
 <a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -254,7 +274,8 @@
             <span class="comment">// The buffer should deserialize into:
             // - db_info
             // - db_roots
-            // - key (as Vec&lt;u8&gt;) (key being the name of the sled tree where the Merkle tree is)
+            // - root_key (as Vec&lt;u8&gt;) (key being the name of the sled key in info_db where the latest root is)
+            // - tree_key (as Vec&lt;u8&gt;) (key being the name of the sled key in info_db where the Merkle tree is)
             // - coins (as Vec&lt;MerkleNode&gt;) (the coins being added into the Merkle tree)
             </span><span class="kw">let </span><span class="kw-2">mut </span>buf_reader = Cursor::new(buf);
             <span class="comment">// FIXME: There&#39;s a type DbHandle=u32, but this should maybe be renamed
@@ -295,8 +316,17 @@
                 <span class="kw">return </span>-<span class="number">2
             </span>}
 
+            <span class="comment">// This `key` represents the sled key in info where the latest root is
+            </span><span class="kw">let </span>root_key: Vec&lt;u8&gt; = <span class="kw">match </span>Decodable::decode(<span class="kw-2">&amp;mut </span>buf_reader) {
+                <span class="prelude-val">Ok</span>(v) =&gt; v,
+                <span class="prelude-val">Err</span>(e) =&gt; {
+                    <span class="macro">error!</span>(target: <span class="string">&quot;runtime::merkle&quot;</span>, <span class="string">&quot;Failed to decode key vec: {}&quot;</span>, e);
+                    <span class="kw">return </span>-<span class="number">2
+                </span>}
+            };
+
             <span class="comment">// This `key` represents the sled database tree name
-            </span><span class="kw">let </span>key: Vec&lt;u8&gt; = <span class="kw">match </span>Decodable::decode(<span class="kw-2">&amp;mut </span>buf_reader) {
+            </span><span class="kw">let </span>tree_key: Vec&lt;u8&gt; = <span class="kw">match </span>Decodable::decode(<span class="kw-2">&amp;mut </span>buf_reader) {
                 <span class="prelude-val">Ok</span>(v) =&gt; v,
                 <span class="prelude-val">Err</span>(e) =&gt; {
                     <span class="macro">error!</span>(target: <span class="string">&quot;runtime::merkle&quot;</span>, <span class="string">&quot;Failed to decode key vec: {}&quot;</span>, e);
@@ -323,7 +353,7 @@
                 .overlay
                 .lock()
                 .unwrap()
-                .get(<span class="kw-2">&amp;</span>db_info.tree, <span class="kw-2">&amp;</span>key)
+                .get(<span class="kw-2">&amp;</span>db_info.tree, <span class="kw-2">&amp;</span>tree_key)
             {
                 <span class="prelude-val">Ok</span>(v) =&gt; v,
                 <span class="prelude-val">Err</span>(e) =&gt; {
@@ -390,7 +420,7 @@
             <span class="comment">// Apply changes to overlay
             </span><span class="kw">let </span>lock = env.blockchain.lock().unwrap();
             <span class="kw">let </span><span class="kw-2">mut </span>overlay = lock.overlay.lock().unwrap();
-            <span class="kw">if </span>overlay.insert(<span class="kw-2">&amp;</span>db_info.tree, <span class="kw-2">&amp;</span>key, <span class="kw-2">&amp;</span>tree_data).is_err() {
+            <span class="kw">if </span>overlay.insert(<span class="kw-2">&amp;</span>db_info.tree, <span class="kw-2">&amp;</span>tree_key, <span class="kw-2">&amp;</span>tree_data).is_err() {
                 <span class="macro">error!</span>(target: <span class="string">&quot;runtime::merkle&quot;</span>, <span class="string">&quot;Couldn&#39;t insert to db_info tree&quot;</span>);
                 <span class="kw">return </span>-<span class="number">2
             </span>}
@@ -407,6 +437,16 @@
                 </span><span class="macro">assert_eq!</span>(root_value.len(), <span class="number">32</span>);
                 <span class="kw">if </span>overlay.insert(<span class="kw-2">&amp;</span>db_roots.tree, <span class="kw-2">&amp;</span>root_value, <span class="kw-2">&amp;</span>[]).is_err() {
                     <span class="macro">error!</span>(target: <span class="string">&quot;runtime::merkle&quot;</span>, <span class="string">&quot;Couldn&#39;t insert to db_roots tree&quot;</span>);
+                    <span class="kw">return </span>-<span class="number">2
+                </span>}
+            }
+
+            <span class="comment">// Write a pointer to the latest known root
+            </span><span class="kw">if </span>!new_roots.is_empty() {
+                <span class="macro">debug!</span>(target: <span class="string">&quot;runtime::merkle&quot;</span>, <span class="string">&quot;Replacing latest Merkle root pointer&quot;</span>);
+                <span class="kw">let </span>latest_root = serialize(new_roots.last().unwrap());
+                <span class="kw">if </span>overlay.insert(<span class="kw-2">&amp;</span>db_info.tree, <span class="kw-2">&amp;</span>root_key, <span class="kw-2">&amp;</span>latest_root).is_err() {
+                    <span class="macro">error!</span>(target: <span class="string">&quot;runtime::merkle&quot;</span>, <span class="string">&quot;Couldn&#39;t insert latest root to db_info tree&quot;</span>);
                     <span class="kw">return </span>-<span class="number">2
                 </span>}
             }

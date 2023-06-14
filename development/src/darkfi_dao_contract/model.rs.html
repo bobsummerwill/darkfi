@@ -192,6 +192,19 @@
 <a href="#192" id="192">192</a>
 <a href="#193" id="193">193</a>
 <a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -297,6 +310,19 @@
 </span><span class="kw">pub struct </span>DaoProposeUpdate {
     <span class="doccomment">/// Minted proposal bulla
     </span><span class="kw">pub </span>proposal_bulla: pallas::Base,
+    <span class="doccomment">/// Snapshotted Merkle root in the Money state
+    </span><span class="kw">pub </span>snapshot_root: MerkleNode,
+}
+
+<span class="doccomment">/// Metadata for a DAO proposal on the blockchain
+</span><span class="attr">#[derive(Debug, Copy, Clone, SerialEncodable, SerialDecodable)]
+</span><span class="kw">pub struct </span>DaoProposalMetadata {
+    <span class="doccomment">/// Vote aggregate
+    </span><span class="kw">pub </span>vote_aggregate: DaoBlindAggregateVote,
+    <span class="doccomment">/// Snapshotted Merkle root in the Money state
+    </span><span class="kw">pub </span>snapshot_root: MerkleNode,
+    <span class="doccomment">/// Proposal closed
+    </span><span class="kw">pub </span>ended: bool,
 }
 
 <span class="doccomment">/// Parameters for `Dao::Vote`
@@ -332,8 +358,8 @@
 </span><span class="kw">pub struct </span>DaoVoteUpdate {
     <span class="doccomment">/// The proposal bulla being voted on
     </span><span class="kw">pub </span>proposal_bulla: pallas::Base,
-    <span class="doccomment">/// The proposal votes aggregate
-    </span><span class="kw">pub </span>proposal_votes: DaoBlindAggregateVote,
+    <span class="doccomment">/// The updated proposal metadata
+    </span><span class="kw">pub </span>proposal_metadata: DaoProposalMetadata,
     <span class="doccomment">/// Vote nullifiers,
     </span><span class="kw">pub </span>vote_nullifiers: Vec&lt;Nullifier&gt;,
 }
