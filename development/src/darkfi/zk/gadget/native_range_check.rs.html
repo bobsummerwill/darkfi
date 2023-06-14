@@ -603,8 +603,8 @@
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>z_values: Vec&lt;AssignedCell&lt;pallas::Base, pallas::Base&gt;&gt; = <span class="macro">vec!</span>[z_0.clone()];
-        <span class="kw">let </span><span class="kw-2">mut </span>z = z_0.clone();
-        <span class="kw">let </span>decomposed_chunks = z_0.value().map(<span class="self">Self</span>::decompose_value).transpose_vec(NUM_WINDOWS);
+        <span class="kw">let </span><span class="kw-2">mut </span>z = z_0;
+        <span class="kw">let </span>decomposed_chunks = z.value().map(<span class="self">Self</span>::decompose_value).transpose_vec(NUM_WINDOWS);
 
         <span class="kw">let </span>two_pow_k_inverse =
             Value::known(pallas::Base::from(<span class="number">1 </span>&lt;&lt; WINDOW_SIZE <span class="kw">as </span>u64).invert().unwrap());
