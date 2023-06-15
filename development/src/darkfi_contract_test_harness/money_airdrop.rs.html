@@ -151,8 +151,8 @@
         value: u64,
         holder: Holder,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;(Transaction, MoneyTransferParamsV1)&gt; {
-        <span class="kw">let </span>recipient = <span class="self">self</span>.holders.get_mut(<span class="kw-2">&amp;</span>holder).unwrap().keypair.public;
-        <span class="kw">let </span>faucet = <span class="self">self</span>.holders.get_mut(<span class="kw-2">&amp;</span>Holder::Faucet).unwrap();
+        <span class="kw">let </span>recipient = <span class="self">self</span>.holders.get(<span class="kw-2">&amp;</span>holder).unwrap().keypair.public;
+        <span class="kw">let </span>faucet = <span class="self">self</span>.holders.get(<span class="kw-2">&amp;</span>Holder::Faucet).unwrap();
         <span class="kw">let </span>(mint_pk, mint_zkbin) = <span class="self">self</span>.proving_keys.get(<span class="kw-2">&amp;</span>MONEY_CONTRACT_ZKAS_MINT_NS_V1).unwrap();
         <span class="kw">let </span>(burn_pk, burn_zkbin) = <span class="self">self</span>.proving_keys.get(<span class="kw-2">&amp;</span>MONEY_CONTRACT_ZKAS_BURN_NS_V1).unwrap();
         <span class="kw">let </span>tx_action_benchmark =

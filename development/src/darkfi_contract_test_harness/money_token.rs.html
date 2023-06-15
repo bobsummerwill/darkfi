@@ -204,8 +204,8 @@
         holder: Holder,
         recipient: Holder,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;(Transaction, MoneyTokenMintParamsV1)&gt; {
-        <span class="kw">let </span>rcpt = <span class="self">self</span>.holders.get_mut(<span class="kw-2">&amp;</span>recipient).unwrap().keypair.public;
-        <span class="kw">let </span>mint_authority = <span class="self">self</span>.holders.get_mut(<span class="kw-2">&amp;</span>holder).unwrap().token_mint_authority;
+        <span class="kw">let </span>rcpt = <span class="self">self</span>.holders.get(<span class="kw-2">&amp;</span>recipient).unwrap().keypair.public;
+        <span class="kw">let </span>mint_authority = <span class="self">self</span>.holders.get(<span class="kw-2">&amp;</span>holder).unwrap().token_mint_authority;
         <span class="kw">let </span>(mint_pk, mint_zkbin) =
             <span class="self">self</span>.proving_keys.get(<span class="kw-2">&amp;</span>MONEY_CONTRACT_ZKAS_TOKEN_MINT_NS_V1).unwrap();
         <span class="kw">let </span>tx_action_benchmark =
@@ -269,7 +269,7 @@
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         holder: Holder,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;(Transaction, MoneyTokenFreezeParamsV1)&gt; {
-        <span class="kw">let </span>mint_authority = <span class="self">self</span>.holders.get_mut(<span class="kw-2">&amp;</span>holder).unwrap().token_mint_authority;
+        <span class="kw">let </span>mint_authority = <span class="self">self</span>.holders.get(<span class="kw-2">&amp;</span>holder).unwrap().token_mint_authority;
         <span class="kw">let </span>(frz_pk, frz_zkbin) =
             <span class="self">self</span>.proving_keys.get(<span class="kw-2">&amp;</span>MONEY_CONTRACT_ZKAS_TOKEN_FRZ_NS_V1).unwrap();
         <span class="kw">let </span>tx_action_benchmark =

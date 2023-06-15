@@ -144,7 +144,6 @@
 <a href="#144" id="144">144</a>
 <a href="#145" id="145">145</a>
 <a href="#146" id="146">146</a>
-<a href="#147" id="147">147</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -189,7 +188,7 @@
         slot: u64,
         staked_oc: ConsensusOwnCoin,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;(Transaction, ConsensusUnstakeReqParamsV1, SecretKey, SecretKey)&gt; {
-        <span class="kw">let </span>wallet = <span class="self">self</span>.holders.get_mut(<span class="kw-2">&amp;</span>holder).unwrap();
+        <span class="kw">let </span>wallet = <span class="self">self</span>.holders.get(<span class="kw-2">&amp;</span>holder).unwrap();
         <span class="kw">let </span>(burn_pk, burn_zkbin) =
             <span class="self">self</span>.proving_keys.get(<span class="kw-2">&amp;</span>CONSENSUS_CONTRACT_ZKAS_BURN_NS_V1).unwrap();
         <span class="kw">let </span>(mint_pk, mint_zkbin) =
@@ -275,17 +274,16 @@
     <span class="kw">pub async fn </span>execute_erroneous_unstake_request_txs(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         holder: Holder,
-        txs: Vec&lt;Transaction&gt;,
+        txs: <span class="kw-2">&amp;</span>[Transaction],
         slot: u64,
         erroneous: usize,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">let </span>wallet = <span class="self">self</span>.holders.get_mut(<span class="kw-2">&amp;</span>holder).unwrap();
+        <span class="kw">let </span>wallet = <span class="self">self</span>.holders.get(<span class="kw-2">&amp;</span>holder).unwrap();
         <span class="kw">let </span>tx_action_benchmark =
             <span class="self">self</span>.tx_action_benchmarks.get_mut(<span class="kw-2">&amp;</span>TxAction::ConsensusUnstakeRequest).unwrap();
         <span class="kw">let </span>timer = Instant::now();
 
-        <span class="kw">let </span>erroneous_txs =
-            wallet.state.read().<span class="kw">await</span>.verify_transactions(<span class="kw-2">&amp;</span>txs, slot, <span class="bool-val">false</span>).<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>erroneous_txs = wallet.state.read().<span class="kw">await</span>.verify_transactions(txs, slot, <span class="bool-val">false</span>).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="macro">assert_eq!</span>(erroneous_txs.len(), erroneous);
         tx_action_benchmark.verify_times.push(timer.elapsed());
 
