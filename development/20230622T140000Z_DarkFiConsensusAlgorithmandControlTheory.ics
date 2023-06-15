@@ -2,8 +2,8 @@ BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//dark.fi//Seminars//EN
 BEGIN:VEVENT
-SUMMARY:DarkFi Seminar: Walkthrough the Consensus code
-UID:13c0ca3f-d804-c8e1-5ecf-598743e7b100
+SUMMARY:DarkFi Seminar: DarkFi Consensus Algorithm and Control Theory
+UID:5df0cfae-db6d-5f96-68eb-c149b7d3795e
 DTSTART:20230622T140000Z
 DTEND:20230622T160000Z
 DTSTAMP:20230622T140000Z
