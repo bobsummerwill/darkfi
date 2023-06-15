@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["__wrap","create_module","trampoline"],"static":["DOC","INTRINSIC_ITEMS","ITEMS","TYPE_OBJECT"],"struct":["Point"]};

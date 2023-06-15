@@ -98,6 +98,7 @@ var sourcesIndex = JSON.parse('{\
 "darkfi_derive_internal":["",[],["helpers.rs","lib.rs"]],\
 "darkfi_money_contract":["",[["client",[],["genesis_mint_v1.rs","mod.rs","stake_v1.rs","swap_v1.rs","token_freeze_v1.rs","token_mint_v1.rs","transfer_v1.rs","unstake_v1.rs"]]],["error.rs","lib.rs","model.rs"]],\
 "darkfi_sdk":["",[["crypto",[["constants",[["fixed_bases",[],["commit_ivk_r.rs","note_commit_r.rs","nullifier_k.rs","spend_auth_g.rs","value_commit_r.rs","value_commit_v.rs"]]],["fixed_bases.rs","sinsemilla.rs","util.rs"]]],["constants.rs","contract_id.rs","diffie_hellman.rs","ecvrf.rs","keypair.rs","merkle_node.rs","mimc_vdf.rs","mod.rs","note.rs","nullifier.rs","pedersen.rs","schnorr.rs","smt.rs","token_id.rs","util.rs"]]],["db.rs","entrypoint.rs","error.rs","lib.rs","log.rs","merkle.rs","tx.rs","util.rs"]],\
+"darkfi_sdk_py":["",[],["affine.rs","base.rs","lib.rs","point.rs","proof.rs","proving_key.rs","scalar.rs","verifying_key.rs","zk_binary.rs","zk_circuit.rs"]],\
 "darkfi_serial":["",[["types",[],["bridgetree.rs","collections.rs","hash.rs","pasta.rs","url.rs"]]],["async_serial.rs","endian.rs","lib.rs","types.rs"]],\
 "darkfid":["",[],["error.rs","main.rs","rpc_blockchain.rs","rpc_misc.rs","rpc_tx.rs","rpc_wallet.rs"]],\
 "darkirc":["",[["irc",[["server",[],["nickserv.rs"]]],["client.rs","mod.rs","server.rs"]]],["crypto.rs","main.rs","privmsg.rs","rpc.rs","settings.rs"]],\
@@ -176,6 +177,7 @@ var sourcesIndex = JSON.parse('{\
 "incrementalmerkletree":["",[],["frontier.rs","lib.rs"]],\
 "indexmap":["",[["map",[["core",[],["raw.rs"]]],["core.rs"]]],["arbitrary.rs","equivalent.rs","lib.rs","macros.rs","map.rs","mutable_keys.rs","set.rs","util.rs"]],\
 "indicatif":["",[],["draw_target.rs","format.rs","iter.rs","lib.rs","multi.rs","progress_bar.rs","state.rs","style.rs","term_like.rs"]],\
+"indoc":["",[],["error.rs","expr.rs","lib.rs","unindent.rs"]],\
 "inout":["",[],["errors.rs","inout.rs","inout_buf.rs","lib.rs","reserved.rs"]],\
 "io_lifetimes":["",[],["example_ffi.rs","lib.rs","portability.rs","raw.rs","traits.rs","views.rs"]],\
 "ipnet":["",[],["ipext.rs","ipnet.rs","lib.rs","mask.rs","parser.rs"]],\
@@ -239,6 +241,10 @@ var sourcesIndex = JSON.parse('{\
 "proc_macro_error_attr":["",[],["lib.rs","parse.rs","settings.rs"]],\
 "ptr_meta":["",[],["impls.rs","lib.rs"]],\
 "ptr_meta_derive":["",[],["lib.rs"]],\
+"pyo3":["",[["conversions",[["std",[],["array.rs","map.rs","mod.rs","num.rs","osstr.rs","path.rs","set.rs","slice.rs","string.rs","vec.rs"]]],["mod.rs"]],["err",[],["err_state.rs","impls.rs","mod.rs"]],["ffi",[],["mod.rs"]],["impl_",[["pyclass",[],["lazy_type_object.rs"]]],["deprecations.rs","extract_argument.rs","freelist.rs","frompyobject.rs","not_send.rs","panic.rs","pycell.rs","pyclass.rs","pyfunction.rs","pymethods.rs","pymodule.rs","trampoline.rs"]],["pycell",[],["impl_.rs"]],["pyclass",[],["create_type_object.rs","gc.rs"]],["types",[],["any.rs","boolobject.rs","bytearray.rs","bytes.rs","capsule.rs","code.rs","complex.rs","datetime.rs","dict.rs","floatob.rs","frame.rs","frozenset.rs","function.rs","iterator.rs","list.rs","mapping.rs","mod.rs","module.rs","num.rs","pysuper.rs","sequence.rs","set.rs","slice.rs","string.rs","traceback.rs","tuple.rs","typeobject.rs"]]],["buffer.rs","callback.rs","conversion.rs","derive_utils.rs","exceptions.rs","gil.rs","impl_.rs","instance.rs","internal_tricks.rs","lib.rs","macros.rs","marker.rs","marshal.rs","panic.rs","prelude.rs","pycell.rs","pyclass.rs","pyclass_init.rs","sync.rs","type_object.rs","version.rs"]],\
+"pyo3_ffi":["",[["cpython",[],["abstract_.rs","bytesobject.rs","ceval.rs","code.rs","compile.rs","descrobject.rs","dictobject.rs","frameobject.rs","funcobject.rs","genobject.rs","import.rs","initconfig.rs","listobject.rs","methodobject.rs","mod.rs","object.rs","pydebug.rs","pyerrors.rs","pylifecycle.rs","pymem.rs","pystate.rs","pythonrun.rs","tupleobject.rs","unicodeobject.rs","weakrefobject.rs"]]],["abstract_.rs","bltinmodule.rs","boolobject.rs","bytearrayobject.rs","bytesobject.rs","ceval.rs","code.rs","codecs.rs","compile.rs","complexobject.rs","context.rs","datetime.rs","descrobject.rs","dictobject.rs","enumobject.rs","fileobject.rs","fileutils.rs","floatobject.rs","import.rs","intrcheck.rs","iterobject.rs","lib.rs","listobject.rs","longobject.rs","marshal.rs","memoryobject.rs","methodobject.rs","modsupport.rs","moduleobject.rs","object.rs","objimpl.rs","osmodule.rs","pyarena.rs","pycapsule.rs","pyerrors.rs","pyframe.rs","pyhash.rs","pylifecycle.rs","pymem.rs","pyport.rs","pystate.rs","pystrtod.rs","pythonrun.rs","rangeobject.rs","setobject.rs","sliceobject.rs","structmember.rs","structseq.rs","sysmodule.rs","traceback.rs","tupleobject.rs","typeslots.rs","unicodeobject.rs","warnings.rs","weakrefobject.rs"]],\
+"pyo3_macros":["",[],["lib.rs"]],\
+"pyo3_macros_backend":["",[["pyfunction",[],["signature.rs"]]],["attributes.rs","deprecations.rs","frompyobject.rs","konst.rs","lib.rs","method.rs","module.rs","params.rs","pyclass.rs","pyfunction.rs","pyimpl.rs","pymethod.rs","utils.rs"]],\
 "quote":["",[],["ext.rs","format.rs","ident_fragment.rs","lib.rs","runtime.rs","spanned.rs","to_tokens.rs"]],\
 "radium":["",[],["lib.rs","macros.rs","types.rs"]],\
 "rand":["",[["distributions",[],["bernoulli.rs","distribution.rs","float.rs","integer.rs","mod.rs","other.rs","slice.rs","uniform.rs","utils.rs","weighted.rs","weighted_index.rs"]],["rngs",[["adapter",[],["mod.rs","read.rs","reseeding.rs"]]],["mock.rs","mod.rs","std.rs","thread.rs"]],["seq",[],["index.rs","mod.rs"]]],["lib.rs","prelude.rs","rng.rs"]],\
@@ -333,6 +339,7 @@ var sourcesIndex = JSON.parse('{\
 "unicode_normalization":["",[],["__test_api.rs","decompose.rs","lib.rs","lookups.rs","no_std_prelude.rs","normalize.rs","perfect_hash.rs","quick_check.rs","recompose.rs","replace.rs","stream_safe.rs","tables.rs"]],\
 "unicode_segmentation":["",[],["grapheme.rs","lib.rs","sentence.rs","tables.rs","word.rs"]],\
 "unicode_width":["",[],["lib.rs","tables.rs"]],\
+"unindent":["",[],["lib.rs","unindent.rs"]],\
 "universal_hash":["",[],["lib.rs"]],\
 "untrusted":["",[],["untrusted.rs"]],\
 "url":["",[],["host.rs","lib.rs","origin.rs","parser.rs","path_segments.rs","quirks.rs","slicing.rs"]],\

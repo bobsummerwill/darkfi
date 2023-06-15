@@ -901,6 +901,7 @@
 <a href="#901" id="901">901</a>
 <a href="#902" id="902">902</a>
 <a href="#903" id="903">903</a>
+<a href="#904" id="904">904</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -1016,7 +1017,8 @@
     }
 }
 
-<span class="kw">pub struct </span>ZkCircuit {
+<span class="attr">#[derive(Clone)]
+</span><span class="kw">pub struct </span>ZkCircuit {
     constants: Vec&lt;String&gt;,
     witnesses: Vec&lt;Witness&gt;,
     literals: Vec&lt;(LitType, String)&gt;,
