@@ -341,7 +341,6 @@
 <a href="#341" id="341">341</a>
 <a href="#342" id="342">342</a>
 <a href="#343" id="343">343</a>
-<a href="#344" id="344">344</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -386,8 +385,8 @@
 <span class="kw">use crate</span>::{
     client::common::{ConsensusBurnInputInfo, ConsensusMintOutputInfo},
     model::{
-        ConsensusProposalParamsV1, HEADSTART, MU_RHO_PREFIX, MU_Y_PREFIX, REWARD, SEED_PREFIX,
-        SERIAL_PREFIX,
+        ConsensusProposalParamsV1, HEADSTART, MU_RHO_PREFIX, MU_Y_PREFIX, REWARD,
+        SECRET_KEY_PREFIX, SEED_PREFIX, SERIAL_PREFIX,
     },
 };
 
@@ -472,7 +471,6 @@
 
 <span class="kw">impl </span>ConsensusProposalCallBuilder {
     <span class="kw">pub fn </span>build(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;ConsensusProposalCallDebris&gt; {
-        <span class="kw">let </span>SECRET_PREFIX = pallas::Base::from(<span class="number">4</span>);
         <span class="macro">info!</span>(<span class="string">&quot;Building Consensus::ProposalBurnV1 contract call&quot;</span>);
         <span class="macro">assert!</span>(<span class="self">self</span>.owncoin.note.value != <span class="number">0</span>);
 
@@ -492,9 +490,9 @@
         <span class="kw">let </span>output_reward_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
         <span class="kw">let </span>output_value_blind = input.value_blind + output_reward_blind;
 
-        <span class="comment">// derive output secret from old secret key.
-        </span><span class="kw">let </span>output_secret = poseidon_hash([SECRET_PREFIX, <span class="self">self</span>.owncoin.secret.inner()]);
-        <span class="kw">let </span>output_keypair = Keypair::new(SecretKey::from(output_secret));
+        <span class="comment">// The output&#39;s secret key is derived from the old secret key
+        </span><span class="kw">let </span>output_secret_key = poseidon_hash([SECRET_KEY_PREFIX, <span class="self">self</span>.owncoin.secret.inner()]);
+        <span class="kw">let </span>output_keypair = Keypair::new(SecretKey::from(output_secret_key));
 
         <span class="comment">// The output&#39;s serial is derived from the old serial
         </span><span class="kw">let </span>output_serial =
