@@ -341,6 +341,7 @@
 <a href="#341" id="341">341</a>
 <a href="#342" id="342">342</a>
 <a href="#343" id="343">343</a>
+<a href="#344" id="344">344</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -385,8 +386,8 @@
 <span class="kw">use crate</span>::{
     client::common::{ConsensusBurnInputInfo, ConsensusMintOutputInfo},
     model::{
-        ConsensusProposalParamsV1, HEADSTART, MU_RHO_PREFIX, MU_Y_PREFIX, REWARD,
-        SECRET_KEY_PREFIX, SEED_PREFIX, SERIAL_PREFIX,
+        ConsensusProposalParamsV1, HEADSTART, MU_RHO_PREFIX, MU_Y_PREFIX, REWARD, SEED_PREFIX,
+        SERIAL_PREFIX,
     },
 };
 
@@ -490,9 +491,8 @@
         <span class="kw">let </span>output_reward_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
         <span class="kw">let </span>output_value_blind = input.value_blind + output_reward_blind;
 
-        <span class="comment">// The output&#39;s secret key is derived from the old secret key
-        </span><span class="kw">let </span>output_secret_key = poseidon_hash([SECRET_KEY_PREFIX, <span class="self">self</span>.owncoin.secret.inner()]);
-        <span class="kw">let </span>output_keypair = Keypair::new(SecretKey::from(output_secret_key));
+        <span class="comment">// We create a new random keypair for the output
+        </span><span class="kw">let </span>output_keypair = Keypair::random(<span class="kw-2">&amp;mut </span>OsRng);
 
         <span class="comment">// The output&#39;s serial is derived from the old serial
         </span><span class="kw">let </span>output_serial =
@@ -670,6 +670,8 @@
         Witness::Base(Value::known(input.note.coin_blind)),
         Witness::Uint32(Value::known(u64::from(input.leaf_position).try_into().unwrap())),
         Witness::MerklePath(Value::known(input.merkle_path.clone().try_into().unwrap())),
+        Witness::Base(Value::known(output_x)),
+        Witness::Base(Value::known(output_y)),
         Witness::Scalar(Value::known(output.value_blind)),
         Witness::Base(Value::known(output.coin_blind)),
         Witness::Base(Value::known(public_inputs.mu_y)),
