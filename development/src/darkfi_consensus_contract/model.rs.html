@@ -142,6 +142,8 @@
 <a href="#142" id="142">142</a>
 <a href="#143" id="143">143</a>
 <a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -244,6 +246,8 @@
 </span><span class="kw">pub const </span>SERIAL_PREFIX: pallas::Base = pallas::Base::from_raw([<span class="number">2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
 <span class="doccomment">/// Seed prefix, calculated by: pallas::Base::from(3)
 </span><span class="kw">pub const </span>SEED_PREFIX: pallas::Base = pallas::Base::from_raw([<span class="number">3</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
+<span class="doccomment">/// Secret key prefix, calculated by: pallas::Base::from(4)
+</span><span class="kw">pub const </span>SECRET_KEY_PREFIX: pallas::Base = pallas::Base::from_raw([<span class="number">4</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
 <span class="doccomment">/// Election seed y prefix, calculated by: pallas::Base::from(22)
 </span><span class="kw">pub const </span>MU_Y_PREFIX: pallas::Base = pallas::Base::from_raw([<span class="number">22</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]);
 <span class="doccomment">/// Election seed rho prefix, calculated by: pallas::Base::from(5)
