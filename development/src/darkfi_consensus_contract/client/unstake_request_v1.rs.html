@@ -148,6 +148,12 @@
 <a href="#148" id="148">148</a>
 <a href="#149" id="149">149</a>
 <a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
+<a href="#152" id="152">152</a>
+<a href="#153" id="153">153</a>
+<a href="#154" id="154">154</a>
+<a href="#155" id="155">155</a>
+<a href="#156" id="156">156</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -178,15 +184,17 @@
     model::{ConsensusInput, ConsensusOutput, ConsensusUnstakeReqParamsV1},
 };
 <span class="kw">use </span>darkfi_sdk::{
-    crypto::{note::AeadEncryptedNote, pasta_prelude::<span class="kw-2">*</span>, Keypair, MerkleTree, SecretKey},
+    crypto::{note::AeadEncryptedNote, pasta_prelude::<span class="kw-2">*</span>, Keypair, MerkleTree, SecretKey, poseidon_hash},
     pasta::pallas,
 };
 <span class="kw">use </span>log::{debug, info};
 <span class="kw">use </span>rand::rngs::OsRng;
 
-<span class="kw">use </span><span class="kw">crate</span>::client::common::{
-    create_consensus_burn_proof, create_consensus_mint_proof, ConsensusBurnInputInfo,
-    ConsensusMintOutputInfo,
+<span class="kw">use crate</span>::{
+    client::common::{create_consensus_burn_proof, create_consensus_mint_proof, ConsensusBurnInputInfo, ConsensusMintOutputInfo},
+    model::{
+        SERIAL_PREFIX,
+    },
 };
 
 <span class="kw">pub struct </span>ConsensusUnstakeRequestCallDebris {
@@ -235,13 +243,17 @@
         };
 
         <span class="macro">debug!</span>(<span class="string">&quot;Building Consensus::UnstakeRequestV1 anonymous output&quot;</span>);
-        <span class="kw">let </span>output_serial = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
+        <span class="comment">//let output_serial = pallas::Base::random(&amp;mut OsRng);
+        // derive output secret from old secret key.
+        </span><span class="kw">let </span>output_secret = poseidon_hash([<span class="self">self</span>.owncoin.secret.inner()]);
+        <span class="kw">let </span>output_keypair = Keypair::new(SecretKey::from(output_secret));
+        <span class="kw">let </span>output_serial = poseidon_hash([SERIAL_PREFIX, <span class="self">self</span>.owncoin.secret.inner(), <span class="self">self</span>.owncoin.note.serial]);
         <span class="kw">let </span>output_coin_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
 
         <span class="comment">// We create a new random keypair for the output
-        </span><span class="kw">let </span>output_keypair = Keypair::random(<span class="kw-2">&amp;mut </span>OsRng);
+        //let output_keypair = Keypair::random(&amp;mut OsRng);
 
-        <span class="kw">let </span>output = ConsensusMintOutputInfo {
+        </span><span class="kw">let </span>output = ConsensusMintOutputInfo {
             value: <span class="self">self</span>.owncoin.note.value,
             epoch: <span class="self">self</span>.epoch,
             public_key: output_keypair.public,
