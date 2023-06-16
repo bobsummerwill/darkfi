@@ -472,6 +472,7 @@
 
 <span class="kw">impl </span>ConsensusProposalCallBuilder {
     <span class="kw">pub fn </span>build(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;ConsensusProposalCallDebris&gt; {
+        <span class="kw">let </span>SECRET_PREFIX = pallas::Base::from(<span class="number">4</span>);
         <span class="macro">info!</span>(<span class="string">&quot;Building Consensus::ProposalBurnV1 contract call&quot;</span>);
         <span class="macro">assert!</span>(<span class="self">self</span>.owncoin.note.value != <span class="number">0</span>);
 
@@ -491,8 +492,9 @@
         <span class="kw">let </span>output_reward_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
         <span class="kw">let </span>output_value_blind = input.value_blind + output_reward_blind;
 
-        <span class="comment">// We create a new random keypair for the output
-        </span><span class="kw">let </span>output_keypair = Keypair::random(<span class="kw-2">&amp;mut </span>OsRng);
+        <span class="comment">// derive output secret from old secret key.
+        </span><span class="kw">let </span>output_secret = poseidon_hash([SECRET_PREFIX, <span class="self">self</span>.owncoin.secret.inner()]);
+        <span class="kw">let </span>output_keypair = Keypair::new(SecretKey::from(output_secret));
 
         <span class="comment">// The output&#39;s serial is derived from the old serial
         </span><span class="kw">let </span>output_serial =
@@ -670,8 +672,6 @@
         Witness::Base(Value::known(input.note.coin_blind)),
         Witness::Uint32(Value::known(u64::from(input.leaf_position).try_into().unwrap())),
         Witness::MerklePath(Value::known(input.merkle_path.clone().try_into().unwrap())),
-        Witness::Base(Value::known(output_x)),
-        Witness::Base(Value::known(output_y)),
         Witness::Scalar(Value::known(output.value_blind)),
         Witness::Base(Value::known(output.coin_blind)),
         Witness::Base(Value::known(public_inputs.mu_y)),
