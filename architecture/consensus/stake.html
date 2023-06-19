@@ -207,8 +207,6 @@ witness &quot;Burn_V1&quot; {
 	Base user_data,
 	# Blinding factor for the encrypted user_data
 	Base user_data_blind,
-	# Random blinding factor for coin
-	Base coin_blind,
 	# Secret key used to derive nullifier and coin's public key
 	Base secret,
 	# Leaf position of the coin in the Merkle tree of coins
@@ -254,7 +252,6 @@ circuit &quot;Burn_V1&quot; {
 		serial,
 		spend_hook,
 		user_data,
-		coin_blind,
 	);
 
 	# Merkle root
@@ -297,8 +294,6 @@ witness &quot;ConsensusMint_V1&quot; {
 	Base epoch,
 	# Unique serial number corresponding to this coin
 	Base serial,
-	# Random blinding factor for coin
-	Base coin_blind,
 	# Random blinding factor for the value commitment
 	Scalar value_blind,
 }
@@ -314,7 +309,6 @@ circuit &quot;ConsensusMint_V1&quot; {
 		value,
 		epoch,
 		serial,
-		coin_blind,
 	);
 	constrain_instance(C);
 

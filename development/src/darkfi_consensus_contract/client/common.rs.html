@@ -177,23 +177,6 @@
 <a href="#177" id="177">177</a>
 <a href="#178" id="178">178</a>
 <a href="#179" id="179">179</a>
-<a href="#180" id="180">180</a>
-<a href="#181" id="181">181</a>
-<a href="#182" id="182">182</a>
-<a href="#183" id="183">183</a>
-<a href="#184" id="184">184</a>
-<a href="#185" id="185">185</a>
-<a href="#186" id="186">186</a>
-<a href="#187" id="187">187</a>
-<a href="#188" id="188">188</a>
-<a href="#189" id="189">189</a>
-<a href="#190" id="190">190</a>
-<a href="#191" id="191">191</a>
-<a href="#192" id="192">192</a>
-<a href="#193" id="193">193</a>
-<a href="#194" id="194">194</a>
-<a href="#195" id="195">195</a>
-<a href="#196" id="196">196</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -237,7 +220,6 @@
     <span class="kw">pub </span>public_key: PublicKey,
     <span class="kw">pub </span>value_blind: pallas::Scalar,
     <span class="kw">pub </span>serial: pallas::Base,
-    <span class="kw">pub </span>coin_blind: pallas::Base,
 }
 
 <span class="kw">pub struct </span>ConsensusBurnInputInfo {
@@ -275,14 +257,7 @@
     <span class="kw">let </span>value_commit = pedersen_commitment_u64(output.value, output.value_blind);
     <span class="kw">let </span>(pub_x, pub_y) = output.public_key.xy();
 
-    <span class="kw">let </span>coin = Coin::from(poseidon_hash([
-        pub_x,
-        pub_y,
-        value_pallas,
-        epoch_pallas,
-        output.serial,
-        output.coin_blind,
-    ]));
+    <span class="kw">let </span>coin = Coin::from(poseidon_hash([pub_x, pub_y, value_pallas, epoch_pallas, output.serial]));
 
     <span class="kw">let </span>public_inputs = ConsensusMintRevealed { epoch: output.epoch, coin, value_commit };
 
@@ -292,7 +267,6 @@
         Witness::Base(Value::known(value_pallas)),
         Witness::Base(Value::known(epoch_pallas)),
         Witness::Base(Value::known(output.serial)),
-        Witness::Base(Value::known(output.coin_blind)),
         Witness::Scalar(Value::known(output.value_blind)),
     ];
 
@@ -343,14 +317,7 @@
     <span class="kw">let </span>public_key = PublicKey::from_secret(input.secret);
     <span class="kw">let </span>(pub_x, pub_y) = public_key.xy();
 
-    <span class="kw">let </span>coin = poseidon_hash([
-        pub_x,
-        pub_y,
-        value_pallas,
-        epoch_pallas,
-        input.note.serial,
-        input.note.coin_blind,
-    ]);
+    <span class="kw">let </span>coin = poseidon_hash([pub_x, pub_y, value_pallas, epoch_pallas, input.note.serial]);
 
     <span class="kw">let </span>merkle_root = {
         <span class="kw">let </span>position: u64 = input.leaf_position.into();
@@ -378,7 +345,6 @@
         Witness::Base(Value::known(value_pallas)),
         Witness::Base(Value::known(epoch_pallas)),
         Witness::Base(Value::known(input.note.serial)),
-        Witness::Base(Value::known(input.note.coin_blind)),
         Witness::Scalar(Value::known(input.value_blind)),
         Witness::Base(Value::known(input.secret.inner())),
         Witness::Uint32(Value::known(u64::from(input.leaf_position).try_into().unwrap())),

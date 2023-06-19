@@ -187,12 +187,6 @@
 <a href="#187" id="187">187</a>
 <a href="#188" id="188">188</a>
 <a href="#189" id="189">189</a>
-<a href="#190" id="190">190</a>
-<a href="#191" id="191">191</a>
-<a href="#192" id="192">192</a>
-<a href="#193" id="193">193</a>
-<a href="#194" id="194">194</a>
-<a href="#195" id="195">195</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -237,9 +231,7 @@
     <span class="kw">pub </span>yes_vote_blind: pallas::Scalar,
     <span class="kw">pub </span>all_vote_blind: pallas::Scalar,
     <span class="kw">pub </span>user_serial: pallas::Base,
-    <span class="kw">pub </span>user_coin_blind: pallas::Base,
     <span class="kw">pub </span>dao_serial: pallas::Base,
-    <span class="kw">pub </span>dao_coin_blind: pallas::Base,
     <span class="kw">pub </span>input_value: u64,
     <span class="kw">pub </span>input_value_blind: pallas::Scalar,
     <span class="kw">pub </span>hook_dao_exec: pallas::Base,
@@ -291,7 +283,7 @@
             <span class="self">self</span>.proposal.blind,
         ]);
 
-        <span class="kw">let </span>coin_0 = poseidon_hash::&lt;<span class="number">8</span>&gt;([
+        <span class="kw">let </span>coin_0 = poseidon_hash::&lt;<span class="number">7</span>&gt;([
             proposal_dest_x,
             proposal_dest_y,
             proposal_amount,
@@ -299,10 +291,9 @@
             <span class="self">self</span>.user_serial,
             user_spend_hook,
             user_data,
-            <span class="self">self</span>.user_coin_blind,
         ]);
 
-        <span class="kw">let </span>coin_1 = poseidon_hash::&lt;<span class="number">8</span>&gt;([
+        <span class="kw">let </span>coin_1 = poseidon_hash::&lt;<span class="number">7</span>&gt;([
             dao_pub_x,
             dao_pub_y,
             change,
@@ -310,7 +301,6 @@
             <span class="self">self</span>.dao_serial,
             <span class="self">self</span>.hook_dao_exec,
             dao_bulla,
-            <span class="self">self</span>.dao_coin_blind,
         ]);
 
         <span class="kw">let </span>yes_vote_commit = pedersen_commitment_u64(<span class="self">self</span>.yes_vote_value, <span class="self">self</span>.yes_vote_blind);
@@ -345,9 +335,7 @@
             Witness::Scalar(Value::known(<span class="self">self</span>.all_vote_blind)),
             <span class="comment">// outputs + inputs
             </span>Witness::Base(Value::known(<span class="self">self</span>.user_serial)),
-            Witness::Base(Value::known(<span class="self">self</span>.user_coin_blind)),
             Witness::Base(Value::known(<span class="self">self</span>.dao_serial)),
-            Witness::Base(Value::known(<span class="self">self</span>.dao_coin_blind)),
             Witness::Base(Value::known(input_value)),
             Witness::Scalar(Value::known(<span class="self">self</span>.input_value_blind)),
             <span class="comment">// misc

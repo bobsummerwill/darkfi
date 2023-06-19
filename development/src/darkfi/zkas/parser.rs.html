@@ -1475,7 +1475,7 @@
     <span class="kw">fn </span>parse_ast_circuit(<span class="kw-2">&amp;</span><span class="self">self</span>, statements: Vec&lt;Vec&lt;Token&gt;&gt;) -&gt; Vec&lt;Statement&gt; {
         <span class="comment">// The statement layouts/syntax in the language are as follows:
         //
-        // C = poseidon_hash(pub_x, pub_y, value, token, serial, coin_blind);
+        // C = poseidon_hash(pub_x, pub_y, value, token, serial);
         // | |          |                   |       |
         // V V          V                   V       V
         // variable    opcode              arg     arg

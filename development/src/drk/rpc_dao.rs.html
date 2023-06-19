@@ -575,12 +575,6 @@
 <a href="#575" id="575">575</a>
 <a href="#576" id="576">576</a>
 <a href="#577" id="577">577</a>
-<a href="#578" id="578">578</a>
-<a href="#579" id="579">579</a>
-<a href="#580" id="580">580</a>
-<a href="#581" id="581">581</a>
-<a href="#582" id="582">582</a>
-<a href="#583" id="583">583</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -980,9 +974,7 @@
         </span><span class="kw">let </span>user_data_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
 
         <span class="kw">let </span>user_serial = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
-        <span class="kw">let </span>user_coin_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
         <span class="kw">let </span>dao_serial = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
-        <span class="kw">let </span>dao_coin_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
 
         <span class="comment">// TODO: FIXME: Clean this up and create an API
         </span><span class="kw">let </span>exec_signature_secret = SecretKey::random(<span class="kw-2">&amp;mut </span>OsRng);
@@ -1029,7 +1021,6 @@
                 token_id: proposal.token_id,
                 public: proposal.recipient,
                 serial: user_serial,
-                coin_blind: user_coin_blind,
                 spend_hook: pallas::Base::zero(),
                 user_data: pallas::Base::zero(),
             },
@@ -1039,7 +1030,6 @@
                 token_id: proposal.token_id,
                 public: PublicKey::from_secret(dao.secret_key),
                 serial: dao_serial,
-                coin_blind: dao_coin_blind,
                 spend_hook: DAO_CONTRACT_ID.inner(),
                 user_data: dao_bulla.inner(),
             },
@@ -1136,9 +1126,7 @@
             yes_vote_blind: total_yes_vote_blind,
             all_vote_blind: total_all_vote_blind,
             user_serial,
-            user_coin_blind,
             dao_serial,
-            dao_coin_blind,
             input_value: input_sum, <span class="comment">// &lt;-- FIXME
             </span>input_value_blind,      <span class="comment">// &lt;-- FIXME
             </span>hook_dao_exec: DAO_CONTRACT_ID.inner(),

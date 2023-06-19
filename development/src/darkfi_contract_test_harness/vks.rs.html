@@ -243,7 +243,7 @@
 <span class="kw">use </span>log::debug;
 
 <span class="doccomment">/// Update this if any circuits are changed
-</span><span class="kw">const </span>VKS_HASH: <span class="kw-2">&amp;</span>str = <span class="string">&quot;f731fc9e7922583be551236328814c6e3a0fb6ee5cf7f4516c4c2be1ac5333b5&quot;</span>;
+</span><span class="kw">const </span>VKS_HASH: <span class="kw-2">&amp;</span>str = <span class="string">&quot;e5dcc83e82020f26d6b4479051332de04c200cfb77dae45c26b8252f499149cf&quot;</span>;
 
 <span class="kw">fn </span>vks_path() -&gt; <span class="prelude-ty">Result</span>&lt;PathBuf&gt; {
     <span class="kw">let </span>output = Command::new(<span class="string">&quot;git&quot;</span>).arg(<span class="string">&quot;rev-parse&quot;</span>).arg(<span class="string">&quot;--show-toplevel&quot;</span>).output()<span class="question-mark">?</span>.stdout;

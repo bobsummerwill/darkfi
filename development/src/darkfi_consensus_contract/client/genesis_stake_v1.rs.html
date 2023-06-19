@@ -131,9 +131,6 @@
 <a href="#131" id="131">131</a>
 <a href="#132" id="132">132</a>
 <a href="#133" id="133">133</a>
-<a href="#134" id="134">134</a>
-<a href="#135" id="135">135</a>
-<a href="#136" id="136">136</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -210,8 +207,7 @@
         <span class="comment">// We just create the pedersen commitment blinds here. We simply
         // enforce that the clear input and the anon output have the same
         // commitments.
-        </span><span class="kw">let </span>coin_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
-        <span class="kw">let </span>value_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
+        </span><span class="kw">let </span>value_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
         <span class="kw">let </span>token_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
         <span class="kw">let </span>reward_blind = pallas::Scalar::random(<span class="kw-2">&amp;mut </span>OsRng);
 
@@ -234,7 +230,6 @@
             public_key: <span class="self">self</span>.recipient,
             value_blind,
             serial,
-            coin_blind,
         };
 
         <span class="macro">info!</span>(<span class="string">&quot;Creating genesis stake mint proof for output&quot;</span>);
@@ -246,7 +241,6 @@
             serial,
             value: output.value,
             epoch,
-            coin_blind,
             value_blind,
             reward: <span class="number">0</span>,
             reward_blind,

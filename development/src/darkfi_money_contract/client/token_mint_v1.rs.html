@@ -222,12 +222,6 @@
 <a href="#222" id="222">222</a>
 <a href="#223" id="223">223</a>
 <a href="#224" id="224">224</a>
-<a href="#225" id="225">225</a>
-<a href="#226" id="226">226</a>
-<a href="#227" id="227">227</a>
-<a href="#228" id="228">228</a>
-<a href="#229" id="229">229</a>
-<a href="#230" id="230">230</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -358,7 +352,6 @@
         };
 
         <span class="kw">let </span>serial = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
-        <span class="kw">let </span>coin_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
 
         <span class="macro">info!</span>(<span class="string">&quot;Creating token mint proof for output&quot;</span>);
         <span class="kw">let </span>(proof, public_inputs) = create_token_mint_proof(
@@ -371,7 +364,6 @@
             serial,
             <span class="self">self</span>.spend_hook,
             <span class="self">self</span>.user_data,
-            coin_blind,
         )<span class="question-mark">?</span>;
 
         <span class="kw">let </span>note = MoneyNote {
@@ -380,7 +372,6 @@
             token_id: output.token_id,
             spend_hook: <span class="self">self</span>.spend_hook,
             user_data: <span class="self">self</span>.user_data,
-            coin_blind,
             value_blind,
             token_blind,
             memo: <span class="macro">vec!</span>[],
@@ -412,7 +403,6 @@
     serial: pallas::Base,
     spend_hook: pallas::Base,
     user_data: pallas::Base,
-    coin_blind: pallas::Base,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;(Proof, TokenMintRevealed)&gt; {
     <span class="kw">let </span>token_id = TokenId::derive(mint_authority.secret);
 
@@ -429,7 +419,6 @@
         serial,
         spend_hook,
         user_data,
-        coin_blind,
     ]));
 
     <span class="kw">let </span>public_inputs = TokenMintRevealed {
@@ -446,7 +435,6 @@
         Witness::Base(Value::known(rcpt_x)),
         Witness::Base(Value::known(rcpt_y)),
         Witness::Base(Value::known(serial)),
-        Witness::Base(Value::known(coin_blind)),
         Witness::Base(Value::known(spend_hook)),
         Witness::Base(Value::known(user_data)),
         Witness::Scalar(Value::known(value_blind)),

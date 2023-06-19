@@ -205,12 +205,6 @@
 <a href="#205" id="205">205</a>
 <a href="#206" id="206">206</a>
 <a href="#207" id="207">207</a>
-<a href="#208" id="208">208</a>
-<a href="#209" id="209">209</a>
-<a href="#210" id="210">210</a>
-<a href="#211" id="211">211</a>
-<a href="#212" id="212">212</a>
-<a href="#213" id="213">213</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -322,7 +316,6 @@
         <span class="kw">let </span>spend_hook = pallas::Base::ZERO;
         <span class="kw">let </span>user_data_enc = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
         <span class="kw">let </span>token_blind = pallas::Scalar::ZERO;
-        <span class="kw">let </span>coin_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
 
         <span class="macro">info!</span>(<span class="string">&quot;Building Money::UnstakeV1 Mint ZK proof&quot;</span>);
         <span class="kw">let </span>(proof, public_inputs) = create_unstake_mint_proof(
@@ -334,7 +327,6 @@
             serial,
             spend_hook,
             user_data_enc,
-            coin_blind,
         )<span class="question-mark">?</span>;
 
         <span class="comment">// Encrypted note
@@ -344,7 +336,6 @@
             token_id: output.token_id,
             spend_hook,
             user_data: user_data_enc,
-            coin_blind,
             value_blind: <span class="self">self</span>.value_blind,
             token_blind,
             memo: <span class="macro">vec!</span>[],
@@ -387,7 +378,6 @@
     serial: pallas::Base,
     spend_hook: pallas::Base,
     user_data: pallas::Base,
-    coin_blind: pallas::Base,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;(Proof, MoneyMintRevealed)&gt; {
     <span class="kw">let </span>value_commit = pedersen_commitment_u64(output.value, value_blind);
     <span class="kw">let </span>token_commit = pedersen_commitment_base(output.token_id.inner(), token_blind);
@@ -401,7 +391,6 @@
         serial,
         spend_hook,
         user_data,
-        coin_blind,
     ]));
 
     <span class="kw">let </span>public_inputs = MoneyMintRevealed { coin, value_commit, token_commit };
@@ -412,7 +401,6 @@
         Witness::Base(Value::known(pallas::Base::from(output.value))),
         Witness::Base(Value::known(output.token_id.inner())),
         Witness::Base(Value::known(serial)),
-        Witness::Base(Value::known(coin_blind)),
         Witness::Base(Value::known(spend_hook)),
         Witness::Base(Value::known(user_data)),
         Witness::Scalar(Value::known(value_blind)),

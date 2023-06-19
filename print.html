@@ -2275,8 +2275,6 @@ witness &quot;ConsensusMint_V1&quot; {
 	Base epoch,
 	# Unique serial number corresponding to this coin
 	Base serial,
-	# Random blinding factor for coin
-	Base coin_blind,
 	# Random blinding factor for the value commitment
 	Scalar value_blind,
 }
@@ -2292,7 +2290,6 @@ circuit &quot;ConsensusMint_V1&quot; {
 		value,
 		epoch,
 		serial,
-		coin_blind,
 	);
 	constrain_instance(C);
 
@@ -2394,8 +2391,6 @@ witness &quot;Burn_V1&quot; {
 	Base user_data,
 	# Blinding factor for the encrypted user_data
 	Base user_data_blind,
-	# Random blinding factor for coin
-	Base coin_blind,
 	# Secret key used to derive nullifier and coin's public key
 	Base secret,
 	# Leaf position of the coin in the Merkle tree of coins
@@ -2441,7 +2436,6 @@ circuit &quot;Burn_V1&quot; {
 		serial,
 		spend_hook,
 		user_data,
-		coin_blind,
 	);
 
 	# Merkle root
@@ -2484,8 +2478,6 @@ witness &quot;ConsensusMint_V1&quot; {
 	Base epoch,
 	# Unique serial number corresponding to this coin
 	Base serial,
-	# Random blinding factor for coin
-	Base coin_blind,
 	# Random blinding factor for the value commitment
 	Scalar value_blind,
 }
@@ -2501,7 +2493,6 @@ circuit &quot;ConsensusMint_V1&quot; {
 		value,
 		epoch,
 		serial,
-		coin_blind,
 	);
 	constrain_instance(C);
 
@@ -2639,16 +2630,12 @@ witness &quot;ConsensusProposal_V1&quot; {
 	Base reward,
 	# Random blinding factor for the value commitment
 	Scalar input_value_blind,
-	# Random blinding factor for coin
-	Base input_coin_blind,
 	# Leaf position of the coin in the Merkle tree of coins
 	Uint32 leaf_pos,
 	# Merkle path to the coin
 	MerklePath path,
 	# Random blinding factor for the value commitment of the new coin
 	Scalar output_value_blind,
-	# Random blinding factor for new coin
-	Base output_coin_blind,
 	# Election seed y
 	Base mu_y,
 	# Election seed rho
@@ -2695,7 +2682,6 @@ circuit &quot;ConsensusProposal_V1&quot; {
 		input_value,
 		epoch,
 		input_serial,
-		input_coin_blind,
 	);
 
 	# Merkle inclusion proof
@@ -2746,7 +2732,6 @@ circuit &quot;ConsensusProposal_V1&quot; {
 		output_value,
 		ZERO,
 		output_serial,
-		output_coin_blind,
 	);
 	constrain_instance(output_coin);
 
@@ -2849,8 +2834,6 @@ witness &quot;ConsensusBurn_V1&quot; {
 	Base epoch,
 	# Unique serial number corresponding to this coin
 	Base serial,
-	# Random blinding factor for coin
-	Base coin_blind,
 	# Random blinding factor for value commitment
 	Scalar value_blind,
 	# Secret key used to derive nullifier and coins' public key
@@ -2884,7 +2867,6 @@ circuit &quot;ConsensusBurn_V1&quot; {
 		value,
 		epoch,
 		serial,
-		coin_blind,
 	);
 
 	# Merkle root
@@ -2919,8 +2901,6 @@ witness &quot;ConsensusMint_V1&quot; {
 	Base epoch,
 	# Unique serial number corresponding to this coin
 	Base serial,
-	# Random blinding factor for coin
-	Base coin_blind,
 	# Random blinding factor for the value commitment
 	Scalar value_blind,
 }
@@ -2936,7 +2916,6 @@ circuit &quot;ConsensusMint_V1&quot; {
 		value,
 		epoch,
 		serial,
-		coin_blind,
 	);
 	constrain_instance(C);
 
@@ -3036,8 +3015,6 @@ witness &quot;ConsensusBurn_V1&quot; {
 	Base epoch,
 	# Unique serial number corresponding to this coin
 	Base serial,
-	# Random blinding factor for coin
-	Base coin_blind,
 	# Random blinding factor for value commitment
 	Scalar value_blind,
 	# Secret key used to derive nullifier and coins' public key
@@ -3071,7 +3048,6 @@ circuit &quot;ConsensusBurn_V1&quot; {
 		value,
 		epoch,
 		serial,
-		coin_blind,
 	);
 
 	# Merkle root
@@ -3109,8 +3085,6 @@ witness &quot;Mint_V1&quot; {
 	Base token,
 	# Unique serial number corresponding to this coin
 	Base serial,
-	# Random blinding factor for coin
-	Base coin_blind,
 	# Allows composing this ZK proof to invoke other contracts
 	Base spend_hook,
 	# Data passed from this coin to the invoked contract
@@ -3131,7 +3105,6 @@ circuit &quot;Mint_V1&quot; {
 		serial,
 		spend_hook,
 		user_data,
-		coin_blind,
 	);
 	constrain_instance(C);
 
@@ -3374,8 +3347,6 @@ pub struct Note {
     pub value: u64,
     /// Token ID of the coin
     pub token_id: TokenId,
-    /// Blinding factor for the coin bulla
-    pub coin_blind: pallas::Base,
     /// Blinding factor for the value Pedersen commitment
     pub value_blind: ValueBlind,
     /// Blinding factor for the token ID Pedersen commitment
@@ -4368,14 +4339,13 @@ witness &quot;Mint&quot; {
 	Base value,
 	Base token,
 	Base serial,
-	Base coin_blind,
 	Scalar value_blind,
 	Scalar token_blind,
 }
 
 circuit &quot;Mint&quot; {
 	# Poseidon hash of the coin
-	C = poseidon_hash(pub_x, pub_y, value, token, serial, coin_blind);
+	C = poseidon_hash(pub_x, pub_y, value, token, serial);
 	constrain_instance(C);
 
 	# Pedersen commitment for coin's value
@@ -4470,7 +4440,6 @@ let token_id = pallas::Base::random(&amp;mut OsRng);
 let value_blind = pallas::Scalar::random(&amp;mut OsRng);
 let token_blind = pallas::Scalar::random(&amp;mut OsRng);
 let serial = pallas::Base::random(&amp;mut OsRng);
-let coin_blind = pallas::Base::random(&amp;mut OsRng);
 let public_key = PublicKey::from_secret(SecretKey::random(&amp;mut OsRng));
 let (pub_x, pub_y) = public_key.xy();
 
@@ -4480,13 +4449,12 @@ let prover_witnesses = vec![
     Witness::Base(Value::known(pallas::Base::from(value))),
     Witness::Base(Value::known(token_id)),
     Witness::Base(Value::known(serial)),
-    Witness::Base(Value::known(coin_blind)),
     Witness::Scalar(Value::known(value_blind)),
     Witness::Scalar(Value::known(token_blind)),
 ];
 
 // Create the public inputs
-let msgs = [pub_x, pub_y, pallas::Base::from(value), token_id, serial, coin_blind];
+let msgs = [pub_x, pub_y, pallas::Base::from(value), token_id, serial];
 let coin = poseidon_hash(msgs);
 
 let value_commit = pedersen_commitment_u64(value, value_blind);
@@ -4533,7 +4501,6 @@ witness &quot;Burn&quot; {
 	Base serial,
 	Base value,
 	Base token,
-	Base coin_blind,
 	Scalar value_blind,
 	Scalar token_blind,
 	Uint32 leaf_pos,
@@ -4572,7 +4539,7 @@ circuit &quot;Burn&quot; {
 	pub = ec_mul_base(secret, NULLIFIER_K);
 	pub_x = ec_get_x(pub);
 	pub_y = ec_get_y(pub);
-	C = poseidon_hash(pub_x, pub_y, value, token, serial, coin_blind);
+	C = poseidon_hash(pub_x, pub_y, value, token, serial);
 
 	# Merkle root
 	root = merkle_root(leaf_pos, path, C);
@@ -4645,14 +4612,13 @@ let token_id = pallas::Base::random(&amp;mut OsRng);
 let value_blind = pallas::Scalar::random(&amp;mut OsRng);
 let token_blind = pallas::Scalar::random(&amp;mut OsRng);
 let serial = pallas::Base::random(&amp;mut OsRng);
-let coin_blind = pallas::Base::random(&amp;mut OsRng);
 let secret = SecretKey::random(&amp;mut OsRng);
 let sig_secret = SecretKey::random(&amp;mut OsRng);
 
 // Build the coin
 let coin2 = {
     let (pub_x, pub_y) = PublicKey::from_secret(secret).xy();
-    let messages = [pub_x, pub_y, pallas::Base::from(value), token_id, serial, coin_blind];
+    let messages = [pub_x, pub_y, pallas::Base::from(value), token_id, serial];
     poseidon_hash(messages)
 };
 
@@ -4680,7 +4646,6 @@ let prover_witnesses = vec![
     Witness::Base(Value::known(serial)),
     Witness::Base(Value::known(pallas::Base::from(value))),
     Witness::Base(Value::known(token_id)),
-    Witness::Base(Value::known(coin_blind)),
     Witness::Scalar(Value::known(value_blind)),
     Witness::Scalar(Value::known(token_blind)),
     Witness::Uint32(Value::known(leaf_pos.try_into().unwrap())),

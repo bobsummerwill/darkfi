@@ -226,8 +226,6 @@
 <a href="#226" id="226">226</a>
 <a href="#227" id="227">227</a>
 <a href="#228" id="228">228</a>
-<a href="#229" id="229">229</a>
-<a href="#230" id="230">230</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -406,7 +404,6 @@
         input.note.serial,
         input.note.spend_hook,
         input.note.user_data,
-        input.note.coin_blind,
     ]);
 
     <span class="kw">let </span>merkle_root = {
@@ -446,7 +443,6 @@
         Witness::Base(Value::known(input.note.spend_hook)),
         Witness::Base(Value::known(input.note.user_data)),
         Witness::Base(Value::known(user_data_blind)),
-        Witness::Base(Value::known(input.note.coin_blind)),
         Witness::Base(Value::known(input.secret.inner())),
         Witness::Uint32(Value::known(u64::from(input.leaf_position).try_into().unwrap())),
         Witness::MerklePath(Value::known(input.merkle_path.clone().try_into().unwrap())),

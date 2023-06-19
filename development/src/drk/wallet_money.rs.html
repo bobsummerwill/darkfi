@@ -782,15 +782,6 @@
 <a href="#782" id="782">782</a>
 <a href="#783" id="783">783</a>
 <a href="#784" id="784">784</a>
-<a href="#785" id="785">785</a>
-<a href="#786" id="786">786</a>
-<a href="#787" id="787">787</a>
-<a href="#788" id="788">788</a>
-<a href="#789" id="789">789</a>
-<a href="#790" id="790">790</a>
-<a href="#791" id="791">791</a>
-<a href="#792" id="792">792</a>
-<a href="#793" id="793">793</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -816,15 +807,15 @@
 <span class="kw">use </span>darkfi_money_contract::{
     client::{
         MoneyNote, OwnCoin, MONEY_ALIASES_COL_ALIAS, MONEY_ALIASES_COL_TOKEN_ID,
-        MONEY_ALIASES_TABLE, MONEY_COINS_COL_COIN, MONEY_COINS_COL_COIN_BLIND,
-        MONEY_COINS_COL_IS_SPENT, MONEY_COINS_COL_LEAF_POSITION, MONEY_COINS_COL_MEMO,
-        MONEY_COINS_COL_NULLIFIER, MONEY_COINS_COL_SECRET, MONEY_COINS_COL_SERIAL,
-        MONEY_COINS_COL_SPEND_HOOK, MONEY_COINS_COL_TOKEN_BLIND, MONEY_COINS_COL_TOKEN_ID,
-        MONEY_COINS_COL_USER_DATA, MONEY_COINS_COL_VALUE, MONEY_COINS_COL_VALUE_BLIND,
-        MONEY_COINS_TABLE, MONEY_INFO_COL_LAST_SCANNED_SLOT, MONEY_INFO_TABLE,
-        MONEY_KEYS_COL_IS_DEFAULT, MONEY_KEYS_COL_KEY_ID, MONEY_KEYS_COL_PUBLIC,
-        MONEY_KEYS_COL_SECRET, MONEY_KEYS_TABLE, MONEY_TOKENS_COL_IS_FROZEN,
-        MONEY_TOKENS_COL_TOKEN_ID, MONEY_TOKENS_TABLE, MONEY_TREE_COL_TREE, MONEY_TREE_TABLE,
+        MONEY_ALIASES_TABLE, MONEY_COINS_COL_COIN, MONEY_COINS_COL_IS_SPENT,
+        MONEY_COINS_COL_LEAF_POSITION, MONEY_COINS_COL_MEMO, MONEY_COINS_COL_NULLIFIER,
+        MONEY_COINS_COL_SECRET, MONEY_COINS_COL_SERIAL, MONEY_COINS_COL_SPEND_HOOK,
+        MONEY_COINS_COL_TOKEN_BLIND, MONEY_COINS_COL_TOKEN_ID, MONEY_COINS_COL_USER_DATA,
+        MONEY_COINS_COL_VALUE, MONEY_COINS_COL_VALUE_BLIND, MONEY_COINS_TABLE,
+        MONEY_INFO_COL_LAST_SCANNED_SLOT, MONEY_INFO_TABLE, MONEY_KEYS_COL_IS_DEFAULT,
+        MONEY_KEYS_COL_KEY_ID, MONEY_KEYS_COL_PUBLIC, MONEY_KEYS_COL_SECRET, MONEY_KEYS_TABLE,
+        MONEY_TOKENS_COL_IS_FROZEN, MONEY_TOKENS_COL_TOKEN_ID, MONEY_TOKENS_TABLE,
+        MONEY_TREE_COL_TREE, MONEY_TREE_TABLE,
     },
     model::{
         Coin, MoneyTokenFreezeParamsV1, MoneyTokenMintParamsV1, MoneyTransferParamsV1, Output,
@@ -1057,8 +1048,6 @@
             QueryType::Blob <span class="kw">as </span>u8,
             MONEY_COINS_COL_USER_DATA,
             QueryType::Blob <span class="kw">as </span>u8,
-            MONEY_COINS_COL_COIN_BLIND,
-            QueryType::Blob <span class="kw">as </span>u8,
             MONEY_COINS_COL_VALUE_BLIND,
             QueryType::Blob <span class="kw">as </span>u8,
             MONEY_COINS_COL_TOKEN_BLIND,
@@ -1108,25 +1097,22 @@
             <span class="kw">let </span>user_data_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">6</span>].clone())<span class="question-mark">?</span>;
             <span class="kw">let </span>user_data: pallas::Base = deserialize(<span class="kw-2">&amp;</span>user_data_bytes)<span class="question-mark">?</span>;
 
-            <span class="kw">let </span>coin_blind_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">7</span>].clone())<span class="question-mark">?</span>;
-            <span class="kw">let </span>coin_blind: pallas::Base = deserialize(<span class="kw-2">&amp;</span>coin_blind_bytes)<span class="question-mark">?</span>;
-
-            <span class="kw">let </span>value_blind_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">8</span>].clone())<span class="question-mark">?</span>;
+            <span class="kw">let </span>value_blind_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">7</span>].clone())<span class="question-mark">?</span>;
             <span class="kw">let </span>value_blind: pallas::Scalar = deserialize(<span class="kw-2">&amp;</span>value_blind_bytes)<span class="question-mark">?</span>;
 
-            <span class="kw">let </span>token_blind_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">9</span>].clone())<span class="question-mark">?</span>;
+            <span class="kw">let </span>token_blind_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">8</span>].clone())<span class="question-mark">?</span>;
             <span class="kw">let </span>token_blind: pallas::Scalar = deserialize(<span class="kw-2">&amp;</span>token_blind_bytes)<span class="question-mark">?</span>;
 
-            <span class="kw">let </span>secret_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">10</span>].clone())<span class="question-mark">?</span>;
+            <span class="kw">let </span>secret_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">9</span>].clone())<span class="question-mark">?</span>;
             <span class="kw">let </span>secret: SecretKey = deserialize(<span class="kw-2">&amp;</span>secret_bytes)<span class="question-mark">?</span>;
 
-            <span class="kw">let </span>nullifier_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">11</span>].clone())<span class="question-mark">?</span>;
+            <span class="kw">let </span>nullifier_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">10</span>].clone())<span class="question-mark">?</span>;
             <span class="kw">let </span>nullifier: Nullifier = deserialize(<span class="kw-2">&amp;</span>nullifier_bytes)<span class="question-mark">?</span>;
 
-            <span class="kw">let </span>leaf_position_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">12</span>].clone())<span class="question-mark">?</span>;
+            <span class="kw">let </span>leaf_position_bytes: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">11</span>].clone())<span class="question-mark">?</span>;
             <span class="kw">let </span>leaf_position: bridgetree::Position = deserialize(<span class="kw-2">&amp;</span>leaf_position_bytes)<span class="question-mark">?</span>;
 
-            <span class="kw">let </span>memo: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">13</span>].clone())<span class="question-mark">?</span>;
+            <span class="kw">let </span>memo: Vec&lt;u8&gt; = serde_json::from_value(row[<span class="number">12</span>].clone())<span class="question-mark">?</span>;
 
             <span class="kw">let </span>note = MoneyNote {
                 serial,
@@ -1134,7 +1120,6 @@
                 token_id,
                 spend_hook,
                 user_data,
-                coin_blind,
                 value_blind,
                 token_blind,
                 memo,
@@ -1368,7 +1353,7 @@
         <span class="comment">// This is the SQL query we&#39;ll be executing to insert new coins
         // into the wallet
         </span><span class="kw">let </span>query = <span class="macro">format!</span>(
-            <span class="string">&quot;INSERT INTO {} ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14);&quot;</span>,
+            <span class="string">&quot;INSERT INTO {} ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13);&quot;</span>,
             MONEY_COINS_TABLE,
             MONEY_COINS_COL_COIN,
             MONEY_COINS_COL_IS_SPENT,
@@ -1377,7 +1362,6 @@
             MONEY_COINS_COL_TOKEN_ID,
             MONEY_COINS_COL_SPEND_HOOK,
             MONEY_COINS_COL_USER_DATA,
-            MONEY_COINS_COL_COIN_BLIND,
             MONEY_COINS_COL_VALUE_BLIND,
             MONEY_COINS_COL_TOKEN_BLIND,
             MONEY_COINS_COL_SECRET,
@@ -1405,8 +1389,6 @@
                 serialize(<span class="kw-2">&amp;</span>owncoin.note.spend_hook),
                 QueryType::Blob <span class="kw">as </span>u8,
                 serialize(<span class="kw-2">&amp;</span>owncoin.note.user_data),
-                QueryType::Blob <span class="kw">as </span>u8,
-                serialize(<span class="kw-2">&amp;</span>owncoin.note.coin_blind),
                 QueryType::Blob <span class="kw">as </span>u8,
                 serialize(<span class="kw-2">&amp;</span>owncoin.note.value_blind),
                 QueryType::Blob <span class="kw">as </span>u8,

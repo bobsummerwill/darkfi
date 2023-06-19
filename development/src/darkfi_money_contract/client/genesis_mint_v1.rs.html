@@ -158,9 +158,6 @@
 <a href="#158" id="158">158</a>
 <a href="#159" id="159">159</a>
 <a href="#160" id="160">160</a>
-<a href="#161" id="161">161</a>
-<a href="#162" id="162">162</a>
-<a href="#163" id="163">163</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -283,7 +280,6 @@
         };
 
         <span class="kw">let </span>serial = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
-        <span class="kw">let </span>coin_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
 
         <span class="macro">info!</span>(<span class="string">&quot;Creating token mint proof for output&quot;</span>);
         <span class="kw">let </span>(proof, public_inputs) = create_transfer_mint_proof(
@@ -295,7 +291,6 @@
             serial,
             <span class="self">self</span>.spend_hook,
             <span class="self">self</span>.user_data,
-            coin_blind,
         )<span class="question-mark">?</span>;
 
         <span class="kw">let </span>note = MoneyNote {
@@ -304,7 +299,6 @@
             token_id: output.token_id,
             spend_hook: <span class="self">self</span>.spend_hook,
             user_data: <span class="self">self</span>.user_data,
-            coin_blind,
             value_blind,
             token_blind,
             memo: <span class="macro">vec!</span>[],

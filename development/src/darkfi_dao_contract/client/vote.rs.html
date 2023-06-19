@@ -273,8 +273,6 @@
 <a href="#273" id="273">273</a>
 <a href="#274" id="274">274</a>
 <a href="#275" id="275">275</a>
-<a href="#276" id="276">276</a>
-<a href="#277" id="277">277</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -378,7 +376,6 @@
                 Witness::Base(halo2::Value::known(pallas::Base::from(<span class="number">0</span>))),
                 Witness::Base(halo2::Value::known(pallas::Base::from(note.value))),
                 Witness::Base(halo2::Value::known(note.token_id.inner())),
-                Witness::Base(halo2::Value::known(note.coin_blind)),
                 Witness::Scalar(halo2::Value::known(all_vote_blind)),
                 Witness::Base(halo2::Value::known(gov_token_blind)),
                 Witness::Uint32(halo2::Value::known(leaf_pos.try_into().unwrap())),
@@ -391,7 +388,7 @@
             <span class="kw">let </span>public_key = PublicKey::from_secret(input.secret);
             <span class="kw">let </span>(pub_x, pub_y) = public_key.xy();
 
-            <span class="kw">let </span>coin = poseidon_hash::&lt;<span class="number">8</span>&gt;([
+            <span class="kw">let </span>coin = poseidon_hash::&lt;<span class="number">7</span>&gt;([
                 pub_x,
                 pub_y,
                 pallas::Base::from(note.value),
@@ -399,7 +396,6 @@
                 note.serial,
                 pallas::Base::from(<span class="number">0</span>),
                 pallas::Base::from(<span class="number">0</span>),
-                note.coin_blind,
             ]);
 
             <span class="kw">let </span>merkle_root = {

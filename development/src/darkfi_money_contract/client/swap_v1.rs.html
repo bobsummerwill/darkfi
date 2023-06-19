@@ -199,9 +199,6 @@
 <a href="#199" id="199">199</a>
 <a href="#200" id="200">200</a>
 <a href="#201" id="201">201</a>
-<a href="#202" id="202">202</a>
-<a href="#203" id="203">203</a>
-<a href="#204" id="204">204</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -358,9 +355,8 @@
 
         proofs.push(proof);
 
-        <span class="comment">// For the output, we create a new serial and coin blind
+        <span class="comment">// For the output, we create a new serial
         </span><span class="kw">let </span>serial = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
-        <span class="kw">let </span>coin_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
 
         <span class="macro">info!</span>(<span class="string">&quot;Creating mint proof for output&quot;</span>);
         <span class="kw">let </span>(proof, public_inputs) = create_transfer_mint_proof(
@@ -372,7 +368,6 @@
             serial,
             <span class="self">self</span>.spend_hook_recv,
             <span class="self">self</span>.user_data_recv,
-            coin_blind,
         )<span class="question-mark">?</span>;
 
         proofs.push(proof);
@@ -384,7 +379,6 @@
             token_id: output.token_id,
             spend_hook: <span class="self">self</span>.spend_hook_recv,
             user_data: <span class="self">self</span>.user_data_recv,
-            coin_blind,
             value_blind: <span class="self">self</span>.value_blinds[<span class="number">1</span>],
             token_blind: <span class="self">self</span>.token_blinds[<span class="number">1</span>],
             <span class="comment">// Here we store our secret key we use for signing

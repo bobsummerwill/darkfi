@@ -110,9 +110,6 @@
 <a href="#110" id="110">110</a>
 <a href="#111" id="111">111</a>
 <a href="#112" id="112">112</a>
-<a href="#113" id="113">113</a>
-<a href="#114" id="114">114</a>
-<a href="#115" id="115">115</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -181,7 +178,6 @@
 
         <span class="macro">debug!</span>(<span class="string">&quot;Building anonymous output&quot;</span>);
         <span class="kw">let </span>serial = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
-        <span class="kw">let </span>coin_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
         <span class="kw">let </span>public_key = PublicKey::from_secret(<span class="self">self</span>.coin.secret);
 
         <span class="kw">let </span>output = ConsensusMintOutputInfo {
@@ -190,7 +186,6 @@
             public_key,
             value_blind: <span class="self">self</span>.value_blind,
             serial,
-            coin_blind,
         };
         <span class="macro">debug!</span>(<span class="string">&quot;Finished building output&quot;</span>);
 
@@ -203,7 +198,6 @@
             serial,
             value: output.value,
             epoch: <span class="self">self</span>.epoch,
-            coin_blind,
             value_blind: <span class="self">self</span>.value_blind,
             reward: <span class="number">0</span>,
             reward_blind: <span class="self">self</span>.value_blind,

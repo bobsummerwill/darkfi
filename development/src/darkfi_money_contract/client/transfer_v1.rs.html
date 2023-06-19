@@ -500,14 +500,6 @@
 <a href="#500" id="500">500</a>
 <a href="#501" id="501">501</a>
 <a href="#502" id="502">502</a>
-<a href="#503" id="503">503</a>
-<a href="#504" id="504">504</a>
-<a href="#505" id="505">505</a>
-<a href="#506" id="506">506</a>
-<a href="#507" id="507">507</a>
-<a href="#508" id="508">508</a>
-<a href="#509" id="509">509</a>
-<a href="#510" id="510">510</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -818,7 +810,6 @@
             output_blinds.push(value_blind);
 
             <span class="kw">let </span>serial = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
-            <span class="kw">let </span>coin_blind = pallas::Base::random(<span class="kw-2">&amp;mut </span>OsRng);
 
             <span class="kw">let </span>(scoped_sh, scoped_ud) = {
                 <span class="kw">if </span>i &gt;= change_outputs.len() {
@@ -838,7 +829,6 @@
                 serial,
                 scoped_sh,
                 scoped_ud,
-                coin_blind,
             )<span class="question-mark">?</span>;
 
             proofs.push(proof);
@@ -850,7 +840,6 @@
                 token_id: output.token_id,
                 spend_hook: scoped_sh,
                 user_data: scoped_ud,
-                coin_blind,
                 value_blind,
                 token_blind,
                 memo: <span class="macro">vec!</span>[],
@@ -896,7 +885,6 @@
         input.note.serial,
         input.note.spend_hook,
         input.note.user_data,
-        input.note.coin_blind,
     ]);
 
     <span class="kw">let </span>merkle_root = {
@@ -936,7 +924,6 @@
         Witness::Base(Value::known(input.note.spend_hook)),
         Witness::Base(Value::known(input.note.user_data)),
         Witness::Base(Value::known(user_data_blind)),
-        Witness::Base(Value::known(input.note.coin_blind)),
         Witness::Base(Value::known(input.secret.inner())),
         Witness::Uint32(Value::known(u64::from(input.leaf_position).try_into().unwrap())),
         Witness::MerklePath(Value::known(input.merkle_path.clone().try_into().unwrap())),
@@ -959,7 +946,6 @@
     serial: pallas::Base,
     spend_hook: pallas::Base,
     user_data: pallas::Base,
-    coin_blind: pallas::Base,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;(Proof, TransferMintRevealed)&gt; {
     <span class="kw">let </span>value_commit = pedersen_commitment_u64(output.value, value_blind);
     <span class="kw">let </span>token_commit = pedersen_commitment_base(output.token_id.inner(), token_blind);
@@ -973,7 +959,6 @@
         serial,
         spend_hook,
         user_data,
-        coin_blind,
     ]));
 
     <span class="kw">let </span>public_inputs = TransferMintRevealed { coin, value_commit, token_commit };
@@ -984,7 +969,6 @@
         Witness::Base(Value::known(pallas::Base::from(output.value))),
         Witness::Base(Value::known(output.token_id.inner())),
         Witness::Base(Value::known(serial)),
-        Witness::Base(Value::known(coin_blind)),
         Witness::Base(Value::known(spend_hook)),
         Witness::Base(Value::known(user_data)),
         Witness::Scalar(Value::known(value_blind)),
