@@ -902,6 +902,17 @@
 <a href="#902" id="902">902</a>
 <a href="#903" id="903">903</a>
 <a href="#904" id="904">904</a>
+<a href="#905" id="905">905</a>
+<a href="#906" id="906">906</a>
+<a href="#907" id="907">907</a>
+<a href="#908" id="908">908</a>
+<a href="#909" id="909">909</a>
+<a href="#910" id="910">910</a>
+<a href="#911" id="911">911</a>
+<a href="#912" id="912">912</a>
+<a href="#913" id="913">913</a>
+<a href="#914" id="914">914</a>
+<a href="#915" id="915">915</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -945,6 +956,7 @@
     utilities::lookup_range_check::LookupRangeCheckConfig,
 };
 <span class="kw">use </span>halo2_proofs::{
+    arithmetic::Field,
     circuit::{floor_planner, AssignedCell, Layouter, Value},
     pasta::{group::Curve, pallas, Fp},
     plonk,
@@ -1262,7 +1274,11 @@
         </span><span class="kw">let </span>one = assign_free_advice(
             layouter.namespace(|| <span class="string">&quot;Load constant one&quot;</span>),
             config.advices[<span class="number">0</span>],
-            Value::known(pallas::Base::one()),
+            Value::known(pallas::Base::ONE),
+        )<span class="question-mark">?</span>;
+        layouter.assign_region(
+            || <span class="string">&quot;constrain constant&quot;</span>,
+            |<span class="kw-2">mut </span>region| region.constrain_constant(one.cell(), pallas::Base::ONE),
         )<span class="question-mark">?</span>;
 
         <span class="comment">// ANCHOR: constant_init
@@ -1645,6 +1661,12 @@
                         layouter.namespace(|| <span class="string">&quot;Witness literal&quot;</span>),
                         config.advices[<span class="number">0</span>],
                         Value::known(pallas::Base::from(lit)),
+                    )<span class="question-mark">?</span>;
+                    layouter.assign_region(
+                        || <span class="string">&quot;constrain constant&quot;</span>,
+                        |<span class="kw-2">mut </span>region| {
+                            region.constrain_constant(witness.cell(), pallas::Base::from(lit))
+                        },
                     )<span class="question-mark">?</span>;
 
                     <span class="macro">trace!</span>(target: <span class="string">&quot;zk::vm&quot;</span>, <span class="string">&quot;Pushing assignment to heap address {}&quot;</span>, heap.len());
