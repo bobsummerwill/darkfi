@@ -95,6 +95,7 @@
 <a href="#95" id="95">95</a>
 <a href="#96" id="96">96</a>
 <a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -120,7 +121,7 @@
 <span class="kw">use crate</span>::{
     settings::{
         parse_configured_channels, parse_configured_contacts, Args, ChannelInfo, ContactInfo,
-        CONFIG_FILE,
+        CONFIG_FILE, MAXIMUM_LENGTH_OF_NICK_CHAN_CNT,
     },
     PrivMsgEvent,
 };
@@ -155,7 +156,8 @@
     <span class="kw">pub fn </span>new(settings: <span class="kw-2">&amp;</span>Args) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>password = settings.password.as_ref().unwrap_or(<span class="kw-2">&amp;</span>String::new()).clone();
 
-        <span class="kw">let </span>auto_channels = settings.autojoin.clone();
+        <span class="kw">let </span><span class="kw-2">mut </span>auto_channels = settings.autojoin.clone();
+        auto_channels.retain(|chan| chan.len() &lt;= MAXIMUM_LENGTH_OF_NICK_CHAN_CNT);
 
         <span class="comment">// Pick up channel settings from the TOML configuration
         </span><span class="kw">let </span>cfg_path = get_config_path(settings.config.clone(), CONFIG_FILE)<span class="question-mark">?</span>;

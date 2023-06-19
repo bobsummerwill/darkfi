@@ -324,6 +324,14 @@
 <a href="#324" id="324">324</a>
 <a href="#325" id="325">325</a>
 <a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -359,7 +367,7 @@
 
 <span class="comment">// Msg config
 </span><span class="kw">pub const </span>MAXIMUM_LENGTH_OF_MESSAGE: usize = <span class="number">1024</span>;
-<span class="kw">pub const </span>MAXIMUM_LENGTH_OF_NICKNAME: usize = <span class="number">32</span>;
+<span class="kw">pub const </span>MAXIMUM_LENGTH_OF_NICK_CHAN_CNT: usize = <span class="number">32</span>;
 
 <span class="comment">// IRC Client
 </span><span class="kw">pub enum </span>RPL {
@@ -492,6 +500,10 @@
     }
 
     <span class="kw">for </span>chan <span class="kw">in </span>map[<span class="string">&quot;channel&quot;</span>].as_table().unwrap() {
+        <span class="kw">if </span>chan.<span class="number">0</span>.len() &gt; MAXIMUM_LENGTH_OF_NICK_CHAN_CNT {
+            <span class="macro">warn!</span>(<span class="string">&quot;Channel name is too long, skipping...&quot;</span>);
+            <span class="kw">continue
+        </span>}
         <span class="macro">info!</span>(<span class="string">&quot;Found configuration for channel {}&quot;</span>, chan.<span class="number">0</span>);
         <span class="kw">let </span><span class="kw-2">mut </span>channel_info = ChannelInfo::new()<span class="question-mark">?</span>;
 
@@ -573,6 +585,10 @@
     <span class="kw">let </span>secret = crypto_box::SecretKey::from(bytes);
 
     <span class="kw">for </span>cnt <span class="kw">in </span>contacts {
+        <span class="kw">if </span>cnt.<span class="number">0</span>.len() &gt; MAXIMUM_LENGTH_OF_NICK_CHAN_CNT {
+            <span class="macro">warn!</span>(<span class="string">&quot;Contact name is too long, skipping...&quot;</span>);
+            <span class="kw">continue
+        </span>}
         <span class="macro">info!</span>(<span class="string">&quot;Found configuration for contact {}&quot;</span>, cnt.<span class="number">0</span>);
         <span class="kw">let </span><span class="kw-2">mut </span>contact_info = ContactInfo::new()<span class="question-mark">?</span>;
 

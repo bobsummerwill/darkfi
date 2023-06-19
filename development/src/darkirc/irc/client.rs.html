@@ -891,7 +891,7 @@
     }
 
     <span class="kw">async fn </span>on_receive_nick(<span class="kw-2">&amp;mut </span><span class="self">self</span>, nickname: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-        <span class="kw">if </span>nickname.len() &gt; settings::MAXIMUM_LENGTH_OF_NICKNAME {
+        <span class="kw">if </span>nickname.len() &gt;= settings::MAXIMUM_LENGTH_OF_NICK_CHAN_CNT {
             <span class="kw">return </span><span class="prelude-val">Ok</span>(())
         }
 

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["decrypt_privmsg","decrypt_target","encrypt","encrypt_privmsg","try_decrypt"],"struct":["KeyPair"]};
+window.SIDEBAR_ITEMS = {"fn":["decrypt_privmsg","decrypt_target","encrypt","encrypt_privmsg","pad","try_decrypt","unpad"],"struct":["KeyPair"]};
