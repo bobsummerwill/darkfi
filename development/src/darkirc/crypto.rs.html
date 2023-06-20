@@ -163,6 +163,30 @@
 <a href="#163" id="163">163</a>
 <a href="#164" id="164">164</a>
 <a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
+<a href="#175" id="175">175</a>
+<a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
 </pre></div><pre class="rust"><code><span class="comment">/* This file is part of DarkFi (https://dark.fi)
  *
  * Copyright (C) 2020-2023 Dyne.org foundation
@@ -313,19 +337,43 @@
     privmsg.msg = encrypt(salt_box, privmsg.msg.as_bytes());
 }
 
-<span class="kw">fn </span>pad(<span class="kw-2">mut </span>data: Vec&lt;u8&gt;) -&gt; Vec&lt;u8&gt; {
-    <span class="kw">let </span>pad_len = (MAXIMUM_LENGTH_OF_NICK_CHAN_CNT - data.len()) <span class="kw">as </span>u8;
-    <span class="kw">for _ in </span><span class="number">0</span>..pad_len {
-        data.push(pad_len);
+<span class="kw">fn </span>pad(data: Vec&lt;u8&gt;) -&gt; Vec&lt;u8&gt; {
+    <span class="kw">if </span>data.len() == MAXIMUM_LENGTH_OF_NICK_CHAN_CNT {
+        <span class="kw">return </span>data
     }
+
+    <span class="macro">assert!</span>(data.len() &lt; MAXIMUM_LENGTH_OF_NICK_CHAN_CNT);
+    <span class="kw">let </span>padding = <span class="macro">vec!</span>[<span class="number">0u8</span>; MAXIMUM_LENGTH_OF_NICK_CHAN_CNT - data.len()];
+
+    <span class="kw">let </span><span class="kw-2">mut </span>data = data.clone();
+    data.extend_from_slice(<span class="kw-2">&amp;</span>padding);
     data
 }
 
-<span class="kw">fn </span>unpad(<span class="kw-2">mut </span>data: Vec&lt;u8&gt;) -&gt; Vec&lt;u8&gt; {
-    <span class="kw">let </span>pad_len = data[data.len() - <span class="number">1</span>];
-    <span class="kw">for _ in </span><span class="number">0</span>..pad_len {
-        data.pop();
+<span class="kw">fn </span>unpad(data: Vec&lt;u8&gt;) -&gt; Vec&lt;u8&gt; {
+    <span class="macro">assert!</span>(data.len() == MAXIMUM_LENGTH_OF_NICK_CHAN_CNT);
+    <span class="kw">match </span>data.iter().position(|<span class="kw-2">&amp;</span>x| x == <span class="number">0u8</span>) {
+        <span class="prelude-val">Some</span>(idx) =&gt; data[..idx].to_vec(),
+        <span class="prelude-val">None </span>=&gt; data,
     }
-    data
+}
+
+<span class="attr">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_pad_unpad() {
+        <span class="kw">let </span>nick = String::from(<span class="string">&quot;terry-davis&quot;</span>);
+
+        <span class="kw">let </span>padded = pad(nick.clone().into());
+        <span class="macro">assert!</span>(padded.len() == <span class="number">32</span>);
+        <span class="macro">assert_eq!</span>(nick, String::from_utf8_lossy(<span class="kw-2">&amp;</span>unpad(padded)));
+
+        <span class="kw">let </span>nick = String::from(<span class="string">&quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;</span>);
+        <span class="kw">let </span>padded = pad(nick.clone().into());
+        <span class="macro">assert_eq!</span>(nick, String::from_utf8_lossy(<span class="kw-2">&amp;</span>padded));
+        <span class="macro">assert_eq!</span>(nick, String::from_utf8_lossy(<span class="kw-2">&amp;</span>unpad(padded)));
+    }
 }
 </code></pre></div></section></main></body></html>
